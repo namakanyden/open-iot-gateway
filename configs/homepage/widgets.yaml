@@ -11,3 +11,11 @@
     provider: duckduckgo
     target: _blank
 
+- datetime:
+    text_size: xl
+    locale: sk
+    format:
+      dateStyle: long
+      timeStyle: long 
+      hourCycle: h23
+
