@@ -1,0 +1,14 @@
+[2023-03-22T08:55:20.957Z] info: settings.yaml was copied to the config folder
+[2023-03-22T08:55:20.959Z] info: settings.yaml was copied to the config folder
+[2023-03-22T08:55:21.633Z] error: undefined
+[2023-03-22T08:55:21.654Z] info: docker.yaml was copied to the config folder
+[2023-03-22T08:55:21.655Z] info: services.yaml was copied to the config folder
+[2023-03-22T08:55:21.655Z] info: bookmarks.yaml was copied to the config folder
+[2023-03-22T08:55:21.656Z] info: widgets.yaml was copied to the config folder
+[2023-03-22T08:55:21.766Z] info: kubernetes.yaml was copied to the config folder
+[2023-03-24T15:50:24.543Z] error: Failed to load services.yaml, please check for errors
+[2023-03-24T15:50:24.544Z] error: TypeError: Cannot read properties of null (reading 'map')
+[2023-03-24T15:50:24.568Z] error: Failed to load services.yaml, please check for errors
+[2023-03-24T15:50:24.568Z] error: TypeError: Cannot read properties of null (reading 'map')
+[2023-03-24T15:50:25.120Z] error: Failed to load services.yaml, please check for errors
+[2023-03-24T15:50:25.120Z] error: TypeError: Cannot read properties of null (reading 'map')

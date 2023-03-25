@@ -1,0 +1,10 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/en/configs/services
+
+
+- Applications:
+    - IoTLab Dashboard:
+        href: http://192.168.0.182:1880/ui/
+        description: IoTLab Dashboard
+        icon: nodered.png
