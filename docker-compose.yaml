@@ -118,7 +118,7 @@ services:
     labels:
       homepage.group: IoT Gateway Core
       homepage.name: Theengs Gateway
-      homepage.icon: https://cdn.shopify.com/s/files/1/0673/4613/7370/files/logo-Theengs-final-512.png
+      homepage.icon: https://github.com/namakanyden/Open-IoT-Gateway/raw/main/icons/theengs.png
       homepage.description: BLE2MQTT Gateway
 
 
@@ -133,7 +133,7 @@ services:
     labels:
       homepage.group: IoT Gateway Core
       homepage.name: Chrony
-      #homepage.icon: 
+      homepage.icon: https://github.com/namakanyden/Open-IoT-Gateway/raw/main/icons/chrony.png
       homepage.description: NTP Server
 
 
