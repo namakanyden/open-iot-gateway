@@ -14,7 +14,7 @@ services:
       # Entrypoints
       - "--entrypoints.mqtt.address=:1883"
       - "--entrypoints.web.address=:80"
-    restart: unless-stopped
+    restart: always
     ports:
       # The HTTP port
       - 80:80
@@ -35,9 +35,9 @@ services:
   portainer:
     image: portainer/portainer-ce
     ports:
-      - 8000:8000 
-      - 9443:9443 
-    restart: always 
+      - 8000:8000
+      - 9443:9443
+    restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock 
       - portainer_data:/data
@@ -54,7 +54,7 @@ services:
     volumes:
       - ./configs/homepage:/app/config
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    restart: unless-stopped
+    restart: always
     labels:
       traefik.enable: true
       traefik.http.routers.homepage.rule: PathPrefix(`/`)
@@ -64,7 +64,7 @@ services:
 
   mosquitto:
     image: eclipse-mosquitto
-    restart: unless-stopped
+    restart: always
     volumes:
       #- ${PWD}/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
       #- ${PWD}/mosquitto/config/mosquitto.passwd:/mosquitto/config/mosquitto.passwd
@@ -84,7 +84,7 @@ services:
 
   telegraf:
     image: telegraf
-    restart: unless-stopped
+    restart: always
     volumes:
       - ./configs/telegraf:/etc/telegraf:ro
     labels:
@@ -94,9 +94,10 @@ services:
       homepage.description: System Metrics
 
 
-  theengsgateway:
-    image: maretodoric/theengsgateway-i386:latest
-    restart: unless-stopped
+  theengs:
+    image: theengs/gateway
+      #image: maretodoric/theengsgateway-aarch64:latest
+    restart: always
 #    network_mode: host
     environment:
       MQTT_HOST: mosquitto
@@ -124,7 +125,7 @@ services:
 
   chrony:
     image: cturra/ntp
-    #restart: always
+    restart: always
     ports:
       - 123:123/udp
     environment:
@@ -139,5 +140,4 @@ services:
 
 volumes:
   portainer_data:
-    #  nodered_data:
 
