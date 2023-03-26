@@ -3,7 +3,7 @@ version: "3"
 services:
 
   traefik:
-    image: traefik
+    image: traefik:2.9
     # Enables the web UI and tells Traefik to listen to docker
     command: 
       # Configuration
@@ -14,10 +14,12 @@ services:
       # Entrypoints
       - "--entrypoints.mqtt.address=:1883"
       - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
     restart: unless-stopped
     ports:
-      # The HTTP port
+      # The HTTP and HTTPS port
       - 80:80
+      - 443:443
       # The Web UI (enabled by --api.insecure=true)
       - 8080:8080
       # MQTT
@@ -42,11 +44,23 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock 
       - portainer_data:/data
     labels:
-      - homepage.group=IoT Gateway Core
-      - homepage.name=Portainer
-      - homepage.icon=portainer.png
-      - homepage.href=https://${HOSTIP:-localhost}:9443/
-      - homepage.description=Docker management
+      homepage.group: IoT Gateway Core
+      homepage.name: Portainer
+      homepage.icon: portainer.png
+      homepage.href: https://${HOSTIP:-localhost}:9443/
+      homepage.description: Docker management
+
+      #traefik.enable: true
+      #traefik.http.services.portainer.loadbalancer.server.port: 9443
+
+      ## middleware
+      #traefik.http.middlewares.portainer-rewrite.replacepathregex.regex: "^/portainer/(.*)"
+      #traefik.http.middlewares.portainer-rewrite.replacepathregex.replacement: "/$$1"
+
+      ## routers
+      #traefik.http.routers.portainer.entrypoints: web
+      #traefik.http.routers.portainer.rule: PathPrefix(`/portainer/`)
+      #traefik.http.routers.portainer.middlewares: "portainer-rewrite"
 
 
   homepage:
