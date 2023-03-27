@@ -5,7 +5,7 @@ services:
   traefik:
     image: traefik:2.9
     # Enables the web UI and tells Traefik to listen to docker
-    command: 
+    command:
       # Configuration
       - "--api.insecure=true"
       - "--providers.docker=true"
@@ -15,7 +15,7 @@ services:
       - "--entrypoints.mqtt.address=:1883"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
-    restart: unless-stopped
+    restart: always
     ports:
       # The HTTP and HTTPS port
       - 80:80
@@ -37,11 +37,11 @@ services:
   portainer:
     image: portainer/portainer-ce
     ports:
-      - 8000:8000 
-      - 9443:9443 
-    restart: always 
+      - 8000:8000
+      - 9443:9443
+    restart: always
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock 
+      - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
     labels:
       homepage.group: IoT Gateway Core
@@ -68,17 +68,17 @@ services:
     volumes:
       - ./configs/homepage:/app/config
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    restart: unless-stopped
+    restart: always
     labels:
       traefik.enable: true
       traefik.http.routers.homepage.rule: PathPrefix(`/`)
-      traefik.http.routers.homepage.entrypoints: web 
+      traefik.http.routers.homepage.entrypoints: web
       traefik.http.services.homepage.loadbalancer.server.port: 3000
 
 
   mosquitto:
     image: eclipse-mosquitto
-    restart: unless-stopped
+    restart: always
     volumes:
       #- ${PWD}/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
       #- ${PWD}/mosquitto/config/mosquitto.passwd:/mosquitto/config/mosquitto.passwd
@@ -98,19 +98,20 @@ services:
 
   telegraf:
     image: telegraf
-    restart: unless-stopped
+    restart: always
     volumes:
       - ./configs/telegraf:/etc/telegraf:ro
     labels:
       homepage.group: IoT Gateway Core
-      homepage.name: Telegraf 
+      homepage.name: Telegraf
       homepage.icon: telegraf.png
       homepage.description: System Metrics
 
 
-  theengsgateway:
-    image: maretodoric/theengsgateway-i386:latest
-    restart: unless-stopped
+  theengs:
+    image: theengs/gateway
+      #image: maretodoric/theengsgateway-aarch64:latest
+    restart: always
 #    network_mode: host
     environment:
       MQTT_HOST: mosquitto
@@ -138,7 +139,7 @@ services:
 
   chrony:
     image: cturra/ntp
-    #restart: always
+    restart: always
     ports:
       - 123:123/udp
     environment:
@@ -153,5 +154,4 @@ services:
 
 volumes:
   portainer_data:
-    #  nodered_data:
 
