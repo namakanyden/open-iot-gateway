@@ -1,9 +1,9 @@
-## Additional Services
+# Additional Services
 
 For adding additional services, which are not part of the *Open IoT Gateway* stack, use additional `docker-compose.yaml` file. For `homepage.group` use label `Services`
 
 
-### Node-RED
+## Node-RED
 
 ```yaml
 nodered:

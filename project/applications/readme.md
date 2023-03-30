@@ -1,4 +1,4 @@
-## Additional Applications
+# Additional Applications
 
 When adding applications, you can create new `docker-compose.yaml` file with all of them. If you want to add them to homepage, use `Applications` as `homepage.group`.
 
@@ -6,7 +6,8 @@ When adding applications, you can create new `docker-compose.yaml` file with all
 
 ```
 
-### MQTT Explorer
+
+## MQTT Explorer
 
 
 ```yaml
