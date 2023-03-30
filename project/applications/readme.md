@@ -6,6 +6,14 @@ When adding applications, you can create new `docker-compose.yaml` file with all
 
 ```
 
+if you want to connect to some core services, you can connect with IP address or you can connect your application to the same network `iotgw` by specifying the network in `docker-compose.yaml` file following way:
+
+```yaml
+networks:
+  iotgw:
+    external: true
+```
+
 
 ## MQTT Explorer
 

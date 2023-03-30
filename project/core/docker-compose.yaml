@@ -155,3 +155,9 @@ services:
 volumes:
   portainer_data:
 
+networks:
+  # all containers will be by default connected to network iotgw
+  default:
+    external:
+      name: iotgw
+
