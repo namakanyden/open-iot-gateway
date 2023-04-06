@@ -6,6 +6,8 @@ services:
     restart: always
     ports:
     - 4000:4000
+    volumes:
+    - ./configs/mqtt-explorer:/mqtt-explorer/config
     labels:
       homepage.group: Applications
       homepage.name: MQTT Explorer
