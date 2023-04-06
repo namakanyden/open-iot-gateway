@@ -37,7 +37,7 @@ services:
   portainer:
     image: portainer/portainer-ce
     ports:
-      - 8000:8000
+      # - 8000:8000
       - 9443:9443
     restart: always
     volumes:
@@ -82,7 +82,6 @@ services:
     volumes:
       #- ${PWD}/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
       #- ${PWD}/mosquitto/config/mosquitto.passwd:/mosquitto/config/mosquitto.passwd
-      #- ./mosquitto/config:/mosquitto/config
       - ./configs/mosquitto:/mosquitto/config
     labels:
       traefik.enable: true
@@ -106,28 +105,31 @@ services:
       homepage.name: Telegraf
       homepage.icon: telegraf.png
       homepage.description: System Metrics
+    environment:
+      HOSTIP: ${HOSTIP:-localhost}
+      ROOM: ${IOTGW_ROOM:-home}
+      DEPARTMENT: ${IOTGW_DEPARTMENT:-none}
 
 
   theengs:
     image: theengs/gateway
-      #image: maretodoric/theengsgateway-aarch64:latest
     restart: always
 #    network_mode: host
     environment:
       MQTT_HOST: mosquitto
 #       MQTT_USERNAME: <username>
 #       MQTT_PASSWORD: <password>
-      MQTT_PUB_TOPIC: kpi/${ROOM:-room}/ble2mqtt
+      MQTT_PUB_TOPIC: gateway/ble2mqtt
 #       MQTT_SUB_TOPIC: home/TheengsGateway/commands
 #       PUBLISH_ALL: true
 #       TIME_BETWEEN: 60
 #       SCAN_TIME: 60
 #       LOG_LEVEL: DEBUG
-      DISCOVERY_TOPIC: kpi/${ROOM:-room}/homeassistant/sensor
+      DISCOVERY_TOPIC: gateway/homeassistant/sensor
 #       DISCOVERY_DEVICE_NAME: TheengsGateway
 #       DISCOVERY_FILTER: "[IBEACON,GAEN,MS-CDP]"
 #       SCANNING_MODE: active
-#       ADAPTER: hci0
+      ADAPTER: ${IOTGW_BLE_ADAPTER:-hci0}
     volumes:
       - /var/run/dbus:/var/run/dbus
     labels:
@@ -143,7 +145,7 @@ services:
     ports:
       - 123:123/udp
     environment:
-      NTP_SERVERS: ${NTP_SERVERS:-time.cloudflare.com}
+      NTP_SERVERS: ${IOTGW_NTP_SERVERS:-time.cloudflare.com}
       LOG_LEVEL: 0
     labels:
       homepage.group: IoT Gateway Core
@@ -155,3 +157,8 @@ services:
 volumes:
   portainer_data:
 
+networks:
+  # all containers will be by default connected to network iotgw
+  default:
+    name: iotgw
+    external: true

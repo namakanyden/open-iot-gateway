@@ -1,0 +1,34 @@
+{
+  "ConnectionManager_connections": {
+    "mqtt.eclipse.org": {
+      "configVersion": 1,
+      "certValidation": true,
+      "clientId": "mqtt-explorer-c01eb9da",
+      "id": "mqtt.eclipse.org",
+      "name": "IoT Gateway",
+      "encryption": false,
+      "subscriptions": [
+        {
+          "topic": "#",
+          "qos": 0
+        },
+        {
+          "topic": "$SYS/#",
+          "qos": 0
+        }
+      ],
+      "type": "mqtt",
+      "host": "mosquitto",
+      "port": 1883,
+      "protocol": "mqtt"
+    }
+  },
+  "Settings": {
+    "timeLocale": "sk",
+    "topicOrder": "none",
+    "highlightTopicUpdates": true,
+    "valueRendererDisplayMode": "raw",
+    "selectTopicWithMouseOver": false,
+    "theme": "light"
+  }
+}
