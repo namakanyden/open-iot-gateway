@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  mqtt-explorer:
+    image: smeagolworms4/mqtt-explorer
+    restart: always
+    ports:
+    - 4000:4000
+    volumes:
+    - ./configs/mqtt-explorer:/mqtt-explorer/config
+    labels:
+      homepage.group: Applications
+      homepage.name: MQTT Explorer
+      homepage.href: http://${HOSTIP:-localhost}:4000
+      homepage.description: MQTT Web Client
+      homepage.icon: http://mqtt-explorer.com/icon.png
+    networks:
+      - iotgw
+
+networks:
+  iotgw:
+    external: true

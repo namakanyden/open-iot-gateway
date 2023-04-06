@@ -82,7 +82,6 @@ services:
     volumes:
       #- ${PWD}/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
       #- ${PWD}/mosquitto/config/mosquitto.passwd:/mosquitto/config/mosquitto.passwd
-      #- ./mosquitto/config:/mosquitto/config
       - ./configs/mosquitto:/mosquitto/config
     labels:
       traefik.enable: true
@@ -106,6 +105,10 @@ services:
       homepage.name: Telegraf
       homepage.icon: telegraf.png
       homepage.description: System Metrics
+    environment:
+      HOSTIP: ${HOSTIP:-localhost}
+      ROOM: ${IOTGW_ROOM:-home}
+      DEPARTMENT: ${IOTGW_DEPARTMENT:-none}
 
 
   theengs:
@@ -126,7 +129,7 @@ services:
 #       DISCOVERY_DEVICE_NAME: TheengsGateway
 #       DISCOVERY_FILTER: "[IBEACON,GAEN,MS-CDP]"
 #       SCANNING_MODE: active
-      ADAPTER: ${THEENGS_ADAPTER:-hci0}
+      ADAPTER: ${IOTGW_BLE_ADAPTER:-hci0}
     volumes:
       - /var/run/dbus:/var/run/dbus
     labels:
@@ -142,7 +145,7 @@ services:
     ports:
       - 123:123/udp
     environment:
-      NTP_SERVERS: ${NTP_SERVERS:-time.cloudflare.com}
+      NTP_SERVERS: ${IOTGW_NTP_SERVERS:-time.cloudflare.com}
       LOG_LEVEL: 0
     labels:
       homepage.group: IoT Gateway Core
@@ -159,4 +162,3 @@ networks:
   default:
     name: iotgw
     external: true
-
