@@ -10,30 +10,59 @@ services:
     volumes:
     - nodered_data:/data
     labels:
+      # homepage setup
       homepage.group: Services
       homepage.name: Node-RED
       homepage.icon: nodered.png
-      homepage.href: http://${HOSTIP:-localhost}:1880
+      homepage.href: http://${HOSTIP:-localhost}/nodered/
       homepage.description: Node-RED
+
+      # traefik setup
+      traefik.enable: true
+      traefik.http.services.nodered.loadbalancer.server.port: 1880
+
+      # middleware
+      traefik.http.middlewares.nodered-rewrite.replacepathregex.regex: "^/nodered/(.*)"
+      traefik.http.middlewares.nodered-rewrite.replacepathregex.replacement: "/$$1"
+
+      # routers
+      traefik.http.routers.nodered.entrypoints: web
+      traefik.http.routers.nodered.rule: PathPrefix(`/nodered/`)
+      traefik.http.routers.nodered.middlewares: "nodered-rewrite"
+
 
   zigbee2mqtt:
     restart: always
     image: koenkk/zigbee2mqtt
     volumes:
-      - ./zigbee2mqtt-data:/app/data
+      - ./configs/zigbee2mqtt/configuration.yaml:/app/data/configuration.yaml
       - /run/udev:/run/udev:ro
-    ports:
-      - 8000:8080
+    # ports:
+      # - 8000:8080
     environment:
       - TZ=Europe/Bratislava
     devices:
       - ${IOTGW_ZIGBEE_ADAPTER:-/dev/ttyACM0}:/dev/ttyACM0
     labels:
+      # homepage setup
       homepage.group: Services
       homepage.name: Zigbee2MQTT
       homepage.icon: zigbee2mqtt.png
-      homepage.href: http://${HOSTIP:-localhost}:8000
+      homepage.href: http://${HOSTIP:-localhost}/zigbee2mqtt/
       homepage.description: Zigbee to MQTT bridge
+
+      # traefik setup
+      traefik.enable: true
+      traefik.http.services.zb2mqtt.loadbalancer.server.port: 8080
+
+      # middleware
+      traefik.http.middlewares.zb2mqtt-rewrite.replacepathregex.regex: "^/zigbee2mqtt/(.*)"
+      traefik.http.middlewares.zb2mqtt-rewrite.replacepathregex.replacement: "/$$1"
+
+      # routers
+      traefik.http.routers.zb2mqtt.entrypoints: web
+      traefik.http.routers.zb2mqtt.rule: PathPrefix(`/zigbee2mqtt/`)
+      traefik.http.routers.zb2mqtt.middlewares: "zb2mqtt-rewrite"
     networks:
       - iotgw
 

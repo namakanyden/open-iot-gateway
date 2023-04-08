@@ -11,6 +11,11 @@ The core services contains:
 * Homepage
 
 
+## Theengs Gateway
+
+Provides bridge between BLE and MQTT.
+
+
 ## Running
 
 ```bash
