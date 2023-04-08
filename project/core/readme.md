@@ -14,7 +14,7 @@ The core services contains:
 ## Running
 
 ```bash
-$ docker compose --env-file core.env up --detach
+$ docker compose --env-file ../global.env --env-file core.env up --detach
 ```
 
 ## Environment Variables

@@ -27,8 +27,7 @@ services:
     environment:
       - TZ=Europe/Bratislava
     devices:
-      - /dev/ttyACM0:/dev/ttyACM0
-      - /dev/ttyUSB0:/dev/ttyUSB0
+      - ${IOTGW_ZIGBEE_ADAPTER:-/dev/ttyACM0}:/dev/ttyACM0
     labels:
       homepage.group: Services
       homepage.name: Zigbee2MQTT

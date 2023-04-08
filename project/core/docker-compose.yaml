@@ -119,7 +119,7 @@ services:
       MQTT_HOST: mosquitto
 #       MQTT_USERNAME: <username>
 #       MQTT_PASSWORD: <password>
-      MQTT_PUB_TOPIC: gateway/ble2mqtt
+      MQTT_PUB_TOPIC: gateway/ble
 #       MQTT_SUB_TOPIC: home/TheengsGateway/commands
 #       PUBLISH_ALL: true
 #       TIME_BETWEEN: 60

@@ -28,3 +28,13 @@ nodered:
    homepage.href: http://${HOSTIP:-localhost}:1880
    homepage.description: Node-RED
 ```
+
+## Running
+
+```bash
+$ docker compose --env-file ../global.env --env-file services.env up --detach
+```
+
+## Environment Variables
+
+* `IOTGW_ZIGBEE_ADAPTER` - location of Zigbee receiver device, default is `/dev/ttyACM0`
