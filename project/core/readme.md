@@ -11,10 +11,15 @@ The core services contains:
 * Homepage
 
 
+## Theengs Gateway
+
+Provides bridge between BLE and MQTT.
+
+
 ## Running
 
 ```bash
-$ docker compose --env-file core.env up --detach
+$ docker compose --env-file ../global.env --env-file core.env up --detach
 ```
 
 ## Environment Variables
