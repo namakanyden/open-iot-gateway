@@ -28,3 +28,4 @@ $ docker compose --env-file ../global.env --env-file core.env up --detach
 * `IOTGW_DEPARTMENT` - name of the department, default is `none`
 * `IOTGW_BLE_ADAPTER` - name of the local BLE adapter, default is `hci0`
 * `IOTGW_NTP_SERVERS` - list (pool) of NTP servers, default is `time.cloudflare.com`
+
