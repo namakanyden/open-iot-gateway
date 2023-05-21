@@ -29,6 +29,8 @@ services:
       traefik.http.routers.nodered.entrypoints: web
       traefik.http.routers.nodered.rule: PathPrefix(`/nodered/`)
       traefik.http.routers.nodered.middlewares: "nodered-rewrite"
+    networks:
+      - iotgw
 
 
   zigbee2mqtt:
@@ -36,6 +38,7 @@ services:
     image: koenkk/zigbee2mqtt
     volumes:
       - ./configs/zigbee2mqtt/configuration.yaml:/app/data/configuration.yaml
+      - zigbee2mqtt_data:/app/data/
       - /run/udev:/run/udev:ro
     # ports:
       # - 8000:8080
@@ -68,6 +71,7 @@ services:
 
 volumes:
   nodered_data:
+  zigbee2mqtt_data:
 
 networks:
   iotgw:
