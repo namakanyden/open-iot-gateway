@@ -30,3 +30,10 @@ mqtt-explorer:
     homepage.href: http://${HOSTIP:-localhost}:4000
     homepage.description: MQTT Web Client
 ```
+
+## Running
+
+```bash
+$ docker compose --env-file ../global.env up --detach
+```
+

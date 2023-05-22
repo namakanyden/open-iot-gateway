@@ -6,5 +6,5 @@
 - Applications:
     - IoTLab Dashboard:
         href: http://192.168.0.182:1880/ui/
-        description: IoTLab Dashboard
-        icon: nodered.png
+        description: Gateway Dashboard
+        icon: node-red.png
