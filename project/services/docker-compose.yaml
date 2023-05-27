@@ -13,7 +13,7 @@ services:
       # homepage setup
       homepage.group: Services
       homepage.name: Node-RED
-      homepage.icon: nodered.png
+      homepage.icon: node-red.png
       homepage.href: http://${HOSTIP:-localhost}/nodered/
       homepage.description: Node-RED
 
