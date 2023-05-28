@@ -59,6 +59,13 @@ serial:
 frontend: true
 ```
 
+Ziskat id adaptera:
+
+```
+ls /dev/serial/by-id/
+```
+
+
 ## Running
 
 ```bash
@@ -68,3 +75,4 @@ $ docker compose --env-file ../global.env --env-file services.env up --detach
 ## Environment Variables
 
 * `IOTGW_ZIGBEE_ADAPTER` - location of Zigbee receiver device, default is `/dev/ttyACM0`
+

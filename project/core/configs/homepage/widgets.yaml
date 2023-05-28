@@ -6,10 +6,8 @@
     cpu: true
     memory: true
     disk: /
-
-- search:
-    provider: duckduckgo
-    target: _blank
+    uptime: true
+    cputemp: true 
 
 - datetime:
     text_size: xl
@@ -18,4 +16,8 @@
       dateStyle: long
       timeStyle: long 
       hourCycle: h23
+
+
+- logo:
+    icon: https://magazin.kpi.fei.tuke.sk/images/kpi-logo.svg
 

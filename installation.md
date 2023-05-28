@@ -1,24 +1,99 @@
 # Inštalácia
 
-## 1. Operačný systém
+## Operačný systém
 
-nainštalovať Armbian
+Ako operačný systém budeme používať [Armbian](https://www.armbian.com/), ktorý je určený na beh na jednodoskových počítačoch, akým je aj _Raspberry Pi_. Okrem toho je pravidelne aktualizovaný a vychádza z distribúcií _Debian_ a _Ubuntu_.
+
+Ak vám po nainštalovaní distribúcie _Armbian_ na kartu a spustení minipočítača Raspberry Pi zostane čierna obrazovka, je to zrejme prednastavenou konfiguráciou grafického výstupu. V tom prípade odporúčame pridať do konfigurácie pre všetkých voľbu `hdmi_safe=1` a prípadne zakomentovať voľbu `hdmi_drive`. 
+
+```
+[all]
+hdmi_safe=1
+#hdmi_drive=2
+```
+
+Prejdite procesom prvého spustenia a prvej pinštalačnej konfigurácie, kde postupne nastavíte:
+
+* heslo pre používateľa `root` (predvolené nastavené heslo je `1234`)
+* meno a heslo nového používateľa 
+* jazyk a časovú zónu
+* nepripájajte sa k WiFi sieti, nakoľko zariadenie bude poskytovať WiFi sieť vlastným chytrým zariadeniam
+
+Po nainštalovaní bude automaticky dostupná služba `ssh`, tak.
 
 
-## 2. Poinštalačná konfigurácia
+## Poinštalačná konfigurácia
 
-- wifi siet
-- docker
+Základnú poinštalačnú konfiguráciu urobíme pomocou nástroja `armbian-config`, ktorý spustíte príkazom:
+
+```bash
+$ sudo armbian-config
+```
 
 
-## 3. Spustenie `core`
+### Nastavenie názvu zariadenia (hostname)
 
-vytvorenie samostatnej siete 
+Názov zariadenia zmeníte pomocou menu `Personal > Hostname`.
+
+
+### Samostatná WiFi sieť
+
+Prejdite do časti `Network > `
+
+
+## Zapnutie Bluetooth
+
+Prejdite do časti `Network > BT install`. Process inštalácie prebehne automaticky.
+
+Okrem toho je však potrebné dopísať do súboru `/boot/firmware/config.txt` tieto riadky do časti `[all]`:
+
+```bash
+dtparam=krnbt=on
+enable_uart=0
+```
+
+Zdroj: https://www.linuxquestions.org/questions/slackware-arm-108/pri4-revision-a03111-bluetooth-problems-4175689561/page4.html
+
+
+### Inštalácia nástroja Docker
+
+Docker na vašom zariadení nainštalujete týmto príkazom
+
+```bash
+$ curl -sSL https://get.docker.com/ | sh
+```
+
+Inštalácia bude trvať niekoľko minút.
+
+Po skončení inštalácie je potrebné používateľa pridať do skupiny `docker` nasledovným príkazom:
+
+```bash
+$ sudo usermod -aG docker $USER
+```
+
+
+### Reštart
+
+Aby sa korektne aplikovali všetky zmeny, zariadenie reštartujte napríklad príkazom:
+
+```bash
+$ sudo reboot
+```
+
+
+## Inštalácia Core modulov
+
+Ešte predtým, ako začneme, si projekt stiahneme zo [stránky projektu na serveri github.com](https://github.com/namakanyden/Open-IoT-Gateway) pomocou príkazu:
+
+```bash
+$ git clone https://github.com/namakanyden/Open-IoT-Gateway.git
+```
+
+### Vytvorenie samostatnej siete 
 
 ```bash
 $ docker network create iotgw
 ```
-
 
 spustenie kompozicie
 
