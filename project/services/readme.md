@@ -29,6 +29,36 @@ nodered:
    homepage.description: Node-RED
 ```
 
+## Zigbee2MQTT
+
+konfiguracny subor:
+
+```yaml
+# Home Assistant integration (MQTT discovery)
+homeassistant: false
+
+# allow new devices to join
+permit_join: true
+
+# MQTT settings
+mqtt:
+  # MQTT server URL
+  server: 'mqtt://mosquitto'
+  # MQTT server authentication, uncomment if required:
+  # user: my_user
+  # password: my_password
+  # MQTT base topic for zigbee2mqtt MQTT messages
+  base_topic: gateway/zigbee
+
+# Serial settings
+serial:
+  # Location of CC2531 USB sniffer
+  port: /dev/ttyACM0
+
+# Will run frontend on port 8080
+frontend: true
+```
+
 ## Running
 
 ```bash
