@@ -1,7 +1,6 @@
 version: "3"
 
 services:
-
   traefik:
     image: traefik:2.9
     # Enables the web UI and tells Traefik to listen to docker
@@ -33,7 +32,6 @@ services:
       - homepage.href=http://${HOSTIP:-localhost}:8080/
       - homepage.description=Traefik dashboard
 
-
         #  portainer:
         #    image: portainer/portainer-ce
         #    ports:
@@ -62,7 +60,6 @@ services:
       #traefik.http.routers.portainer.rule: PathPrefix(`/portainer/`)
       #traefik.http.routers.portainer.middlewares: "portainer-rewrite"
 
-
   homepage:
     image: ghcr.io/benphelps/homepage:latest
     volumes:
@@ -75,7 +72,6 @@ services:
       traefik.http.routers.homepage.entrypoints: web
       traefik.http.services.homepage.loadbalancer.server.port: 3000
 
-
   mosquitto:
     image: eclipse-mosquitto
     restart: always
@@ -85,7 +81,7 @@ services:
       - ./configs/mosquitto:/mosquitto/config
     labels:
       traefik.enable: true
-      traefik.tcp.services.mosquitto.loadbalancer.server.port: 1883
+      traefik.tcp.services.mosquitto.loadbalancer.server.port: 1893
       traefik.tcp.routers.mosquitto.entrypoints: mqtt
       traefik.tcp.routers.mosquitto.service: mosquitto
       traefik.tcp.routers.mosquitto.rule: HostSNI(`*`)
@@ -93,7 +89,6 @@ services:
       homepage.name: Mosquitto
       homepage.icon: mqtt.png
       homepage.description: Local MQTT Broker
-
 
   telegraf:
     image: telegraf
@@ -110,26 +105,25 @@ services:
       ROOM: ${IOTGW_ROOM:-home}
       DEPARTMENT: ${IOTGW_DEPARTMENT:-none}
 
-
   theengs:
     image: theengs/gateway
     restart: always
-#    network_mode: host
+    #    network_mode: host
     environment:
       MQTT_HOST: mosquitto
-#       MQTT_USERNAME: <username>
-#       MQTT_PASSWORD: <password>
+      #       MQTT_USERNAME: <username>
+      #       MQTT_PASSWORD: <password>
       MQTT_PUB_TOPIC: gateway/ble
-#       MQTT_SUB_TOPIC: home/TheengsGateway/commands
+      #       MQTT_SUB_TOPIC: home/TheengsGateway/commands
       PUBLISH_ALL: true
-#       TIME_BETWEEN: 60
-#       SCAN_TIME: 60
+      #       TIME_BETWEEN: 60
+      #       SCAN_TIME: 60
       LOG_LEVEL: INFO
       DISCOVERY: false
-#      DISCOVERY_TOPIC: gateway/homeassistant/sensor
-#       DISCOVERY_DEVICE_NAME: TheengsGateway
-#      DISCOVERY_FILTER: "[IBEACON]"  # GAEN,MS-CDP
-#       SCANNING_MODE: active
+      #      DISCOVERY_TOPIC: gateway/homeassistant/sensor
+      #       DISCOVERY_DEVICE_NAME: TheengsGateway
+      #      DISCOVERY_FILTER: "[IBEACON]"  # GAEN,MS-CDP
+      #       SCANNING_MODE: active
       ADAPTER: ${IOTGW_BLE_ADAPTER:-hci0}
     volumes:
       - /var/run/dbus:/var/run/dbus
@@ -138,7 +132,6 @@ services:
       homepage.name: Theengs Gateway
       homepage.icon: https://github.com/namakanyden/Open-IoT-Gateway/raw/main/icons/theengs.png
       homepage.description: BLE2MQTT Gateway
-
 
   chrony:
     image: cturra/ntp
@@ -154,7 +147,6 @@ services:
       homepage.icon: https://github.com/namakanyden/Open-IoT-Gateway/raw/main/icons/chrony.png
       homepage.description: NTP Server
 
-
 volumes:
   portainer_data:
 
@@ -162,4 +154,4 @@ networks:
   # all containers will be by default connected to network iotgw
   default:
     name: iotgw
-    external: true
+    #  external: true
