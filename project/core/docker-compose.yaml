@@ -26,39 +26,42 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
-      - homepage.group=IoT Gateway Core
-      - homepage.name=Traefik Dashboard
-      - homepage.icon=traefik.png
-      - homepage.href=http://${HOSTIP:-localhost}:8080/
-      - homepage.description=Traefik dashboard
+      homepage.group: IoT Gateway Core
+      homepage.name: Traefik Dashboard
+      homepage.icon: traefik.png
+      homepage.href: http://${HOSTIP:-localhost}:8080/
+      homepage.description: Traefik dashboard
+      # portainer
+      io.portainer.accesscontrol.teams: IoTAdministrator
 
-        #  portainer:
-        #    image: portainer/portainer-ce
-        #    ports:
-        #      # - 8000:8000
-        #      - 9443:9443
-        #    restart: always
-        #    volumes:
-        #      - /var/run/docker.sock:/var/run/docker.sock
-        #      - portainer_data:/data
-        #    labels:
-        #      homepage.group: IoT Gateway Core
-        #      homepage.name: Portainer
-        #      homepage.icon: portainer.png
-        #      homepage.href: https://${HOSTIP:-localhost}:9443/
-        #      homepage.description: Docker management
+  portainer:
+    image: portainer/portainer-ce:latest
+    restart: always
+    ports:
+      - 9443:9443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    labels:
+      homepage.group: IoT Gateway Core
+      homepage.name: Portainer
+      homepage.icon: portainer.png
+      homepage.href: https://${HOSTIP:-localhost}:9443/
+      homepage.description: Docker management
+      # portainer
+      io.portainer.accesscontrol.teams: IoTAdministrator
 
-      #traefik.enable: true
-      #traefik.http.services.portainer.loadbalancer.server.port: 9443
+      # traefik.enable: true
+      # traefik.http.services.portainer.loadbalancer.server.port: 9443
 
       ## middleware
-      #traefik.http.middlewares.portainer-rewrite.replacepathregex.regex: "^/portainer/(.*)"
-      #traefik.http.middlewares.portainer-rewrite.replacepathregex.replacement: "/$$1"
+      # traefik.http.middlewares.portainer-rewrite.replacepathregex.regex: "^/portainer/(.*)"
+      # traefik.http.middlewares.portainer-rewrite.replacepathregex.replacement: "/$$1"
 
       ## routers
-      #traefik.http.routers.portainer.entrypoints: web
-      #traefik.http.routers.portainer.rule: PathPrefix(`/portainer/`)
-      #traefik.http.routers.portainer.middlewares: "portainer-rewrite"
+      # traefik.http.routers.portainer.entrypoints: web
+      # traefik.http.routers.portainer.rule: PathPrefix(`/portainer/`)
+      # traefik.http.routers.portainer.middlewares: "portainer-rewrite"
 
   homepage:
     image: ghcr.io/benphelps/homepage:latest
@@ -71,6 +74,8 @@ services:
       traefik.http.routers.homepage.rule: PathPrefix(`/`)
       traefik.http.routers.homepage.entrypoints: web
       traefik.http.services.homepage.loadbalancer.server.port: 3000
+      # portainer
+      io.portainer.accesscontrol.teams: IoTAdministrator
 
   mosquitto:
     image: eclipse-mosquitto
@@ -85,10 +90,13 @@ services:
       traefik.tcp.routers.mosquitto.entrypoints: mqtt
       traefik.tcp.routers.mosquitto.service: mosquitto
       traefik.tcp.routers.mosquitto.rule: HostSNI(`*`)
+      # homepage
       homepage.group: IoT Gateway Core
       homepage.name: Mosquitto
       homepage.icon: mqtt.png
       homepage.description: Local MQTT Broker
+      # portainer
+      io.portainer.accesscontrol.teams: IoTAdministrator
 
   telegraf:
     image: telegraf
@@ -100,6 +108,8 @@ services:
       homepage.name: Telegraf
       homepage.icon: telegraf.png
       homepage.description: System Metrics
+      # portainer
+      io.portainer.accesscontrol.teams: IoTAdministrator
     environment:
       HOSTIP: ${HOSTIP:-localhost}
       ROOM: ${IOTGW_ROOM:-home}
@@ -132,6 +142,8 @@ services:
       homepage.name: Theengs Gateway
       homepage.icon: https://github.com/namakanyden/Open-IoT-Gateway/raw/main/icons/theengs.png
       homepage.description: BLE2MQTT Gateway
+      # portainer
+      io.portainer.accesscontrol.teams: IoTAdministrator
 
   chrony:
     image: cturra/ntp
@@ -146,6 +158,8 @@ services:
       homepage.name: Chrony
       homepage.icon: https://github.com/namakanyden/Open-IoT-Gateway/raw/main/icons/chrony.png
       homepage.description: NTP Server
+      # portainer
+      io.portainer.accesscontrol.teams: IoTAdministrator
 
 volumes:
   portainer_data:
