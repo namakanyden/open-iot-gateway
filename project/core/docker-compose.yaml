@@ -86,7 +86,7 @@ services:
       - ./configs/mosquitto:/mosquitto/config
     labels:
       traefik.enable: true
-      traefik.tcp.services.mosquitto.loadbalancer.server.port: 1893
+      traefik.tcp.services.mosquitto.loadbalancer.server.port: 1883
       traefik.tcp.routers.mosquitto.entrypoints: mqtt
       traefik.tcp.routers.mosquitto.service: mosquitto
       traefik.tcp.routers.mosquitto.rule: HostSNI(`*`)
