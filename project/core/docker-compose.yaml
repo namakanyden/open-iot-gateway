@@ -148,21 +148,21 @@ services:
   #     # portainer
   #     io.portainer.accesscontrol.teams: IoTAdministrator
 
-  chrony:
-    image: cturra/ntp
-    restart: always
-    ports:
-      - 123:123/udp
-    environment:
-      NTP_SERVERS: ${IOTGW_NTP_SERVERS:-time.cloudflare.com}
-      LOG_LEVEL: 0
-    labels:
-      homepage.group: IoT Gateway Core
-      homepage.name: Chrony
-      homepage.icon: https://github.com/namakanyden/Open-IoT-Gateway/raw/main/icons/chrony.png
-      homepage.description: NTP Server
-      # portainer
-      io.portainer.accesscontrol.teams: IoTAdministrator
+  # chrony:
+  #   image: cturra/ntp
+  #   restart: always
+  #   ports:
+  #     - 123:123/udp
+  #   environment:
+  #     NTP_SERVERS: ${IOTGW_NTP_SERVERS:-time.cloudflare.com}
+  #     LOG_LEVEL: 0
+  #   labels:
+  #     homepage.group: IoT Gateway Core
+  #     homepage.name: Chrony
+  #     homepage.icon: https://github.com/namakanyden/Open-IoT-Gateway/raw/main/icons/chrony.png
+  #     homepage.description: NTP Server
+  #     # portainer
+  #     io.portainer.accesscontrol.teams: IoTAdministrator
 
 volumes:
   portainer_data:
