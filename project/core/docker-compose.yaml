@@ -118,35 +118,35 @@ services:
       ROOM: ${IOTGW_ROOM:-home}
       DEPARTMENT: ${IOTGW_DEPARTMENT:-none}
 
-  theengs:
-    image: theengs/gateway
-    restart: always
-    #    network_mode: host
-    environment:
-      MQTT_HOST: mosquitto
-      #       MQTT_USERNAME: <username>
-      #       MQTT_PASSWORD: <password>
-      MQTT_PUB_TOPIC: gateway/ble
-      #       MQTT_SUB_TOPIC: home/TheengsGateway/commands
-      PUBLISH_ALL: true
-      #       TIME_BETWEEN: 60
-      #       SCAN_TIME: 60
-      LOG_LEVEL: INFO
-      DISCOVERY: false
-      #      DISCOVERY_TOPIC: gateway/homeassistant/sensor
-      #       DISCOVERY_DEVICE_NAME: TheengsGateway
-      #      DISCOVERY_FILTER: "[IBEACON]"  # GAEN,MS-CDP
-      #       SCANNING_MODE: active
-      ADAPTER: ${IOTGW_BLE_ADAPTER:-hci0}
-    volumes:
-      - /var/run/dbus:/var/run/dbus
-    labels:
-      homepage.group: IoT Gateway Core
-      homepage.name: Theengs Gateway
-      homepage.icon: https://github.com/namakanyden/Open-IoT-Gateway/raw/main/icons/theengs.png
-      homepage.description: BLE2MQTT Gateway
-      # portainer
-      io.portainer.accesscontrol.teams: IoTAdministrator
+  # theengs:
+  #   image: theengs/gateway
+  #   restart: always
+  #   #    network_mode: host
+  #   environment:
+  #     MQTT_HOST: mosquitto
+  #     #       MQTT_USERNAME: <username>
+  #     #       MQTT_PASSWORD: <password>
+  #     MQTT_PUB_TOPIC: gateway/ble
+  #     #       MQTT_SUB_TOPIC: home/TheengsGateway/commands
+  #     PUBLISH_ALL: true
+  #     #       TIME_BETWEEN: 60
+  #     #       SCAN_TIME: 60
+  #     LOG_LEVEL: INFO
+  #     DISCOVERY: false
+  #     #      DISCOVERY_TOPIC: gateway/homeassistant/sensor
+  #     #       DISCOVERY_DEVICE_NAME: TheengsGateway
+  #     #      DISCOVERY_FILTER: "[IBEACON]"  # GAEN,MS-CDP
+  #     #       SCANNING_MODE: active
+  #     ADAPTER: ${IOTGW_BLE_ADAPTER:-hci0}
+  #   volumes:
+  #     - /var/run/dbus:/var/run/dbus
+  #   labels:
+  #     homepage.group: IoT Gateway Core
+  #     homepage.name: Theengs Gateway
+  #     homepage.icon: https://github.com/namakanyden/Open-IoT-Gateway/raw/main/icons/theengs.png
+  #     homepage.description: BLE2MQTT Gateway
+  #     # portainer
+  #     io.portainer.accesscontrol.teams: IoTAdministrator
 
   chrony:
     image: cturra/ntp
