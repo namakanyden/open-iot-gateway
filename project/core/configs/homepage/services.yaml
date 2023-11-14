@@ -11,4 +11,4 @@
     - Dashboard:
         href: http://147.232.44.162/apps/data/touch/
         description: IoTLab Dashboard
-        icon: mdi-view-dashboard-variant.png
+        icon: mdi-view-dashboard-variant
