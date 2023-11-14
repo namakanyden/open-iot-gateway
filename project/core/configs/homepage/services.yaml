@@ -2,9 +2,13 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/en/configs/services
 
-
 - Applications:
     - IoTLab Dashboard:
         href: http://192.168.0.182:1880/ui/
         description: IoTLab Dashboard
         icon: node-red.png
+
+    - Dashboard:
+        href: http://147.232.44.162/apps/data/touch/
+        description: IoTLab Dashboard
+        icon: mdi-view-dashboard-variant.png
