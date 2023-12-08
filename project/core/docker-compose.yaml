@@ -121,7 +121,6 @@ services:
   theengs:
     image: theengs/gateway
     restart: always
-#    network_mode: host
     environment:
       MQTT_HOST: mosquitto
 #       MQTT_USERNAME: <username>
@@ -143,7 +142,7 @@ services:
     labels:
       homepage.group: IoT Gateway Core
       homepage.name: Theengs Gateway
-      homepage.icon: https://github.com/namakanyden/Open-IoT-Gateway/raw/main/icons/theengs.png
+      homepage.icon: https://raw.githubusercontent.com/namakanyden/Open-IoT-Gateway/main/doc/icons/theengs.png
       homepage.description: BLE2MQTT Gateway
 
 
@@ -158,7 +157,7 @@ services:
     labels:
       homepage.group: IoT Gateway Core
       homepage.name: Chrony
-      homepage.icon: https://github.com/namakanyden/Open-IoT-Gateway/raw/main/icons/chrony.png
+      homepage.icon: https://raw.githubusercontent.com/namakanyden/Open-IoT-Gateway/main/doc/icons/chrony.png
       homepage.description: NTP Server
 
 

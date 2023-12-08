@@ -42,6 +42,13 @@ Prejdite procesom prvého spustenia a prvej pinštalačnej konfigurácie, kde po
 Po nainštalovaní bude automaticky dostupná služba `ssh`, tak.
 
 
+## Nainštalovanie docker-a
+
+```bash
+$ curl -sSL https://get.docker.com/ | sh
+```
+
+
 ## Poinštalačná konfigurácia
 
 Základnú poinštalačnú konfiguráciu urobíme pomocou nástroja `armbian-config`, ktorý spustíte príkazom:
@@ -114,7 +121,7 @@ $ sudo reboot
 Ešte predtým, ako začneme, si projekt stiahneme zo [stránky projektu na serveri github.com](https://github.com/namakanyden/Open-IoT-Gateway) pomocou príkazu:
 
 ```bash
-$ git clone https://github.com/namakanyden/Open-IoT-Gateway.git
+$ git clone https://github.com/namakanyden/open-iot-gateway.git
 ```
 
 ### Vytvorenie samostatnej siete

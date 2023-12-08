@@ -5,8 +5,6 @@ services:
   mqtt-explorer:
     image: smeagolworms4/mqtt-explorer
     restart: always
-    ports:
-    - 4000:4000
     volumes:
     - ./configs/mqtt-explorer:/mqtt-explorer/config
     labels:
