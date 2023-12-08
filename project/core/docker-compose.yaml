@@ -34,35 +34,6 @@ services:
       - homepage.description=Traefik dashboard
 
 
-        #  portainer:
-        #    image: portainer/portainer-ce
-        #    ports:
-        #      # - 8000:8000
-        #      - 9443:9443
-        #    restart: always
-        #    volumes:
-        #      - /var/run/docker.sock:/var/run/docker.sock
-        #      - portainer_data:/data
-        #    labels:
-        #      homepage.group: IoT Gateway Core
-        #      homepage.name: Portainer
-        #      homepage.icon: portainer.png
-        #      homepage.href: https://${HOSTIP:-localhost}:9443/
-        #      homepage.description: Docker management
-
-      #traefik.enable: true
-      #traefik.http.services.portainer.loadbalancer.server.port: 9443
-
-      ## middleware
-      #traefik.http.middlewares.portainer-rewrite.replacepathregex.regex: "^/portainer/(.*)"
-      #traefik.http.middlewares.portainer-rewrite.replacepathregex.replacement: "/$$1"
-
-      ## routers
-      #traefik.http.routers.portainer.entrypoints: web
-      #traefik.http.routers.portainer.rule: PathPrefix(`/portainer/`)
-      #traefik.http.routers.portainer.middlewares: "portainer-rewrite"
-
-
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     volumes:
@@ -87,8 +58,6 @@ services:
     image: eclipse-mosquitto
     restart: always
     volumes:
-      #- ${PWD}/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
-      #- ${PWD}/mosquitto/config/mosquitto.passwd:/mosquitto/config/mosquitto.passwd
       - ./configs/mosquitto:/mosquitto/config
     labels:
       traefik.enable: true
@@ -107,15 +76,17 @@ services:
     restart: always
     volumes:
       - ./configs/telegraf:/etc/telegraf:ro
+    environment:
+      HOSTIP: ${HOSTIP:-localhost}
+      ROOM: ${IOTGW_ROOM:-home}
+      DEPARTMENT: ${IOTGW_DEPARTMENT:-none}
+      MQTT_USERNAME: ${MQTT_USERNAME:-unset}
+      MQTT_PASSWORD: ${MQTT_PASSWORD:-unset}
     labels:
       homepage.group: IoT Gateway Core
       homepage.name: Telegraf
       homepage.icon: telegraf.png
       homepage.description: System Metrics
-    environment:
-      HOSTIP: ${HOSTIP:-localhost}
-      ROOM: ${IOTGW_ROOM:-home}
-      DEPARTMENT: ${IOTGW_DEPARTMENT:-none}
 
 
   theengs:
@@ -123,8 +94,8 @@ services:
     restart: always
     environment:
       MQTT_HOST: mosquitto
-#       MQTT_USERNAME: <username>
-#       MQTT_PASSWORD: <password>
+      MQTT_USERNAME: ${MQTT_USERNAME:-student}
+      MQTT_PASSWORD: ${MQTT_PASSWORD:-student}
       MQTT_PUB_TOPIC: gateway/ble
 #       MQTT_SUB_TOPIC: home/TheengsGateway/commands
       PUBLISH_ALL: true

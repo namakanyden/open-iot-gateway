@@ -72,8 +72,16 @@ ls /dev/serial/by-id/
 
 ## Running
 
+Konfigurácia sa nachádza v súbore `.env`, ktorý vytvoríte úpravou šablóny `template.env`. Následne spustite kompozíciu príkazom:
+
 ```bash
-$ docker compose --env-file ../global.env --env-file custom.env up --detach
+$ docker compose up --detach
+```
+
+Poznámka: Overiť si konfiguráciu môžete príkazom:
+
+```bash
+$ docker compose config
 ```
 
 

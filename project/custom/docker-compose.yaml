@@ -28,6 +28,34 @@ services:
       traefik.http.routers.mqttex.rule: PathPrefix(`/mqttexplorer/`)
       traefik.http.routers.mqttex.middlewares: "mqttex-rewrite"
 
+  portainer:
+    image: portainer/portainer-ce
+    ports:
+      # - 8000:8000
+      - 9443:9443
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    labels:
+      homepage.group: Applications
+      homepage.name: Portainer
+      homepage.icon: portainer.png
+      homepage.href: https://${HOSTIP:-localhost}:9443/
+      homepage.description: Docker management
+
+      #traefik.enable: true
+      #traefik.http.services.portainer.loadbalancer.server.port: 9443
+
+      ## middleware
+      #traefik.http.middlewares.portainer-rewrite.replacepathregex.regex: "^/portainer/(.*)"
+      #traefik.http.middlewares.portainer-rewrite.replacepathregex.replacement: "/$$1"
+
+      ## routers
+      #traefik.http.routers.portainer.entrypoints: web
+      #traefik.http.routers.portainer.rule: PathPrefix(`/portainer/`)
+      #traefik.http.routers.portainer.middlewares: "portainer-rewrite"
+
   # zigbee2mqtt:
   #   restart: always
   #   image: koenkk/zigbee2mqtt
@@ -65,6 +93,8 @@ services:
 volumes:
   nodered_data:
   zigbee2mqtt_data:
+  portainer_data:
+
 
 networks:
   # all containers will be by default connected to network iotgw
