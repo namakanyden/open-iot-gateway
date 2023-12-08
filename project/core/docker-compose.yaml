@@ -17,13 +17,10 @@ services:
       - "--entrypoints.websecure.address=:443"
     restart: always
     ports:
-      # The HTTP and HTTPS port
-      - 80:80
+      - 80:80       # The HTTP and HTTPS port
       - 443:443
-      # The Web UI (enabled by --api.insecure=true)
-      - 8080:8080
-      # MQTT
-      - 1883:1883
+      - 8080:8080   # The Web UI (enabled by --api.insecure=true)
+      - 1883:1883   # MQTT
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
@@ -37,8 +34,8 @@ services:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     volumes:
-      - ./configs/homepage:/app/config
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./configs/homepage:/app/config:ro
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: always
     labels:
       traefik.enable: true
@@ -58,7 +55,7 @@ services:
     image: eclipse-mosquitto
     restart: always
     volumes:
-      - ./configs/mosquitto:/mosquitto/config
+      - ./configs/mosquitto:/mosquitto/config:ro
     labels:
       traefik.enable: true
       traefik.tcp.services.mosquitto.loadbalancer.server.port: 1883

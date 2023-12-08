@@ -1,0 +1,53 @@
+version: "3"
+
+services:
+
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    volumes:
+      - ./configs/homepage:/app/config:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    labels:
+      traefik.enable: true
+      traefik.http.routers.homepage.rule: PathPrefix(`/`)
+      traefik.http.routers.homepage.entrypoints: web
+      traefik.http.services.homepage.loadbalancer.server.port: 3000
+
+      # homepage setup
+      homepage.group: Applications
+      homepage.name: Gateway Dashboard
+      homepage.icon: node-red.png
+      homepage.href: http://${HOSTIP:-localhost}/ui/
+      homepage.description: IoT Gateway Dashboard
+
+
+  mosquitto:
+    image: eclipse-mosquitto
+    restart: always
+    volumes:
+      - ./configs/mosquitto:/mosquitto/config:ro
+    labels:
+      traefik.enable: true
+      traefik.tcp.services.mosquitto.loadbalancer.server.port: 1883
+      traefik.tcp.routers.mosquitto.entrypoints: mqtt
+      traefik.tcp.routers.mosquitto.service: mosquitto
+      traefik.tcp.routers.mosquitto.rule: HostSNI(`*`)
+      homepage.group: IoT Gateway Core
+      homepage.name: Mosquitto
+      homepage.icon: mqtt.png
+      homepage.description: Local MQTT Broker
+
+
+  mqtt-explorer:
+    image: smeagolworms4/mqtt-explorer
+    restart: always
+    volumes:
+    - ./configs/mqtt-explorer:/mqtt-explorer/config
+    labels:
+      # homepage setup
+      homepage.group: Applications
+      homepage.name: MQTT Explorer
+      homepage.href: http://${HOSTIP:-localhost}/mqttexplorer/
+      homepage.description: MQTT Web Client
+      homepage.icon: http://mqtt-explorer.com/icon.png
