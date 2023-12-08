@@ -30,6 +30,7 @@ services:
       - homepage.href=http://${HOSTIP:-localhost}:8080/
       - homepage.description=Traefik dashboard
 
+
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     volumes:
@@ -41,13 +42,6 @@ services:
       traefik.http.routers.homepage.rule: PathPrefix(`/`)
       traefik.http.routers.homepage.entrypoints: web
       traefik.http.services.homepage.loadbalancer.server.port: 3000
-
-      # homepage setup
-      homepage.group: Applications
-      homepage.name: Gateway Dashboard
-      homepage.icon: node-red.png
-      homepage.href: http://${HOSTIP:-localhost}/ui/
-      homepage.description: IoT Gateway Dashboard
 
 
   mosquitto:
@@ -83,20 +77,25 @@ services:
 
   grafana:
     image: grafana/grafana
-    ports:
-    - 3000:3000
     environment:
     - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-unset}
     - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-unset}
+    - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/grafana
+    - GF_SERVER_SERVE_FROM_SUB_PATH=true
     volumes:
     - grafana:/var/lib/grafana
     labels:
-      # homepage setup
       homepage.group: Applications
       homepage.name: Grafana
-      homepage.href: http://${HOSTIP:-localhost}:3000
+      homepage.href: http://${HOSTIP:-localhost}/grafana/
       homepage.description: Dashboards
       homepage.icon: grafana.png
+
+      traefik.enable: true
+      traefik.http.routers.grafana.rule: PathPrefix(`/grafana`)
+      traefik.http.routers.grafana.entrypoints: web
+      traefik.http.services.grafana.loadbalancer.server.port: 3000
+
 
   influxdb:
     image: influxdb
@@ -106,10 +105,10 @@ services:
     - influxdb:/var/lib/influxdb2
     environment:
     - DOCKER_INFLUXDB_INIT_MODE=setup
-    - DOCKER_INFLUXDB_INIT_USERNAME=admin
-    - DOCKER_INFLUXDB_INIT_PASSWORD=konvalinka
-    - DOCKER_INFLUXDB_INIT_ORG=kpi-iot
-    - DOCKER_INFLUXDB_INIT_BUCKET=metrics
+    - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_USER:-unset}
+    - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_PASSWORD:-unset}
+    - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_ORG:-unset}
+    - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET:-unset}
     labels:
       homepage.group: Services
       homepage.name: InfluxDB
@@ -134,3 +133,9 @@ volumes:
   grafana:
   influxdb:
 
+
+networks:
+  # all containers will be by default connected to network iotgw
+  default:
+    name: mother
+    external: true
