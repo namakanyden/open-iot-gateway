@@ -2,39 +2,19 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/en/configs/bookmarks
 
-- Developer Documentation:
-  - homepage:
-    - abbr: HP
-      href: https://gethomepage.dev/en/installation/
-      icon: homepage.png
+- Documentation:
+  - IoT1:
+    - abbr: IoT
+      href: http://kurzy.kpi.fei.tuke.sk/iot1
   - Open IoT Gateway:
     - abbr: GW
       href: https://github.com/namakanyden/Open-IoT-Gateway
-  - chrony:
-    - abbr: CH
-      href: https://chrony.tuxfamily.org/
-      icon: https://github.com/namakanyden/Open-IoT-Gateway/raw/main/icons/chrony.png
-  - mosquitto:
-    - abbr: MO
-      href: https://mosquitto.org/
-      icon: eclipse-mosquitto.png
-  - Telegraf:
-    - abbr: TE
-      href: https://www.influxdata.com/time-series-platform/telegraf/
-      icon: telegraf.png
-  - Theengs Gateway:
-    - abbr: TG
-      href: https://gateway.theengs.io/
-      icon: https://github.com/namakanyden/Open-IoT-Gateway/raw/main/icons/theengs.png
-  - Traefik:
-    - abbr: TR
-      href: https://doc.traefik.io/traefik/
-      icon: traefik.png
 
 - Social:
-  - Reddit:
-    - abbr: RE
-      href: https://reddit.com/
+  - Slack:
+    - abbr: SL
+      href: https://kpi-iot1-2023.slack.com
+      icon: slack.png
 
 - Namakaný deň:
   - Homepage:
@@ -43,7 +23,9 @@
   - YouTube:
     - abbr: YT
       href: https://www.youtube.com/@namakanyden
+      icon: youtube.png
   - GitHub:
     - abbr: GH
       href: https://github.com/namakanyden
+      icon: github.png
 

@@ -64,7 +64,7 @@ services:
 
 
   homepage:
-    image: ghcr.io/benphelps/homepage:latest
+    image: ghcr.io/gethomepage/homepage:latest
     volumes:
       - ./configs/homepage:/app/config
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -74,6 +74,13 @@ services:
       traefik.http.routers.homepage.rule: PathPrefix(`/`)
       traefik.http.routers.homepage.entrypoints: web
       traefik.http.services.homepage.loadbalancer.server.port: 3000
+
+      # homepage setup
+      homepage.group: Applications
+      homepage.name: Gateway Dashboard
+      homepage.icon: node-red.png
+      homepage.href: http://${HOSTIP:-localhost}/ui/
+      homepage.description: IoT Gateway Dashboard
 
 
   mosquitto:
@@ -154,8 +161,49 @@ services:
       homepage.description: NTP Server
 
 
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    labels:
+      homepage.group: IoT Gateway Core
+      homepage.name: Watchtower
+      homepage.icon: https://containrrr.dev/watchtower/images/logo-450px.png
+      homepage.description: Automates Docker container base image updates.
+
+  nodered:
+    image: nodered/node-red
+    restart: always
+    ports:
+    - 1880:1880
+    volumes:
+    - nodered_data:/data
+    labels:
+      # homepage setup
+      homepage.group: Services
+      homepage.name: Node-RED
+      homepage.icon: node-red.png
+      homepage.href: http://${HOSTIP:-localhost}/nodered/
+      homepage.description: Node-RED
+
+      # traefik setup
+      traefik.enable: true
+      traefik.http.services.nodered.loadbalancer.server.port: 1880
+
+      # middleware
+      traefik.http.middlewares.nodered-rewrite.replacepathregex.regex: "^/nodered/(.*)"
+      traefik.http.middlewares.nodered-rewrite.replacepathregex.replacement: "/$$1"
+
+      # routers
+      traefik.http.routers.nodered.entrypoints: web
+      traefik.http.routers.nodered.rule: PathPrefix(`/nodered/`)
+      traefik.http.routers.nodered.middlewares: "nodered-rewrite"
+
+
 volumes:
   portainer_data:
+  nodered_data:
 
 networks:
   # all containers will be by default connected to network iotgw

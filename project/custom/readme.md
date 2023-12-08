@@ -11,29 +11,34 @@ networks:
 ```
 
 
-## Node-RED
+
+
+## MQTT Explorer
+
+MQTT Explorer is a comprehensive MQTT client that provides a structured overview of your MQTT topics and makes working with devices/services on your broker dead-simple.
+
+homepage: http://mqtt-explorer.com
 
 ```yaml
-nodered:
-  image: nodered/node-red
-  restart: always
+mqtt-explorer:
+  image: smeagolworms4/mqtt-explorer
+  restart: allways
   ports:
-  - 1880:1880
-  volumes:
-  - nodered_data:/data
+  - 4000:4000
   labels:
-   homepage.group: Services
-   homepage.name: Node-RED
-   homepage.icon: nodered.png
-   homepage.href: http://${HOSTIP:-localhost}:1880
-   homepage.description: Node-RED
+    homepage.group: Applications
+    homepage.name: MQTT Explorer
+    homepage.href: http://${HOSTIP:-localhost}:4000
+    homepage.description: MQTT Web Client
 ```
+
 
 ## Running
 
 ```bash
-$ docker compose --env-file ../global.env --env-file services.env up --detach
+$ docker compose --env-file ../global.env --env-file custom.env up --detach
 ```
+
 
 ## Environment Variables
 

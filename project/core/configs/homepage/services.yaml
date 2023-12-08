@@ -3,8 +3,9 @@
 # https://gethomepage.dev/en/configs/services
 
 
-- Applications:
-    - IoTLab Dashboard:
-        href: http://192.168.0.182:1880/ui/
-        description: Gateway Dashboard
-        icon: node-red.png
+# # applications section
+# - Applications:
+
+# # services section
+# - Services:
+

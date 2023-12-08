@@ -1,3 +1,5 @@
 project/core/configs/homepage/logs/
 .env
 
+project/core/configs/homepage/custom.css
+project/core/configs/homepage/custom.js
