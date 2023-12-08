@@ -74,6 +74,19 @@ services:
       homepage.description: MQTT Web Client
       homepage.icon: http://mqtt-explorer.com/icon.png
 
+      # traefik setup
+      traefik.enable: true
+      traefik.http.services.mqttex.loadbalancer.server.port: 4000
+
+      # middleware
+      traefik.http.middlewares.mqttex-rewrite.replacepathregex.regex: "^/mqttexplorer/(.*)"
+      traefik.http.middlewares.mqttex-rewrite.replacepathregex.replacement: "/$$1"
+
+      # routers
+      traefik.http.routers.mqttex.entrypoints: web
+      traefik.http.routers.mqttex.rule: PathPrefix(`/mqttexplorer/`)
+      traefik.http.routers.mqttex.middlewares: "mqttex-rewrite"
+
 
   grafana:
     image: grafana/grafana
