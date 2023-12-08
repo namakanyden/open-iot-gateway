@@ -2,6 +2,34 @@ version: "3"
 
 services:
 
+  traefik:
+    image: traefik:2.10
+    # Enables the web UI and tells Traefik to listen to docker
+    command:
+      # Configuration
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+
+      # Entrypoints
+      - "--entrypoints.mqtt.address=:1883"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+    restart: always
+    ports:
+      - 80:80       # The HTTP and HTTPS port
+      - 443:443
+      - 8080:8080   # The Web UI (enabled by --api.insecure=true)
+      - 1883:1883   # MQTT
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - homepage.group=Services
+      - homepage.name=Traefik Dashboard
+      - homepage.icon=traefik.png
+      - homepage.href=http://${HOSTIP:-localhost}:8080/
+      - homepage.description=Traefik dashboard
+
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     volumes:
@@ -33,7 +61,7 @@ services:
       traefik.tcp.routers.mosquitto.entrypoints: mqtt
       traefik.tcp.routers.mosquitto.service: mosquitto
       traefik.tcp.routers.mosquitto.rule: HostSNI(`*`)
-      homepage.group: IoT Gateway Core
+      homepage.group: Services
       homepage.name: Mosquitto
       homepage.icon: mqtt.png
       homepage.description: Local MQTT Broker
@@ -51,3 +79,58 @@ services:
       homepage.href: http://${HOSTIP:-localhost}/mqttexplorer/
       homepage.description: MQTT Web Client
       homepage.icon: http://mqtt-explorer.com/icon.png
+
+
+  grafana:
+    image: grafana/grafana
+    ports:
+    - 3000:3000
+    environment:
+    - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-unset}
+    - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-unset}
+    volumes:
+    - grafana:/var/lib/grafana
+    labels:
+      # homepage setup
+      homepage.group: Applications
+      homepage.name: Grafana
+      homepage.href: http://${HOSTIP:-localhost}:3000
+      homepage.description: Dashboards
+      homepage.icon: grafana.png
+
+  influxdb:
+    image: influxdb
+    ports:
+    - 8086:8086
+    volumes:
+    - influxdb:/var/lib/influxdb2
+    environment:
+    - DOCKER_INFLUXDB_INIT_MODE=setup
+    - DOCKER_INFLUXDB_INIT_USERNAME=admin
+    - DOCKER_INFLUXDB_INIT_PASSWORD=konvalinka
+    - DOCKER_INFLUXDB_INIT_ORG=kpi-iot
+    - DOCKER_INFLUXDB_INIT_BUCKET=metrics
+    labels:
+      homepage.group: Services
+      homepage.name: InfluxDB
+      homepage.description: Time-Series Database.
+      homepage.icon: influxdb.png
+      homepage.href: http://${HOSTIP:-localhost}:8086
+
+
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    labels:
+      homepage.group: Services
+      homepage.name: Watchtower
+      homepage.icon: https://containrrr.dev/watchtower/images/logo-450px.png
+      homepage.description: Automates Docker container base image updates.
+
+
+volumes:
+  grafana:
+  influxdb:
+

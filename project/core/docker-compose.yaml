@@ -140,6 +140,7 @@ services:
       homepage.icon: https://containrrr.dev/watchtower/images/logo-450px.png
       homepage.description: Automates Docker container base image updates.
 
+
   nodered:
     image: nodered/node-red
     restart: always
