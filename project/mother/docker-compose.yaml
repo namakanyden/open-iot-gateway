@@ -178,11 +178,11 @@ services:
     volumes:
       - ./configs/telegraf:/etc/telegraf:ro
     environment:
-      # HOSTIP: ${HOSTIP:-localhost}
-      # ROOM: ${IOTGW_ROOM:-home}
-      # DEPARTMENT: ${IOTGW_DEPARTMENT:-none}
       MQTT_USERNAME: ${MQTT_USERNAME:-unset}
       MQTT_PASSWORD: ${MQTT_PASSWORD:-unset}
+      INFLUXDB_WRITE_TOKEN: ${INFLUXDB_WRITE_TOKEN}
+      INFLUXDB_ORG: ${INFLUXDB_ORG}
+      INFLUXDB_BUCKET: ${INFLUXDB_BUCKET}
     labels:
       homepage.group: Services
       homepage.name: Telegraf
