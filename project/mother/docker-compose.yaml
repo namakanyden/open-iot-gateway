@@ -172,6 +172,25 @@ services:
       traefik.http.routers.portainer.entrypoints: websecure
 
 
+  telegraf:
+    image: telegraf
+    restart: always
+    volumes:
+      - ./configs/telegraf:/etc/telegraf:ro
+    environment:
+      # HOSTIP: ${HOSTIP:-localhost}
+      # ROOM: ${IOTGW_ROOM:-home}
+      # DEPARTMENT: ${IOTGW_DEPARTMENT:-none}
+      MQTT_USERNAME: ${MQTT_USERNAME:-unset}
+      MQTT_PASSWORD: ${MQTT_PASSWORD:-unset}
+    labels:
+      homepage.group: Services
+      homepage.name: Telegraf
+      homepage.icon: telegraf.png
+      homepage.description: System Metrics to InfluxDB
+
+
+
 volumes:
   grafana:
   influxdb:
