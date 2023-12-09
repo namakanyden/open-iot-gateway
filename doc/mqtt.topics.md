@@ -15,7 +15,13 @@ budeme rozlišovať dva typy tém:
 ## Globálne témy
 
 * `kpi/services/`
+* `kpi/alerts`
 * `kpi/<room>/alerts/`
 * `kpi/<room>/temperature/<id>`
 * `kpi/<room>/humidity/<id>`
 * `kpi/<room>/light/<id>`
+* `kpi/<room>/door/<id>`
+
+
+* `kpi/<room>/temperature/<id>/set`
+
