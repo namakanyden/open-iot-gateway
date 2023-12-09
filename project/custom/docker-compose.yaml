@@ -28,6 +28,7 @@ services:
       traefik.http.routers.mqttex.rule: PathPrefix(`/mqttexplorer/`)
       traefik.http.routers.mqttex.middlewares: "mqttex-rewrite"
 
+
   portainer:
     image: portainer/portainer-ce
     ports:

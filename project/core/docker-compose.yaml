@@ -34,7 +34,7 @@ services:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     volumes:
-      - ./configs/homepage:/app/config:ro
+      - ./configs/homepage:/app/config
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
     labels:
