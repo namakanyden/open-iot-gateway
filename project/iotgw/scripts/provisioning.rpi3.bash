@@ -4,12 +4,10 @@ set -o errexit  # stop when error occurs
 set -o pipefail # if not, expressions like `error here | true` will always succeed
 set -o nounset  # detects uninitialised variables
 
-readonly _PACKAGES="vim btop podman git tmux"  # dnsmasq hostapd
+readonly _PACKAGES="vim btop podman git tmux" # dnsmasq hostapd
 readonly _USERNAME="maker"
 readonly _PASSWORD="rekam"
 readonly _ROOM="caprica"
-readonly _OPEN_IOT_GW_URL="https://github.com/namakanyden/open-iot-gateway"
-
 
 # functions
 function log() {
@@ -56,15 +54,15 @@ function setup_system() {
     printf "blacklist raspberrypi_hwmon\n" >/etc/modprobe.d/raspberry_hwmon.conf
 }
 
-# sources:
-# https://raspberrypi-guide.github.io/networking/create-wireless-access-point
 function setup_wifi_ap() {
     log "Setup WiFi AP"
 
-    nmcli connection add type wifi ifname wlan0 con-name Hotspot autoconnect yes ssid "${_ROOM}-things"
-    nmcli connection modify Hotspot 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
+    nmcli connection add type wifi ifname wlan0 con-name Hotspot autoconnect no ssid "${_ROOM}-things"
+    # nmcli connection modify Hotspot 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
     nmcli connection modify Hotspot wifi-sec.key-mgmt wpa-psk
     nmcli connection modify Hotspot wifi-sec.psk "welcome.to.the.${_ROOM}"
+    # in the case of own address range
+    # nmcli connection modify Hotspot ipv4.addresses 192.168.1.254/24
     nmcli connection up Hotspot
 }
 
@@ -86,5 +84,6 @@ function main() {
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+
     main "$@"
 fi
