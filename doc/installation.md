@@ -9,6 +9,9 @@ Inštalovať _Armbian_ môžete priamo odtiaľto:
 * verzia pre [minipočítače Raspberry Pi 3/4](https://www.armbian.com/rpi4b/)
 * verzia pre [počítače s architektúrou x86](https://www.armbian.com/uefi-x86/)
 
+
+### Problém s obrazovkou
+
 Ak vám po nainštalovaní distribúcie _Armbian_ na kartu a spustení minipočítača Raspberry Pi zostane čierna obrazovka, je to zrejme prednastavenou konfiguráciou grafického výstupu. V tom prípade odporúčame pridať do konfigurácie v súbore `/boot/firmware/config.txt` pre všetkých voľbu `hdmi_safe=1` a prípadne zakomentovať voľbu `hdmi_drive`.
 
 ```
@@ -16,6 +19,9 @@ Ak vám po nainštalovaní distribúcie _Armbian_ na kartu a spustení minipoč�
 hdmi_safe=1
 #hdmi_drive=2
 ```
+
+
+### Problém s orientáciou obrazovky
 
 Ak potrebujete otočiť obrazovku, tak v tom prípade v konfiguračnom súbore potrebujete pridať voľbu:
 
@@ -35,11 +41,11 @@ lcd_rotate=2
 Prejdite procesom prvého spustenia a prvej pinštalačnej konfigurácie, kde postupne nastavíte:
 
 * heslo pre používateľa `root` (predvolené nastavené heslo je `1234`)
-* meno a heslo nového používateľa
+* meno a heslo nového používateľa, napr.: `maker` s heslom `rekam`
 * jazyk a časovú zónu
 * nepripájajte sa k WiFi sieti, nakoľko zariadenie bude poskytovať WiFi sieť vlastným chytrým zariadeniam
 
-Po nainštalovaní bude automaticky dostupná služba `ssh`, tak.
+Po nainštalovaní bude automaticky dostupná služba `ssh`.
 
 
 ## Nainštalovanie docker-a
