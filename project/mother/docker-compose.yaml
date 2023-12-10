@@ -61,33 +61,6 @@ services:
       homepage.description: Local MQTT Broker
 
 
-  mqtt-explorer:
-    image: smeagolworms4/mqtt-explorer
-    restart: always
-    volumes:
-    - ./configs/mqtt-explorer:/mqtt-explorer/config
-    labels:
-      # homepage setup
-      homepage.group: Applications
-      homepage.name: MQTT Explorer
-      homepage.href: http://${HOSTIP:-localhost}/mqttexplorer/
-      homepage.description: MQTT Web Client
-      homepage.icon: http://mqtt-explorer.com/icon.png
-
-      # traefik setup
-      traefik.enable: true
-      traefik.http.services.mqttex.loadbalancer.server.port: 4000
-
-      # middleware
-      traefik.http.middlewares.mqttex-rewrite.replacepathregex.regex: "^/mqttexplorer/(.*)"
-      traefik.http.middlewares.mqttex-rewrite.replacepathregex.replacement: "/$$1"
-
-      # routers
-      traefik.http.routers.mqttex.entrypoints: web
-      traefik.http.routers.mqttex.rule: PathPrefix(`/mqttexplorer/`)
-      traefik.http.routers.mqttex.middlewares: "mqttex-rewrite"
-
-
   grafana:
     image: grafana/grafana
     environment:
@@ -142,36 +115,6 @@ services:
       homepage.description: Automates Docker container base image updates.
 
 
-  portainer:
-    image: portainer/portainer-ce
-    ports:
-      - 9443:9443
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
-    labels:
-      homepage.group: Applications
-      homepage.name: Portainer
-      homepage.icon: portainer.png
-      homepage.href: https://${HOSTIP:-localhost}:9443
-      homepage.description: Docker management
-
-      traefik.enable: true
-      traefik.http.services.portainer.loadbalancer.server.port: 9443
-      traefik.http.routers.portainer.rule: PathPrefix(`/portainer/`)
-      traefik.http.routers.portainer.middlewares: "portainer-stripprefix"
-      traefik.http.middlewares.portainer-stripprefix.stripprefix.prefixes: "/portainer"
-
-
-      # middleware
-      # traefik.http.middlewares.portainer-rewrite.replacepathregex.regex: "^/portainer/(.*)"
-      # traefik.http.middlewares.portainer-rewrite.replacepathregex.replacement: "/$$1"
-
-      # routers
-      traefik.http.routers.portainer.entrypoints: websecure
-
-
   telegraf:
     image: telegraf
     restart: always
@@ -190,7 +133,6 @@ services:
       homepage.description: System Metrics to InfluxDB
 
 
-
 volumes:
   grafana:
   influxdb:
@@ -200,5 +142,5 @@ volumes:
 networks:
   # all containers will be by default connected to network iotgw
   default:
-    name: mother
+    name: iotgw
     external: true
