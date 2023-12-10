@@ -90,7 +90,7 @@ EOF
     # systemctl restart dhcpcd
 
     # setup DHCP server
-    cat <<-'EOF' >"/etc/dnsmasq.conf"
+    cat > /etc/dnsmasq.conf <<-'EOF'
 interface=wlan0
 dhcp-range=192.168.4.2,192.168.4.20,255.255.255.0,24h
 EOF
@@ -113,7 +113,7 @@ wpa=2
 wpa_key_mgmt=WPA-PSK
 wpa_pairwise=TKIP
 rsn_pairwise=CCMP
-" "${_ROOM}" "${_ROOM}" >/etc/hostapd/hostapd.conf
+" "${_ROOM}" "${_ROOM}" > /etc/hostapd/hostapd.conf
 
     sed -e '/DAEMON_CONF/d' -e '$aDAEMON_CONF="/etc/hostapd/hostapd.conf"' -i /etc/default/hostapd
 
