@@ -65,6 +65,8 @@ function setup_system() {
     # set the hostname based on the name of the room
     hostnamectl hostname "${_ROOM}-gw"
 
+    # disable hwmon kernel module because of too many undervoltage messages
+    printf "blacklist raspberrypi_hwmon\n" > /etc/modprobe.d/raspberry_hwmon.conf
 }
 
 # sources:
@@ -82,7 +84,7 @@ interface wlan0
     static ip_address=192.168.4.1/24
     nohook wpa_supplicant
 EOF
-    systemctl restart dhcpcd
+    # systemctl restart dhcpcd
 
     # setup DHCP server
     cat <<-'EOF' >"/etc/dnsmasq.conf"
@@ -93,11 +95,11 @@ EOF
 
     # setup hostapd
     printf "
-country_code=SK
+#country_code=SK
 interface=wlan0
 ssid=%s-things
 wpa_passphrase=welcome.to.the.%s
-driver=nl80211
+#driver=nl80211
 hw_mode=g
 channel=6
 wmm_enabled=0
@@ -106,6 +108,7 @@ auth_algs=1
 ignore_broadcast_ssid=0
 wpa=2
 wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP
 rsn_pairwise=CCMP
 " "${_ROOM}" "${_ROOM}" >/etc/hostapd/hostapd.conf
 
