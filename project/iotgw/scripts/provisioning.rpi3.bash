@@ -53,7 +53,7 @@ function install_software() {
 function setup_maker() {
     log "Create and setup maker user"
 
-    if [[ ! $(id $_USERNAME > /dev/null 2>&1) ]]; then
+    if [[ ! $(id $_USERNAME >/dev/null 2>&1) ]]; then
         log "User maker already exists."
         return 0
     fi
@@ -69,7 +69,7 @@ function setup_system() {
     hostnamectl hostname "${_ROOM}-gw"
 
     # disable hwmon kernel module because of too many undervoltage messages
-    printf "blacklist raspberrypi_hwmon\n" > /etc/modprobe.d/raspberry_hwmon.conf
+    printf "blacklist raspberrypi_hwmon\n" >/etc/modprobe.d/raspberry_hwmon.conf
 }
 
 # sources:
@@ -82,7 +82,7 @@ function setup_wifi_ap() {
     systemctl stop hostapd
 
     # set DHCP server static IP address
-    cat > "/etc/dhcpd.conf" <<-'EOF'
+    cat >"/etc/dhcpd.conf" <<-'EOF'
 interface wlan0
     static ip_address=192.168.4.1/24
     nohook wpa_supplicant
@@ -137,4 +137,6 @@ function main() {
     log "Done"
 }
 
-main
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi
