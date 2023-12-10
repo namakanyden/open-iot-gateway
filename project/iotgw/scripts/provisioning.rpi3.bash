@@ -4,28 +4,12 @@ set -o errexit  # stop when error occurs
 set -o pipefail # if not, expressions like `error here | true` will always succeed
 set -o nounset  # detects uninitialised variables
 
-readonly _PACKAGES="vim btop dnsmasq hostapd podman git tmux"
+readonly _PACKAGES="vim btop podman git tmux"  # dnsmasq hostapd
 readonly _USERNAME="maker"
 readonly _PASSWORD="rekam"
 readonly _ROOM="caprica"
 readonly _OPEN_IOT_GW_URL="https://github.com/namakanyden/open-iot-gateway"
 
-readonly _HOSTAPD_CONF="
-country_code=SK
-interface=wlan0
-ssid=${_ROOM}-things
-wpa_passphrase=welcome.to.the.${_ROOM}
-driver=nl80211
-hw_mode=g
-channel=6
-wmm_enabled=0
-macaddr_acl=0
-auth_algs=1
-ignore_broadcast_ssid=0
-wpa=2
-wpa_key_mgmt=WPA-PSK
-rsn_pairwise=CCMP
-"
 
 # functions
 function log() {
@@ -77,50 +61,11 @@ function setup_system() {
 function setup_wifi_ap() {
     log "Setup WiFi AP"
 
-    # stop service with no proper configuration
-    systemctl stop dnsmasq
-    systemctl stop hostapd
-
-    # set DHCP server static IP address
-    cat > /etc/dhcpd.conf <<-'EOF'
-interface wlan0
-    static ip_address=192.168.4.1/24
-    nohook wpa_supplicant
-EOF
-    # systemctl restart dhcpcd
-
-    # setup DHCP server
-    cat > /etc/dnsmasq.conf <<-'EOF'
-interface=wlan0
-dhcp-range=192.168.4.2,192.168.4.20,255.255.255.0,24h
-EOF
-    systemctl restart dnsmasq
-
-    # setup hostapd
-    printf "
-#country_code=SK
-interface=wlan0
-ssid=%s-things
-wpa_passphrase=welcome.to.the.%s
-#driver=nl80211
-hw_mode=g
-channel=6
-wmm_enabled=0
-macaddr_acl=0
-auth_algs=1
-ignore_broadcast_ssid=0
-wpa=2
-wpa_key_mgmt=WPA-PSK
-wpa_pairwise=TKIP
-rsn_pairwise=CCMP
-" "${_ROOM}" "${_ROOM}" > /etc/hostapd/hostapd.conf
-
-    sed -e '/DAEMON_CONF/d' -e '$aDAEMON_CONF="/etc/hostapd/hostapd.conf"' -i /etc/default/hostapd
-
-    # run
-    systemctl unmask hostapd
-    systemctl enable hostapd
-    systemctl start hostapd
+    nmcli connection add type wifi ifname wlan0 con-name Hotspot autoconnect yes ssid "${ROOM}-things"
+    nmcli connection modify Hotspot 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
+    nmcli connection modify Hotspot wifi-sec.key-mgmt wpa-psk
+    nmcli connection modify Hotspot wifi-sec.psk "welcome.to.the.${ROOM}"
+    nmcli connection up Hotspot
 }
 
 function main() {
