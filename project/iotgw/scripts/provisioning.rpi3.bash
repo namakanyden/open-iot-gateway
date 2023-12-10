@@ -45,6 +45,9 @@ function install_software() {
     # install docker
     #   log "Installing Docker"
     #   curl -sSL https://get.docker.io | sh
+
+    wget https://github.com/Macchina-CLI/macchina/releases/download/v6.1.8/macchina-android-aarch64 -O /usr/loca/bin/macchina
+    chmod +x /usr/local/bin/macchina
 }
 
 function setup_maker() {
