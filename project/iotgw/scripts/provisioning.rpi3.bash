@@ -82,7 +82,7 @@ function setup_wifi_ap() {
     systemctl stop hostapd
 
     # set DHCP server static IP address
-    cat >"/etc/dhcpd.conf" <<-'EOF'
+    cat > /etc/dhcpd.conf <<-'EOF'
 interface wlan0
     static ip_address=192.168.4.1/24
     nohook wpa_supplicant
