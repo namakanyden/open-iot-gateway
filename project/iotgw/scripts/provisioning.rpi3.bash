@@ -63,6 +63,7 @@ function setup_wifi_ap() {
     nmcli connection modify Hotspot wifi-sec.key-mgmt wpa-psk
     nmcli connection modify Hotspot wifi-sec.psk "welcome.to.the.${_ROOM}"
     nmcli connection modify Hotspot ipv4.addresses 10.0.0.1/24
+    nmcli connection modify Hotspot connection.autoconnect yes
     # nmcli connection modify Hotspot ipv4.dns ""
     # nmcli connection modify Hotspot ipv4.gateway ""
     nmcli connection up Hotspot
@@ -76,6 +77,9 @@ function setup_wifi_ap() {
     # make the rules apply on system startup
     printf "#!/usr/sbin/nft -f\n\nflush ruleset\n\n" > /etc/nftables.conf
     nft list ruleset >> /etc/nftables.conf
+
+    # enable nftables on boot
+    systemctl enable nftables
 }
 
 function main() {
