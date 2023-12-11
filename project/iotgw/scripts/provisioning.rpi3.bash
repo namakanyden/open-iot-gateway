@@ -57,13 +57,25 @@ function setup_system() {
 function setup_wifi_ap() {
     log "Setup WiFi AP"
 
+    # setup wifi hotspot
     nmcli connection add type wifi ifname wlan0 con-name Hotspot autoconnect no ssid "${_ROOM}-things"
-    # nmcli connection modify Hotspot 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
+    nmcli connection modify Hotspot 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
     nmcli connection modify Hotspot wifi-sec.key-mgmt wpa-psk
     nmcli connection modify Hotspot wifi-sec.psk "welcome.to.the.${_ROOM}"
-    # in the case of own address range
-    # nmcli connection modify Hotspot ipv4.addresses 192.168.1.254/24
+    nmcli connection modify Hotspot ipv4.addresses 10.0.0.1/24
+    # nmcli connection modify Hotspot ipv4.dns ""
+    # nmcli connection modify Hotspot ipv4.gateway ""
     nmcli connection up Hotspot
+
+    # drop trafik comming from the wlan0 interface
+    nft add table inet filter
+    nft add chain inet filter forward { type filter hook forward priority 0 \; }
+    nft add rule inet filter forward iifname "wlan0" drop
+    nft add rule inet filter forward oifname "wlan0" drop
+
+    # make the rules apply on system startup
+    printf "#!/usr/sbin/nft -f\n\nflush ruleset\n\n" > /etc/nftables.conf
+    nft list ruleset >> /etc/nftables.conf
 }
 
 function main() {
