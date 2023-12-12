@@ -109,9 +109,17 @@ function is_root() {
     fi
 }
 
+function is_in_proper_folder() {
+    if [[ ! -f "docker-compose.yaml" ]]; then
+        printf "ERROR: Script must be executed from folder with docker-compose.yaml file." >&2
+        exit 1
+    fi
+}
+
 function main() {
     is_root
     is_proper_distro
+    is_in_proper_folder
 
     install_software
     setup_system
