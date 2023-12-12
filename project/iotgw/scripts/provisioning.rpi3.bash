@@ -27,8 +27,10 @@ function install_software() {
     apt install --yes ${_PACKAGES}
 
     # install docker
-    log "Installing Docker"
-    curl -sSL https://get.docker.io | sh
+    if [[ ! $(which docker) ]]; then
+        log "Installing Docker"
+        curl -sSL https://get.docker.io | sh
+    fi
 
     wget https://github.com/Macchina-CLI/macchina/releases/download/v6.1.8/macchina-linux-aarch64 -O /usr/local/bin/macchina
     chmod +x /usr/local/bin/macchina
