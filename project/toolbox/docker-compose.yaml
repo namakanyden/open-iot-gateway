@@ -1,0 +1,105 @@
+version: "3"
+
+services:
+
+  mqtt-explorer:
+    image: smeagolworms4/mqtt-explorer
+    restart: always
+    volumes:
+    - ./configs/mqtt-explorer:/mqtt-explorer/config
+    labels:
+      # homepage setup
+      homepage.group: Applications
+      homepage.name: MQTT Explorer
+      homepage.href: http://${HOSTIP:-localhost}/mqttexplorer/
+      homepage.description: MQTT Web Client
+      homepage.icon: http://mqtt-explorer.com/icon.png
+
+      # traefik setup
+      traefik.enable: true
+      traefik.http.services.mqttex.loadbalancer.server.port: 4000
+
+      # middleware
+      traefik.http.middlewares.mqttex-rewrite.replacepathregex.regex: "^/mqttexplorer/(.*)"
+      traefik.http.middlewares.mqttex-rewrite.replacepathregex.replacement: "/$$1"
+
+      # routers
+      traefik.http.routers.mqttex.entrypoints: web
+      traefik.http.routers.mqttex.rule: PathPrefix(`/mqttexplorer/`)
+      traefik.http.routers.mqttex.middlewares: "mqttex-rewrite"
+
+
+  portainer:
+    image: portainer/portainer-ce
+    ports:
+      # - 8000:8000
+      - 9443:9443
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    labels:
+      homepage.group: Applications
+      homepage.name: Portainer
+      homepage.icon: portainer.png
+      homepage.href: https://${HOSTIP:-localhost}:9443/
+      homepage.description: Docker management
+
+      #traefik.enable: true
+      #traefik.http.services.portainer.loadbalancer.server.port: 9443
+
+      ## middleware
+      #traefik.http.middlewares.portainer-rewrite.replacepathregex.regex: "^/portainer/(.*)"
+      #traefik.http.middlewares.portainer-rewrite.replacepathregex.replacement: "/$$1"
+
+      ## routers
+      #traefik.http.routers.portainer.entrypoints: web
+      #traefik.http.routers.portainer.rule: PathPrefix(`/portainer/`)
+      #traefik.http.routers.portainer.middlewares: "portainer-rewrite"
+
+  # zigbee2mqtt:
+  #   restart: always
+  #   image: koenkk/zigbee2mqtt
+  #   volumes:
+  #     - ./configs/zigbee2mqtt/configuration.yaml:/app/data/configuration.yaml
+  #     - zigbee2mqtt_data:/app/data/
+  #     - /run/udev:/run/udev:ro
+  #   # ports:
+  #     # - 8000:8080
+  #   environment:
+  #     - TZ=Europe/Bratislava
+  #   devices:
+  #     - ${IOTGW_ZIGBEE_ADAPTER:-/dev/ttyACM0}:/dev/ttyACM0
+  #   labels:
+  #     # homepage setup
+  #     homepage.group: Services
+  #     homepage.name: Zigbee2MQTT
+  #     homepage.icon: zigbee2mqtt.png
+  #     homepage.href: http://${HOSTIP:-localhost}/zigbee2mqtt/
+  #     homepage.description: Zigbee to MQTT bridge
+
+  #     # traefik setup
+  #     traefik.enable: true
+  #     traefik.http.services.zb2mqtt.loadbalancer.server.port: 8080
+
+  #     # middleware
+  #     traefik.http.middlewares.zb2mqtt-rewrite.replacepathregex.regex: "^/zigbee2mqtt/(.*)"
+  #     traefik.http.middlewares.zb2mqtt-rewrite.replacepathregex.replacement: "/$$1"
+
+  #     # routers
+  #     traefik.http.routers.zb2mqtt.entrypoints: web
+  #     traefik.http.routers.zb2mqtt.rule: PathPrefix(`/zigbee2mqtt/`)
+  #     traefik.http.routers.zb2mqtt.middlewares: "zb2mqtt-rewrite"
+
+volumes:
+  nodered_data:
+  zigbee2mqtt_data:
+  portainer_data:
+
+
+networks:
+  # all containers will be by default connected to network iotgw
+  default:
+    name: iotgw
+    external: true
+
