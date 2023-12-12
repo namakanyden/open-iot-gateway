@@ -7,6 +7,7 @@ set -o nounset
 readonly _PACKAGES="vim btop git tmux"
 readonly _USERNAME="maker"
 readonly _PASSWORD="rekam"
+readonly _TIMEZONE="Europe/Bratislava"
 readonly _OS_NAME="Debian GNU/Linux 12 (bookworm)"
 readonly _OS_VERSION_ID="12"
 readonly _ROOM="${1:?Name of the room is missing as first parameter.}"
@@ -54,11 +55,15 @@ function setup_maker() {
 function setup_system() {
     log "System Setup."
 
-    # set the hostname based on the name of the room
+    # set the hostname based on the name of the room and update /etc/hosts
     hostnamectl hostname "${_ROOM}-gw"
+    sed -i '/127.0.1.1/d' /etc/hosts
+    sed -i "\$a127.0.1.1 ${_ROOM}-gw" /etc/hosts
 
     # disable hwmon kernel module because of too many undervoltage messages
     printf "blacklist raspberrypi_hwmon\n" >/etc/modprobe.d/raspberry_hwmon.conf
+
+    timedatectl set-timezone "${_TIMEZONE}"
 }
 
 function setup_wifi_ap() {
