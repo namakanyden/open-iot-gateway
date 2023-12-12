@@ -40,7 +40,7 @@ function setup_maker() {
     log "Create and setup maker user"
 
     # create user maker
-    if [[ ! $(id $_USERNAME >/dev/null 2>&1) ]]; then
+    if ! id "${_USERNAME}" > /dev/null 2>&1; then
         useradd --password "${_PASSWORD}" --user-group "${_USERNAME}"
         chpasswd <<<"${_USERNAME}:${_PASSWORD}"
     fi
