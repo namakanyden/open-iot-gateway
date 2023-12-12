@@ -37,14 +37,16 @@ function install_software() {
 function setup_maker() {
     log "Create and setup maker user"
 
+    # create user maker
     if [[ ! $(id $_USERNAME >/dev/null 2>&1) ]]; then
-        log "User maker already exists."
-        return 0
+        useradd --password "${_PASSWORD}" --user-group "${_USERNAME}"
+        chpasswd <<<"${_USERNAME}:${_PASSWORD}"
     fi
 
-    useradd --password "${_PASSWORD}" --user-group "${_USERNAME}"
-    chpasswd <<<"${_USERNAME}:${_PASSWORD}"
-    usermod -aG docker "${_USERNAME}"
+    # add maker to group docker
+    if [[ ! $(groups "${_USERNAME}") =~ "docker" ]]; then
+        usermod -aG docker "${_USERNAME}"
+    fi
 }
 
 function setup_system() {
