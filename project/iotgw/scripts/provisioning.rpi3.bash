@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-set -o errexit  # stop when error occurs
-set -o pipefail # if not, expressions like `error here | true` will always succeed
-set -o nounset  # detects uninitialised variables
+set -o errexit
+set -o pipefail
+set -o nounset
 
-readonly _PACKAGES="vim btop podman git tmux" # dnsmasq hostapd
+readonly _PACKAGES="vim btop git tmux"
 readonly _USERNAME="maker"
 readonly _PASSWORD="rekam"
-readonly _ROOM="caprica"
+readonly _ROOM="${1:?Name of the room is missing as first parameter.}"
 
 # functions
 function log() {
@@ -25,8 +25,8 @@ function install_software() {
     apt install --yes ${_PACKAGES}
 
     # install docker
-    #   log "Installing Docker"
-    #   curl -sSL https://get.docker.io | sh
+    log "Installing Docker"
+    curl -sSL https://get.docker.io | sh
 
     wget https://github.com/Macchina-CLI/macchina/releases/download/v6.1.8/macchina-linux-aarch64 -O /usr/local/bin/macchina
     chmod +x /usr/local/bin/macchina
@@ -42,6 +42,7 @@ function setup_maker() {
 
     useradd --password "${_PASSWORD}" --user-group "${_USERNAME}"
     chpasswd <<<"${_USERNAME}:${_PASSWORD}"
+    usermod -aG docker "${_USERNAME}"
 }
 
 function setup_system() {
@@ -64,8 +65,6 @@ function setup_wifi_ap() {
     nmcli connection modify Hotspot wifi-sec.psk "welcome.to.the.${_ROOM}"
     nmcli connection modify Hotspot ipv4.addresses 10.0.0.1/24
     nmcli connection modify Hotspot connection.autoconnect yes
-    # nmcli connection modify Hotspot ipv4.dns ""
-    # nmcli connection modify Hotspot ipv4.gateway ""
     nmcli connection up Hotspot
 
     # drop trafik comming from the wlan0 interface
@@ -75,8 +74,8 @@ function setup_wifi_ap() {
     nft add rule inet filter forward oifname "wlan0" drop
 
     # make the rules apply on system startup
-    printf "#!/usr/sbin/nft -f\n\nflush ruleset\n\n" > /etc/nftables.conf
-    nft list ruleset >> /etc/nftables.conf
+    printf "#!/usr/sbin/nft -f\n\nflush ruleset\n\n" >/etc/nftables.conf
+    nft list ruleset >>/etc/nftables.conf
 
     # enable nftables on boot
     systemctl enable nftables
@@ -100,6 +99,5 @@ function main() {
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-
     main "$@"
 fi
