@@ -7,6 +7,8 @@ set -o nounset
 readonly _PACKAGES="vim btop git tmux"
 readonly _USERNAME="maker"
 readonly _PASSWORD="rekam"
+readonly _OS_NAME="Debian GNU/Linux 12 (bookworm)"
+readonly _OS_VERSION_ID="12"
 readonly _ROOM="${1:?Name of the room is missing as first parameter.}"
 
 # functions
@@ -81,11 +83,26 @@ function setup_wifi_ap() {
     systemctl enable nftables
 }
 
-function main() {
+function is_proper_distro() {
+    source /etc/os-release
+
+    if [[ "${PRETTY_NAME}" != "${_OS_NAME}" || "${VERSION_ID}" != "${_OS_VERSION_ID}" ]]; then
+        printf "ERROR: Incorrect OS or version.\nExpected OS is '%s' with version '%s'\nCurrent OS is '%s' with version '%s'\n" "${_OS_NAME}" \
+            "${_OS_VERSION_ID}" "${PRETTY_NAME}" "${VERSION_ID}" >&2
+        exit 1
+    fi
+}
+
+function is_root() {
     if [[ $UID != 0 ]]; then
         printf "ERROR: Need to be root.\n" >&2
         exit 1
     fi
+}
+
+function main() {
+    is_root
+    is_proper_distro
 
     install_software
     setup_system
