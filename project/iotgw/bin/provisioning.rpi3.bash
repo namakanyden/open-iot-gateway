@@ -11,6 +11,7 @@ readonly _TIMEZONE="Europe/Bratislava"
 readonly _OS_NAME="Debian GNU/Linux 12 (bookworm)"
 readonly _OS_VERSION_ID="12"
 readonly _ROOM="${1:?Name of the room is missing as first parameter.}"
+readonly _HOSTNAME="${_ROOM}-gw"
 
 # functions
 function log() {
@@ -56,14 +57,17 @@ function setup_system() {
     log "System Setup."
 
     # set the hostname based on the name of the room and update /etc/hosts
-    hostnamectl hostname "${_ROOM}-gw"
+    hostnamectl hostname "${_HOSTNAME}"
     sed -i '/127.0.1.1/d' /etc/hosts
-    sed -i "\$a127.0.1.1 ${_ROOM}-gw" /etc/hosts
+    sed -i "\$a127.0.1.1 ${_HOSTNAME}" /etc/hosts
 
     # disable hwmon kernel module because of too many undervoltage messages
     printf "blacklist raspberrypi_hwmon\n" >/etc/modprobe.d/raspberry_hwmon.conf
 
+    # locales
     timedatectl set-timezone "${_TIMEZONE}"
+    localectl set-locale en_US.UTF-8
+    localectl set-x11-keymap us
 }
 
 function setup_wifi_ap() {
@@ -79,14 +83,14 @@ function setup_wifi_ap() {
     nmcli connection up Hotspot
 
     # drop trafik comming from the wlan0 interface
-    nft add table inet filter
-    nft add chain inet filter forward { type filter hook forward priority 0 \; }
-    nft add rule inet filter forward iifname "wlan0" drop
-    nft add rule inet filter forward oifname "wlan0" drop
+    # nft add table inet filter
+    # nft add chain inet filter forward { type filter hook forward priority 0 \; }
+    # nft add rule inet filter forward iifname "wlan0" drop
+    # nft add rule inet filter forward oifname "wlan0" drop
 
-    # make the rules apply on system startup
-    printf "#!/usr/sbin/nft -f\n\nflush ruleset\n\n" >/etc/nftables.conf
-    nft list ruleset >>/etc/nftables.conf
+    # # make the rules apply on system startup
+    # printf "#!/usr/sbin/nft -f\n\nflush ruleset\n\n" >/etc/nftables.conf
+    # nft list ruleset >>/etc/nftables.conf
 
     # enable nftables on boot
     systemctl enable nftables
@@ -116,7 +120,18 @@ function is_in_proper_folder() {
     fi
 }
 
+function create_env_file() {
+    log "Creating .env file for composition"
+    export _HOSTNAME _ROOM
+
+    envsubst < "template.env" > .env
+
+
+}
+
 function main() {
+    create_env_file
+    exit 0
     is_root
     is_proper_distro
     is_in_proper_folder
@@ -125,6 +140,7 @@ function main() {
     setup_system
     setup_wifi_ap
     setup_maker
+    create_env_file
 
     log "Reboot in 10 seconds..."
     sleep 10
