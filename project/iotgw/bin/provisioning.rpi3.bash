@@ -136,14 +136,12 @@ function create_env_file() {
     docker container run --rm \
         --volume ./configs/mosquitto:/mosquitto/config \
         eclipse-mosquitto \
-        mosquitto_passwd -b -c /mosquitto/config/mosquitto.passwd "${_USERNAME}" "${_USERNAME}-${_ROOM}-password"
-    chmod 0700 ./configs/mosquitto/mosquitto.passwd
-    chown -R "${_USERNAME}":"${_USERNAME}" ./configs/mosquitto
+        mosquitto_passwd -b -c /mosquitto/config/passwd "${_USERNAME}" "${_USERNAME}-${_ROOM}-password"
+    # chmod 0700 ./configs/mosquitto/mosquitto.passwd
+    # chown -R "${_USERNAME}":"${_USERNAME}" ./configs/mosquitto
 }
 
 function main() {
-    create_env_file
-
     is_root ||
         die "ERROR: Need to be root."
     is_proper_distro ||
