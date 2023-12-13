@@ -138,7 +138,7 @@ function create_env_file() {
         eclipse-mosquitto \
         mosquitto_passwd -b -c /mosquitto/config/mosquitto.passwd "${_USERNAME}" "${_USERNAME}-${_ROOM}-password"
     chmod 0700 ./configs/mosquitto/mosquitto.passwd
-
+    chown -R "${_USERNAME}":"${_USERNAME}" ./configs/mosquitto
 }
 
 function main() {
