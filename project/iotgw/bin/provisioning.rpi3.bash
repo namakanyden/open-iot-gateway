@@ -22,6 +22,13 @@ function log() {
     printf "\e[0;35m%s\e[m: \e[0;33m%s\e[m\n" "${now}" "${message}"
 }
 
+function die() {
+    local message="${1}"
+
+    printf "%s\n" "${message}" >&2
+    exit 1
+}
+
 function install_software() {
     log "Software installation"
 
@@ -42,7 +49,7 @@ function setup_maker() {
     log "Create and setup maker user"
 
     # create user maker
-    if ! id "${_USERNAME}" > /dev/null 2>&1; then
+    if ! id "${_USERNAME}" >/dev/null 2>&1; then
         useradd --password "${_PASSWORD}" --user-group "${_USERNAME}"
         chpasswd <<<"${_USERNAME}:${_PASSWORD}"
     fi
@@ -100,41 +107,49 @@ function is_proper_distro() {
     source /etc/os-release
 
     if [[ "${PRETTY_NAME}" != "${_OS_NAME}" || "${VERSION_ID}" != "${_OS_VERSION_ID}" ]]; then
-        printf "ERROR: Incorrect OS or version.\nExpected OS is '%s' with version '%s'\nCurrent OS is '%s' with version '%s'\n" "${_OS_NAME}" \
-            "${_OS_VERSION_ID}" "${PRETTY_NAME}" "${VERSION_ID}" >&2
-        exit 1
+        return 1
     fi
 }
 
 function is_root() {
     if [[ $UID != 0 ]]; then
-        printf "ERROR: Need to be root.\n" >&2
-        exit 1
+        return 1
     fi
 }
 
 function is_in_proper_folder() {
     if [[ ! -f "docker-compose.yaml" ]]; then
-        printf "ERROR: Script must be executed from folder with docker-compose.yaml file." >&2
-        exit 1
+        return 1
     fi
 }
 
 function create_env_file() {
     log "Creating .env file for composition"
-    export _HOSTNAME _ROOM
 
-    envsubst < "template.env" > .env
+    # generate .env file
+    export _HOSTNAME _ROOM _USERNAME
+    envsubst < template.env > .env
 
+    # generate mqtt password for user maker
+    log "Creating password file for Mosquitto"
+    docker image pull eclipse-mosquitto
+    docker container run --rm \
+        --volume ./configs/mosquitto:/mosquitto/config \
+        eclipse-mosquitto \
+        mosquitto_passwd -b -c /mosquitto/config/mosquitto.passwd "${_USERNAME}" "${_USERNAME}-${_ROOM}-password"
+    chmod 0700 ./configs/mosquitto/mosquitto.passwd
 
 }
 
 function main() {
     create_env_file
-    exit 0
-    is_root
-    is_proper_distro
-    is_in_proper_folder
+
+    is_root ||
+        die "ERROR: Need to be root."
+    is_proper_distro ||
+        die "ERROR: Incorrect OS or version.\nExpected OS is '${_OS_NAME}' with version ${_OS_VERSION_ID}'\nCurrent OS is '${PRETTY_NAME}' with version '${VERSION_ID}'\n"
+    is_in_proper_folder ||
+        die "ERROR: Script must be executed from folder with docker-compose.yaml file."
 
     install_software
     setup_system
