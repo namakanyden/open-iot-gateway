@@ -24,11 +24,11 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
-      - homepage.group=IoT Gateway Core
-      - homepage.name=Traefik Dashboard
-      - homepage.icon=traefik.png
-      - homepage.href=http://${HOSTIP:-localhost}:8080/
-      - homepage.description=Traefik dashboard
+      homepage.group: IoT Gateway Core
+      homepage.name: Traefik Dashboard
+      homepage.icon: traefik.png
+      homepage.href: http://${IOTGW_HOSTNAME}:8080/
+      homepage.description: Traefik dashboard
 
 
   homepage:
@@ -43,11 +43,11 @@ services:
       traefik.http.routers.homepage.entrypoints: web
       traefik.http.services.homepage.loadbalancer.server.port: 3000
 
-      # homepage setup
+      # nodered ui
       homepage.group: Applications
       homepage.name: Gateway Dashboard
       homepage.icon: node-red.png
-      homepage.href: http://${HOSTIP:-localhost}/ui/
+      homepage.href: http://${IOTGW_HOSTNAME:-localhost}/ui/
       homepage.description: IoT Gateway Dashboard
 
 
@@ -74,11 +74,11 @@ services:
     volumes:
       - ./configs/telegraf:/etc/telegraf:ro
     environment:
-      HOSTIP: ${HOSTIP:-localhost}
+      HOSTIP: ${IOTGW_HOSTNAME:-localhost}
       ROOM: ${IOTGW_ROOM:-home}
-      DEPARTMENT: ${IOTGW_DEPARTMENT:-none}
-      MQTT_USERNAME: ${MQTT_USERNAME:-unset}
-      MQTT_PASSWORD: ${MQTT_PASSWORD:-unset}
+      DEPARTMENT: ${IOTGW_DEPARTMENT}
+      MQTT_USERNAME: ${MQTT_USERNAME}
+      MQTT_PASSWORD: ${MQTT_PASSWORD}
     labels:
       homepage.group: IoT Gateway Core
       homepage.name: Telegraf
@@ -91,8 +91,8 @@ services:
     restart: always
     environment:
       MQTT_HOST: mosquitto
-      MQTT_USERNAME: ${MQTT_USERNAME:-student}
-      MQTT_PASSWORD: ${MQTT_PASSWORD:-student}
+      MQTT_USERNAME: ${MQTT_USERNAME}
+      MQTT_PASSWORD: ${MQTT_PASSWORD}
       MQTT_PUB_TOPIC: gateway/ble
 #       MQTT_SUB_TOPIC: home/TheengsGateway/commands
       PUBLISH_ALL: true
@@ -153,7 +153,7 @@ services:
       homepage.group: Services
       homepage.name: Node-RED
       homepage.icon: node-red.png
-      homepage.href: http://${HOSTIP:-localhost}/nodered/
+      homepage.href: http://${IOTGW_HOSTNAME}/nodered/
       homepage.description: Node-RED
 
       # traefik setup
