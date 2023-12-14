@@ -93,10 +93,12 @@ function setup_wifi_ap() {
         nmcli connection modify "${_CONNAME}" connection.autoconnect yes
         nmcli connection up "${_CONNAME}"
     } && {
-        log "\tConnection ${_CONNAME} already exist."
+        log "    Connection ${_CONNAME} already exist."
     }
 
     # drop trafik comming from the wlan0 interface
+    systemctl stop nftables
+
     nft add table inet filter
     nft add chain inet filter forward { type filter hook forward priority 0 \; }
     nft add rule inet filter forward iifname "wlan0" drop
