@@ -82,7 +82,7 @@ function setup_wifi_ap() {
     log "Setup WiFi AP"
 
     # setup wifi hotspot
-    nmcli connection show "${_CONNAME}" || {
+    nmcli connection show "${_CONNAME}" > /dev/null || {
         log "Creating Hotspot"
 
         nmcli connection add type wifi ifname wlan0 con-name "${_CONNAME}" autoconnect no ssid "${_ROOM}-things"
