@@ -12,6 +12,7 @@ readonly _OS_NAME="Debian GNU/Linux 12 (bookworm)"
 readonly _OS_VERSION_ID="12"
 readonly _ROOM="${1:?Name of the room is missing as first parameter.}"
 readonly _HOSTNAME="${_ROOM}-gw"
+readonly _CONNAME="Hotspot"
 
 # functions
 function log() {
@@ -81,13 +82,17 @@ function setup_wifi_ap() {
     log "Setup WiFi AP"
 
     # setup wifi hotspot
-    nmcli connection add type wifi ifname wlan0 con-name Hotspot autoconnect no ssid "${_ROOM}-things"
-    nmcli connection modify Hotspot 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
-    nmcli connection modify Hotspot wifi-sec.key-mgmt wpa-psk
-    nmcli connection modify Hotspot wifi-sec.psk "welcome.to.the.${_ROOM}"
-    nmcli connection modify Hotspot ipv4.addresses 10.0.0.1/24
-    nmcli connection modify Hotspot connection.autoconnect yes
-    nmcli connection up Hotspot
+    nmcli conection show "${_CONNAME}" || {
+        log "Creating Hotspot"
+
+        nmcli connection add type wifi ifname wlan0 con-name "${_CONNAME}" autoconnect no ssid "${_ROOM}-things"
+        nmcli connection modify "${_CONNAME}" 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
+        nmcli connection modify "${_CONNAME}" wifi-sec.key-mgmt wpa-psk
+        nmcli connection modify "${_CONNAME}" wifi-sec.psk "welcome.to.the.${_ROOM}"
+        nmcli connection modify "${_CONNAME}" ipv4.addresses 10.0.0.1/24
+        nmcli connection modify "${_CONNAME}" connection.autoconnect yes
+        nmcli connection up "${_CONNAME}"
+    }
 
     # drop trafik comming from the wlan0 interface
     # nft add table inet filter
