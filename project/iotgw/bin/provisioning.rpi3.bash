@@ -150,6 +150,16 @@ function create_env_file() {
     # chown -R "${_USERNAME}":"${_USERNAME}" ./configs/mosquitto
 }
 
+function start_containers() {
+    log "Starting Docker Containers"
+
+    log "    Pulling Images"
+    docker compose pull
+
+    log "   Starting Composition"
+    docker compose up --detach
+}
+
 function main() {
     is_root ||
         die "ERROR: Need to be root."
@@ -163,7 +173,9 @@ function main() {
     setup_wifi_ap
     setup_maker
     create_env_file
+    start_containers
 
+    log "Done"
     log "Reboot in 10 seconds..."
     sleep 10
     log "Rebooting now..."
