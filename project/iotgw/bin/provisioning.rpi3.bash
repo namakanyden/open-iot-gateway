@@ -67,7 +67,7 @@ function setup_system() {
     # set the hostname based on the name of the room and update /etc/hosts
     hostnamectl hostname "${_HOSTNAME}"
     sed -i '/127.0.1.1/d' /etc/hosts
-    sed -i "\$a127.0.1.1 ${_HOSTNAME}" /etc/hosts
+    sed -i "\$a127.0.1.1\t${_HOSTNAME}" /etc/hosts
 
     # disable hwmon kernel module because of too many undervoltage messages
     printf "blacklist raspberrypi_hwmon\n" >/etc/modprobe.d/raspberry_hwmon.conf
@@ -82,7 +82,7 @@ function setup_wifi_ap() {
     log "Setup WiFi AP"
 
     # setup wifi hotspot
-    nmcli conection show "${_CONNAME}" || {
+    nmcli connection show "${_CONNAME}" || {
         log "Creating Hotspot"
 
         nmcli connection add type wifi ifname wlan0 con-name "${_CONNAME}" autoconnect no ssid "${_ROOM}-things"
@@ -92,6 +92,8 @@ function setup_wifi_ap() {
         nmcli connection modify "${_CONNAME}" ipv4.addresses 10.0.0.1/24
         nmcli connection modify "${_CONNAME}" connection.autoconnect yes
         nmcli connection up "${_CONNAME}"
+    } && {
+        log "Connection ${_CONNAME} already exist."
     }
 
     # drop trafik comming from the wlan0 interface
