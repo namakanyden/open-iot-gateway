@@ -148,11 +148,10 @@ function create_env_file() {
     docker image pull eclipse-mosquitto
     docker container run --rm \
         --volume ./configs/mosquitto:/mosquitto/config \
-        --user 1883:1883 \
         eclipse-mosquitto \
         mosquitto_passwd -b -c /mosquitto/config/passwd "${_USERNAME}" "${_USERNAME}-${_ROOM}-password"
     # chmod 0700 ./configs/mosquitto/mosquitto.passwd
-    # chown -R "${_USERNAME}":"${_USERNAME}" ./configs/mosquitto
+    chown -R 1883:1883 ./configs/mosquitto
 }
 
 function start_containers() {
