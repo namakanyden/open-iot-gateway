@@ -85,7 +85,7 @@ function setup_wifi_ap() {
 
     # setup wifi hotspot
     nmcli connection show "${_CONNAME}" > /dev/null || {
-        log "Creating Hotspot"
+        log "${_SP}Creating Hotspot"
 
         nmcli connection add type wifi ifname wlan0 con-name "${_CONNAME}" autoconnect no ssid "${_ROOM}-things"
         nmcli connection modify "${_CONNAME}" 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared
@@ -95,10 +95,12 @@ function setup_wifi_ap() {
         nmcli connection modify "${_CONNAME}" connection.autoconnect yes
         nmcli connection up "${_CONNAME}"
     } && {
-        log "    Connection ${_CONNAME} already exist."
+        log "${_SP}Connection ${_CONNAME} already exist."
     }
 
     # drop trafik comming from the wlan0 interface
+    log "${_SP}Configuring Rules for Firewall"
+
     systemctl stop nftables
 
     nft add table inet filter
