@@ -159,7 +159,7 @@ function start_containers() {
     docker compose pull
 
     log "${_SP}Creating Docker Network ${_DOCKERNET}"
-    docker network create "${DOCKERNET}"
+    docker network create "${+OCKERNET}"
 
     log "${_SP}Starting Composition"
     docker compose up --detach
