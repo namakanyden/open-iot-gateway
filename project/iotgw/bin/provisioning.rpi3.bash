@@ -13,6 +13,8 @@ readonly _OS_VERSION_ID="12"
 readonly _ROOM="${1:?Name of the room is missing as first parameter.}"
 readonly _HOSTNAME="${_ROOM}-gw"
 readonly _CONNAME="Hotspot"
+readonly _SP="    "
+readonly _DOCKERNET="iotgw"
 
 # functions
 function log() {
@@ -153,10 +155,13 @@ function create_env_file() {
 function start_containers() {
     log "Starting Docker Containers"
 
-    log "    Pulling Images"
+    log "${_SP}Pulling Images"
     docker compose pull
 
-    log "   Starting Composition"
+    log "${_SP}Creating Docker Network ${_DOCKERNET}"
+    docker network create "${DOCKERNET}"
+
+    log "${_SP}Starting Composition"
     docker compose up --detach
 }
 
