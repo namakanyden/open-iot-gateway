@@ -1,5 +1,7 @@
 project/core/configs/homepage/logs/
 .env
+mosquitto.conf
+passwd
 
 custom.css
 custom.js

@@ -15,6 +15,9 @@ readonly _HOSTNAME="${_ROOM}-gw"
 readonly _CONNAME="Hotspot"
 readonly _SP="    "
 readonly _DOCKERNET="iotgw"
+readonly _MQTT_REMOTE_BROKER="147.232.205.204"
+readonly _MQTT_REMOTE_USERNAME="mother"
+readonly _MQTT_REMOTE_PASSWORD="mothermother"
 
 # functions
 function log() {
@@ -84,7 +87,7 @@ function setup_wifi_ap() {
     log "Setup WiFi AP"
 
     # setup wifi hotspot
-    nmcli connection show "${_CONNAME}" > /dev/null || {
+    nmcli connection show "${_CONNAME}" >/dev/null || {
         log "${_SP}Creating Hotspot"
 
         nmcli connection add type wifi ifname wlan0 con-name "${_CONNAME}" autoconnect no ssid "${_ROOM}-things"
@@ -142,8 +145,17 @@ function create_env_file() {
     # generate .env file
     export _HOSTNAME _ROOM _USERNAME
     envsubst <template.env >.env
+}
+
+function create_mosquitto_configuration() {
+    log "Creating mosquitto.conf"
+
+    # create configuration file
+    export _ROOM _MQTT_REMOTE_BROKER _MQTT_REMOTE_USERNAME _MQTT_REMOTE_PASSWORD
+    envsubst <./configs/mosquitto/mosquitto.tpl.conf >./configs/mosquitto/mosquitto.conf
 
     # generate mqtt password for user maker
+    log "${_SP}Creating Mosquitto Password File"
     log "Creating password file for Mosquitto"
     docker image pull eclipse-mosquitto
     docker container run --rm \
@@ -180,6 +192,7 @@ function main() {
     setup_wifi_ap
     setup_maker
     create_env_file
+    create_mosquitto_configuration
     start_containers
 
     log "Done"
