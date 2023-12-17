@@ -120,6 +120,7 @@ function setup_wifi_ap() {
 }
 
 function is_proper_distro() {
+    # shellcheck source=/dev/null
     source /etc/os-release
 
     if [[ "${PRETTY_NAME}" != "${_OS_NAME}" || "${VERSION_ID}" != "${_OS_VERSION_ID}" ]]; then
