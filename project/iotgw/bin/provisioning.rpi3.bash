@@ -176,7 +176,8 @@ function start_containers() {
     docker compose pull
 
     log "${_SP}Creating Docker Network ${_DOCKERNET}"
-    docker network create "${_DOCKERNET}"
+    docker network create "${_DOCKERNET}" ||
+        log "${_SP}${_SP}Network Already Exist."
 
     log "${_SP}Starting Composition"
     docker compose up --detach
