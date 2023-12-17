@@ -145,7 +145,7 @@ function create_env_file() {
     _DOCKER_GID=$(getent group docker | cut -d: -f3)
 
     # generate .env file
-    export _HOSTNAME _ROOM _USERNAME _DOCKER_GID
+    export _HOSTNAME _ROOM _USERNAME _DOCKER_GID _TIMEZONE
     envsubst <template.env >.env
 }
 

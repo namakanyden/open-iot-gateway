@@ -82,6 +82,7 @@ services:
       DEPARTMENT: ${IOTGW_DEPARTMENT}
       MQTT_USERNAME: ${MQTT_USERNAME}
       MQTT_PASSWORD: ${MQTT_PASSWORD}
+      TZ: ${TIMEZONE}
     labels:
       homepage.group: IoT Gateway Core
       homepage.name: Telegraf
