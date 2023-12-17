@@ -1,7 +1,6 @@
 version: "3"
 
 services:
-
   traefik:
     image: traefik:2.10
     # Enables the web UI and tells Traefik to listen to docker
@@ -17,10 +16,10 @@ services:
       - "--entrypoints.websecure.address=:443"
     restart: always
     ports:
-      - 80:80       # The HTTP and HTTPS port
+      - 80:80 # The HTTP and HTTPS port
       - 443:443
-      - 8080:8080   # The Web UI (enabled by --api.insecure=true)
-      - 1883:1883   # MQTT
+      - 8080:8080 # The Web UI (enabled by --api.insecure=true)
+      - 1883:1883 # MQTT
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
@@ -29,7 +28,6 @@ services:
       homepage.icon: traefik.png
       homepage.href: http://${IOTGW_HOSTNAME}:8080/
       homepage.description: Traefik dashboard
-
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
@@ -50,7 +48,6 @@ services:
       homepage.href: http://${IOTGW_HOSTNAME:-localhost}/ui/
       homepage.description: IoT Gateway Dashboard
 
-
   mosquitto:
     image: eclipse-mosquitto
     restart: always
@@ -67,7 +64,6 @@ services:
       homepage.icon: mqtt.png
       homepage.description: Local MQTT Broker
 
-
   telegraf:
     image: telegraf:alpine
     restart: always
@@ -75,20 +71,25 @@ services:
     volumes:
       - ./configs/telegraf:/etc/telegraf:ro
       - /var/run/docker.sock:/var/run/docker.sock
-      # - /etc/group:/etc/group:ro
+      - /:/hostfs:ro
     environment:
-      HOSTNAME: ${IOTGW_HOSTNAME:-localhost}
-      ROOM: ${IOTGW_ROOM:-home}
-      DEPARTMENT: ${IOTGW_DEPARTMENT}
-      MQTT_USERNAME: ${MQTT_USERNAME}
-      MQTT_PASSWORD: ${MQTT_PASSWORD}
-      TZ: ${TIMEZONE}
+      - HOSTNAME=${IOTGW_HOSTNAME:-localhost}
+      - ROOM=${IOTGW_ROOM:-home}
+      - DEPARTMENT=${IOTGW_DEPARTMENT}
+      - MQTT_USERNAME=${MQTT_USERNAME}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
+      - TZ=${TIMEZONE}
+      - HOST_ETC=/hostfs/etc
+      - HOST_PROC=/hostfs/proc
+      - HOST_SYS=/hostfs/sys
+      - HOST_VAR=/hostfs/var
+      - HOST_RUN=/hostfs/run
+      - HOST_MOUNT_PREFIX=/hostfs
     labels:
       homepage.group: IoT Gateway Core
       homepage.name: Telegraf
       homepage.icon: telegraf.png
       homepage.description: System Metrics
-
 
   theengs:
     image: theengs/gateway
@@ -98,16 +99,16 @@ services:
       MQTT_USERNAME: ${MQTT_USERNAME}
       MQTT_PASSWORD: ${MQTT_PASSWORD}
       MQTT_PUB_TOPIC: gateway/ble
-#       MQTT_SUB_TOPIC: home/TheengsGateway/commands
+      #       MQTT_SUB_TOPIC: home/TheengsGateway/commands
       PUBLISH_ALL: true
-#       TIME_BETWEEN: 60
-#       SCAN_TIME: 60
+      #       TIME_BETWEEN: 60
+      #       SCAN_TIME: 60
       LOG_LEVEL: INFO
       DISCOVERY: false
-#      DISCOVERY_TOPIC: gateway/homeassistant/sensor
-#       DISCOVERY_DEVICE_NAME: TheengsGateway
-#      DISCOVERY_FILTER: "[IBEACON]"  # GAEN,MS-CDP
-#       SCANNING_MODE: active
+      #      DISCOVERY_TOPIC: gateway/homeassistant/sensor
+      #       DISCOVERY_DEVICE_NAME: TheengsGateway
+      #      DISCOVERY_FILTER: "[IBEACON]"  # GAEN,MS-CDP
+      #       SCANNING_MODE: active
       ADAPTER: ${IOTGW_BLE_ADAPTER:-hci0}
     volumes:
       - /var/run/dbus:/var/run/dbus
@@ -116,7 +117,6 @@ services:
       homepage.name: Theengs Gateway
       homepage.icon: https://raw.githubusercontent.com/namakanyden/Open-IoT-Gateway/main/doc/icons/theengs.png
       homepage.description: BLE2MQTT Gateway
-
 
   chrony:
     image: cturra/ntp
@@ -132,7 +132,6 @@ services:
       homepage.icon: https://raw.githubusercontent.com/namakanyden/Open-IoT-Gateway/main/doc/icons/chrony.png
       homepage.description: NTP Server
 
-
   watchtower:
     image: containrrr/watchtower
     volumes:
@@ -144,14 +143,15 @@ services:
       homepage.icon: https://containrrr.dev/watchtower/images/logo-450px.png
       homepage.description: Automates Docker container base image updates.
 
-
   nodered:
     image: nodered/node-red:latest-minimal
     restart: always
     ports:
-    - 1880:1880
+      - 1880:1880
     volumes:
-    - nodered_data:/data
+      - nodered_data:/data
+    environment:
+      TZ: ${TIMEZONE}
     labels:
       # homepage setup
       homepage.group: Services
@@ -172,7 +172,6 @@ services:
       traefik.http.routers.nodered.entrypoints: web
       traefik.http.routers.nodered.rule: PathPrefix(`/nodered/`)
       traefik.http.routers.nodered.middlewares: "nodered-rewrite"
-
 
 volumes:
   portainer_data:
