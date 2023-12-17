@@ -142,8 +142,10 @@ function is_in_proper_folder() {
 function create_env_file() {
     log "Creating .env file for composition"
 
+    _DOCKER_GID=$(getent group docker | cut -d: -f3)
+
     # generate .env file
-    export _HOSTNAME _ROOM _USERNAME
+    export _HOSTNAME _ROOM _USERNAME _DOCKER_GID
     envsubst <template.env >.env
 }
 
@@ -180,6 +182,8 @@ function start_containers() {
 }
 
 function main() {
+    create_env_file
+    exit 0
     is_root ||
         die "ERROR: Need to be root."
     is_proper_distro ||

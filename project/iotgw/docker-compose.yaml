@@ -3,7 +3,7 @@ version: "3"
 services:
 
   traefik:
-    image: traefik:2.9
+    image: traefik:2.10
     # Enables the web UI and tells Traefik to listen to docker
     command:
       # Configuration
@@ -69,13 +69,15 @@ services:
 
 
   telegraf:
-    image: telegraf
+    image: telegraf:alpine
     restart: always
+    user: telegraf:${DOCKER_GID}
     volumes:
       - ./configs/telegraf:/etc/telegraf:ro
       - /var/run/docker.sock:/var/run/docker.sock
+      # - /etc/group:/etc/group:ro
     environment:
-      HOSTIP: ${IOTGW_HOSTNAME:-localhost}
+      HOSTNAME: ${IOTGW_HOSTNAME:-localhost}
       ROOM: ${IOTGW_ROOM:-home}
       DEPARTMENT: ${IOTGW_DEPARTMENT}
       MQTT_USERNAME: ${MQTT_USERNAME}
@@ -143,7 +145,7 @@ services:
 
 
   nodered:
-    image: nodered/node-red
+    image: nodered/node-red:latest-minimal
     restart: always
     ports:
     - 1880:1880
