@@ -182,8 +182,6 @@ function start_containers() {
 }
 
 function main() {
-    create_env_file
-    exit 0
     is_root ||
         die "ERROR: Need to be root."
     is_proper_distro ||
