@@ -7,9 +7,9 @@ from diagrams.onprem.aggregator import Fluentd
 from diagrams.onprem.monitoring import Grafana
 from diagrams.onprem.database import InfluxDB
 
-with Diagram('IoT', show=True, direction='TB', filename='architecture'):
+with Diagram('Smart Department (architecture)', show=True, direction='TB', filename='architecture'):
     with Cluster('IoT Gateway'):
-        fluentd = Fluentd()
+        fluentd = Fluentd('logging')
         telegraf = Custom('metrics', 'telegraf.png')
         theengs = Custom('ble2mqtt', 'theengs.png')
         chrony = Custom('ntp', 'chrony.png')
