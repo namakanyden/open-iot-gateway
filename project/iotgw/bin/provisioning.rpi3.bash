@@ -107,7 +107,7 @@ function setup_wifi_ap() {
     systemctl stop nftables
 
     nft add table inet filter
-    nft add chain inet filter forward { type filter hook forward priority 0 \; }
+    nft add chain inet filter forward '{ type filter hook forward priority 0; }'
     nft add rule inet filter forward iifname "wlan0" drop
     nft add rule inet filter forward oifname "wlan0" drop
 
