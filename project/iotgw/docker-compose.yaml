@@ -6,7 +6,7 @@ services:
     # Enables the web UI and tells Traefik to listen to docker
     command:
       # Configuration
-      - "--api.insecure=true"
+      # - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
 
@@ -26,13 +26,14 @@ services:
       homepage.group: IoT Gateway Core
       homepage.name: Traefik Dashboard
       homepage.icon: traefik.png
-      homepage.href: http://${IOTGW_HOSTNAME}:8080/
+      # homepage.href: http://${IOTGW_HOSTNAME}:8080/
       homepage.description: Traefik dashboard
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     volumes:
       - ./configs/homepage:/app/config
+      - ./configs/homepage/images:/app/public/images
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
     labels:
@@ -45,7 +46,7 @@ services:
       homepage.group: Applications
       homepage.name: Gateway Dashboard
       homepage.icon: node-red.png
-      homepage.href: http://${IOTGW_HOSTNAME:-localhost}/ui/
+      homepage.href: /ui/
       homepage.description: IoT Gateway Dashboard
 
   mosquitto:
@@ -116,7 +117,7 @@ services:
     labels:
       homepage.group: IoT Gateway Core
       homepage.name: Theengs Gateway
-      homepage.icon: https://raw.githubusercontent.com/namakanyden/Open-IoT-Gateway/main/doc/icons/theengs.png
+      homepage.icon: /images/theengs.png
       homepage.description: BLE2MQTT Gateway
 
   chrony:
@@ -130,7 +131,7 @@ services:
     labels:
       homepage.group: IoT Gateway Core
       homepage.name: Chrony
-      homepage.icon: https://raw.githubusercontent.com/namakanyden/Open-IoT-Gateway/main/doc/icons/chrony.png
+      homepage.icon: /images/chrony.png
       homepage.description: NTP Server
 
   watchtower:
@@ -141,7 +142,7 @@ services:
     labels:
       homepage.group: IoT Gateway Core
       homepage.name: Watchtower
-      homepage.icon: https://containrrr.dev/watchtower/images/logo-450px.png
+      homepage.icon: /images/watchtower.png
       homepage.description: Automates Docker container base image updates.
 
   nodered:
@@ -158,7 +159,7 @@ services:
       homepage.group: Services
       homepage.name: Node-RED
       homepage.icon: node-red.png
-      homepage.href: http://${IOTGW_HOSTNAME}/nodered/
+      homepage.href: /nodered/
       homepage.description: Node-RED
 
       # traefik setup

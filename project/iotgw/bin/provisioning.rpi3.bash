@@ -186,6 +186,13 @@ function start_containers() {
     docker compose up --detach
 }
 
+function setup_homepage() {
+    log "Updating Configuration of Homepage"
+
+    [[ $(cat configs/homepage/widgets.yaml) =~ "{{ ROOM }}" ]] ||
+        sed "s/{{ ROOM }}/$_ROOM/g" configs/homepage/widgets.yaml
+}
+
 function main() {
     is_root ||
         die "ERROR: Need to be root."
@@ -200,6 +207,7 @@ function main() {
     setup_maker
     create_env_file
     create_mosquitto_configuration
+    setup_homepage
     start_containers
 
     log "Done"
