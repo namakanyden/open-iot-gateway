@@ -106,10 +106,11 @@ function setup_wifi_ap() {
 
     systemctl stop nftables
 
-    nft add table inet filter
-    nft add chain inet filter forward '{ type filter hook forward priority 0; }'
-    nft add rule inet filter forward iifname "wlan0" drop
-    nft add rule inet filter forward oifname "wlan0" drop
+    local table="gw-filter"
+    nft add table inet "${table}"
+    nft add chain inet "${table}" forward '{ type filter hook forward priority 0; }'
+    nft add rule inet "${table}" forward iifname "wlan0" drop
+    nft add rule inet "${table}" forward oifname "wlan0" drop
 
     # make the rules apply on system startup
     printf "#!/usr/sbin/nft -f\n\nflush ruleset\n\n" >/etc/nftables.conf
@@ -143,10 +144,12 @@ function is_in_proper_folder() {
 function create_env_file() {
     log "Creating .env file for composition"
 
+    local _HOSTIP _DOCKER_GID
+    _HOSTIP=$(curl https://ifconfig.me)
     _DOCKER_GID=$(getent group docker | cut -d: -f3)
 
     # generate .env file
-    export _HOSTNAME _ROOM _USERNAME _DOCKER_GID _TIMEZONE
+    export _HOSTNAME _ROOM _USERNAME _DOCKER_GID _TIMEZONE _HOSTIP
     envsubst <template.env >.env
 }
 

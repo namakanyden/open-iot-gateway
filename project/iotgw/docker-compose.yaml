@@ -74,6 +74,7 @@ services:
       - /:/hostfs:ro
     environment:
       - HOSTNAME=${IOTGW_HOSTNAME:-localhost}
+      - HOSTIP=${IOTGW_HOSTIP:-127.0.0.1}
       - ROOM=${IOTGW_ROOM:-home}
       - DEPARTMENT=${IOTGW_DEPARTMENT}
       - MQTT_USERNAME=${MQTT_USERNAME}
