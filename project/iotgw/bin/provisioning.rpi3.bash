@@ -73,11 +73,11 @@ function setup_manager() {
 
     # create user manager
     if ! id "${user}" >/dev/null 2>&1; then
-        useradd --user-group "${user}"
-        mkdir -p /home/manager/.ssh
+        useradd --create-home --user-group "${user}"
+        mkdir --parents /home/manager/.ssh
         cp assets/manager.pub /home/manager/.ssh/known_hosts
         chmod 700 /home/manager/.ssh
-        chown -R manager.manager /home/manager/.ssh
+        chown --recursive manager.manager /home/manager/.ssh
     fi
 
     # add manager to groups: docker, sudo
