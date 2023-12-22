@@ -214,7 +214,7 @@ function setup_homepage() {
     log "Updating Configuration of Homepage"
 
     [[ $(cat configs/homepage/widgets.yaml) =~ "{{ ROOM }}" ]] &&
-        sed "s/{{ ROOM }}/$_ROOM/g" configs/homepage/widgets.yaml
+        sed --in-place "s/{{ ROOM }}/$_ROOM/g" configs/homepage/widgets.yaml
 }
 
 function main() {
