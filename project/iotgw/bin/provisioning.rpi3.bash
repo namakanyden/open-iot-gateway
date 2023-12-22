@@ -52,7 +52,7 @@ function install_software() {
 }
 
 function setup_maker() {
-    log "Create and setup maker user"
+    log "Create and Setup User maker"
 
     # create user maker
     if ! id "${_USERNAME}" >/dev/null 2>&1; then
@@ -63,6 +63,30 @@ function setup_maker() {
     # add maker to group docker
     if [[ ! $(groups "${_USERNAME}") =~ "docker" ]]; then
         usermod -aG docker "${_USERNAME}"
+    fi
+}
+
+function setup_manager() {
+    log "Create and Setup User manager"
+
+    local user=manager
+
+    # create user manager
+    if ! id "${user}" >/dev/null 2>&1; then
+        useradd --user-group "${user}"
+        mkdir /home/manager/.ssh
+        cp assets/manager.pub /home/manager/.ssh/known_hosts
+        chmod 700 /home/manager/.ssh
+        chown -R manager.manager /home/manager/.ssh
+    fi
+
+    # add manager to groups: docker, sudo
+    if [[ ! $(groups "${user}") =~ "docker" ]]; then
+        usermod -aG docker "${user}"
+    fi
+
+    if [[ ! $(groups "${user}") =~ "sudo" ]]; then
+        usermod -aG sudo "${user}"
     fi
 }
 
@@ -189,7 +213,7 @@ function start_containers() {
 function setup_homepage() {
     log "Updating Configuration of Homepage"
 
-    [[ $(cat configs/homepage/widgets.yaml) =~ "{{ ROOM }}" ]] ||
+    [[ $(cat configs/homepage/widgets.yaml) =~ "{{ ROOM }}" ]] &&
         sed "s/{{ ROOM }}/$_ROOM/g" configs/homepage/widgets.yaml
 }
 
@@ -205,6 +229,7 @@ function main() {
     setup_system
     setup_wifi_ap
     setup_maker
+    setup_manager
     create_env_file
     create_mosquitto_configuration
     setup_homepage
