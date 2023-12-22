@@ -74,7 +74,7 @@ function setup_manager() {
     # create user manager
     if ! id "${user}" >/dev/null 2>&1; then
         useradd --user-group "${user}"
-        mkdir /home/manager/.ssh
+        mkdir -p /home/manager/.ssh
         cp assets/manager.pub /home/manager/.ssh/known_hosts
         chmod 700 /home/manager/.ssh
         chown -R manager.manager /home/manager/.ssh
