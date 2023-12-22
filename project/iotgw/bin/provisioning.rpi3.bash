@@ -75,7 +75,7 @@ function setup_manager() {
     if ! id "${user}" >/dev/null 2>&1; then
         useradd --create-home --user-group "${user}"
         mkdir --parents /home/manager/.ssh
-        cp assets/manager.pub /home/manager/.ssh/known_hosts
+        cp assets/manager.pub /home/manager/.ssh/authorized_keys
         chmod 700 /home/manager/.ssh
         chown --recursive manager.manager /home/manager/.ssh
     fi
