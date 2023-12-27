@@ -1,0 +1,17 @@
+Mqtt:
+  address: "${MOSQUITTO_HOST}"
+  port: "${MOSQUITTO_PORT}"
+
+Influxdb:
+  url: "${INFLUXDB_URL}"
+  token: "${INFLUXDB_TOKEN}"
+  org: "${INFLUXDB_ORG}"
+
+Validators:
+  - topics: ["kpi/+/+/#"]
+    bucket: "Measurements"
+    tags: "department/room/_/device"
+    disabled_topics: ["kpi/+/metrics/#"]
+    schema: "./config/schemas/measure-value.json"
+  - topics: ["test/+/+/#"]
+    schema: "./config/schemas/test-value.json"

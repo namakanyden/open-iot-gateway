@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "measurement": { "type": "string" },
+    "tags": {
+      "type": "object",
+      "properties": {
+        "unit": { "type": "string" }
+      },
+      "required": ["unit"]
+    },
+    "fields": {
+      "type": "object",
+      "properties": {
+        "value": { "type": "number" }
+      },
+      "required": ["value"]
+    },
+    "time": { "type": "number" }
+  }
+}

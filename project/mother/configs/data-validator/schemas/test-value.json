@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "tags": {
+      "type": "object"
+    },
+    "fields": {
+      "type": "object"
+    },
+    "name": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "number"
+    }
+  },
+  "required": ["tags", "fields", "name", "timestamp"]
+}
