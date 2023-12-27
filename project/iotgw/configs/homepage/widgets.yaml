@@ -7,17 +7,21 @@
     memory: true
     disk: /
     uptime: true
-    cputemp: true 
+    cputemp: true
 
 - datetime:
     text_size: xl
     locale: sk
     format:
       dateStyle: long
-      timeStyle: long 
+      timeStyle: long
       hourCycle: h23
 
 
-- logo:
-    icon: https://magazin.kpi.fei.tuke.sk/images/kpi-logo.svg
+# - logo:
+    # icon: /images/kpi-logo.svg
+
+- greeting:
+    text_size: 4xl
+    text: "{{ ROOM }} IoT Gateway"
 

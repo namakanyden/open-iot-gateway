@@ -22,10 +22,10 @@
       "port": 1883,
       "protocol": "mqtt",
       "changeSet": {
-        "password": "top.secret"
+        "password": "maker-caprica-password"
       },
       "username": "maker",
-      "password": "top.secret"
+      "password": "maker-caprica-password"
     }
   },
   "Settings": {
