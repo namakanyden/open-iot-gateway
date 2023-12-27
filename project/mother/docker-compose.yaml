@@ -29,6 +29,17 @@ services:
       - homepage.href=http://${HOSTIP:-localhost}:8080/
       - homepage.description=Traefik dashboard
 
+  data-validator:
+    image: pjotr99/data-validator
+    volumes: ./configs/data-validator:/app/config
+    restart: always
+    environment:
+      - INFLUXDB_URL=${INFLUX_URL}
+      - INFLUXDB_TOKEN=${INFLUXDB_WRITE_TOKEN}
+      - INFLUXDB_ORG=${INFLUX_ORG}
+      - MOSQUITTO_HOST=${MOSQUITTO_HOST}
+      - MOSQUITTO_PORT=${MOSQUITTO_PORT}
+
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     volumes:
