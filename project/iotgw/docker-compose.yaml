@@ -1,33 +1,33 @@
 version: "3"
 
 services:
-  traefik:
-    image: traefik:2.10
-    # Enables the web UI and tells Traefik to listen to docker
-    command:
-      # Configuration
-      # - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
+  # traefik:
+  #   image: traefik:2.10
+  #   # Enables the web UI and tells Traefik to listen to docker
+  #   command:
+  #     # Configuration
+  #     # - "--api.insecure=true"
+  #     - "--providers.docker=true"
+  #     - "--providers.docker.exposedbydefault=false"
 
-      # Entrypoints
-      - "--entrypoints.mqtt.address=:1883"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-    restart: always
-    ports:
-      - 80:80 # The HTTP and HTTPS port
-      - 443:443
-      - 8080:8080 # The Web UI (enabled by --api.insecure=true)
-      - 1883:1883 # MQTT
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    labels:
-      homepage.group: IoT Gateway Core
-      homepage.name: Traefik Dashboard
-      homepage.icon: traefik.png
-      # homepage.href: http://${IOTGW_HOSTNAME}:8080/
-      homepage.description: Traefik dashboard
+  #     # Entrypoints
+  #     - "--entrypoints.mqtt.address=:1883"
+  #     - "--entrypoints.web.address=:80"
+  #     - "--entrypoints.websecure.address=:443"
+  #   restart: always
+  #   ports:
+  #     - 80:80 # The HTTP and HTTPS port
+  #     - 443:443
+  #     - 8080:8080 # The Web UI (enabled by --api.insecure=true)
+  #     - 1883:1883 # MQTT
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   labels:
+  #     homepage.group: IoT Gateway Core
+  #     homepage.name: Traefik Dashboard
+  #     homepage.icon: traefik.png
+  #     # homepage.href: http://${IOTGW_HOSTNAME}:8080/
+  #     homepage.description: Traefik dashboard
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
@@ -36,17 +36,19 @@ services:
       - ./configs/homepage/images:/app/public/images
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
+    ports:
+      - 80:3000
     labels:
-      traefik.enable: true
-      traefik.http.routers.homepage.rule: PathPrefix(`/`)
-      traefik.http.routers.homepage.entrypoints: web
-      traefik.http.services.homepage.loadbalancer.server.port: 3000
+      # traefik.enable: true
+      # traefik.http.routers.homepage.rule: PathPrefix(`/`)
+      # traefik.http.routers.homepage.entrypoints: web
+      # traefik.http.services.homepage.loadbalancer.server.port: 3000
 
       # nodered ui
       homepage.group: Applications
       homepage.name: Gateway Dashboard
       homepage.icon: node-red.png
-      homepage.href: /ui/
+      homepage.href: :1880/ui/
       homepage.description: IoT Gateway Dashboard
 
   mosquitto:
@@ -54,12 +56,14 @@ services:
     restart: always
     volumes:
       - ./configs/mosquitto:/mosquitto/config:ro
+    ports:
+      - 1883:1883
     labels:
-      traefik.enable: true
-      traefik.tcp.services.mosquitto.loadbalancer.server.port: 1883
-      traefik.tcp.routers.mosquitto.entrypoints: mqtt
-      traefik.tcp.routers.mosquitto.service: mosquitto
-      traefik.tcp.routers.mosquitto.rule: HostSNI(`*`)
+      # traefik.enable: true
+      # traefik.tcp.services.mosquitto.loadbalancer.server.port: 1883
+      # traefik.tcp.routers.mosquitto.entrypoints: mqtt
+      # traefik.tcp.routers.mosquitto.service: mosquitto
+      # traefik.tcp.routers.mosquitto.rule: HostSNI(`*`)
       homepage.group: IoT Gateway Core
       homepage.name: Mosquitto
       homepage.icon: mqtt.png
@@ -153,27 +157,28 @@ services:
     volumes:
       - nodered_data:/data
     environment:
-      TZ: ${TIMEZONE}
+      # - HOSTIP=${IOTGW_HOSTIP:-127.0.0.1}
+      - TZ=${TIMEZONE}
     labels:
       # homepage setup
       homepage.group: Services
       homepage.name: Node-RED
       homepage.icon: node-red.png
-      homepage.href: /nodered/
+      homepage.href: "${IOTGW_HOSTIP:-127.0.0.1}:1880"
       homepage.description: Node-RED
 
-      # traefik setup
-      traefik.enable: true
-      traefik.http.services.nodered.loadbalancer.server.port: 1880
+      # # traefik setup
+      # traefik.enable: true
+      # traefik.http.services.nodered.loadbalancer.server.port: 1880
 
-      # middleware
-      traefik.http.middlewares.nodered-rewrite.replacepathregex.regex: "^/nodered/(.*)"
-      traefik.http.middlewares.nodered-rewrite.replacepathregex.replacement: "/$$1"
+      # # middleware
+      # traefik.http.middlewares.nodered-rewrite.replacepathregex.regex: "^/nodered/(.*)"
+      # traefik.http.middlewares.nodered-rewrite.replacepathregex.replacement: "/$$1"
 
-      # routers
-      traefik.http.routers.nodered.entrypoints: web
-      traefik.http.routers.nodered.rule: PathPrefix(`/nodered/`)
-      traefik.http.routers.nodered.middlewares: "nodered-rewrite"
+      # # routers
+      # traefik.http.routers.nodered.entrypoints: web
+      # traefik.http.routers.nodered.rule: PathPrefix(`/nodered/`)
+      # traefik.http.routers.nodered.middlewares: "nodered-rewrite"
 
 volumes:
   portainer_data:
