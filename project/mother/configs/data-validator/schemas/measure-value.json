@@ -17,5 +17,6 @@
       "required": ["value"]
     },
     "time": { "type": "number" }
-  }
+  },
+  "required": ["tags", "fields", "measurement", "time"]
 }

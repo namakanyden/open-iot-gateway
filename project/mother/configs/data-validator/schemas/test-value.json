@@ -7,12 +7,12 @@
     "fields": {
       "type": "object"
     },
-    "name": {
+    "measurement": {
       "type": "string"
     },
-    "timestamp": {
+    "time": {
       "type": "number"
     }
   },
-  "required": ["tags", "fields", "name", "timestamp"]
+  "required": ["tags", "fields", "measurement", "time"]
 }
