@@ -31,14 +31,15 @@ services:
 
   data-validator:
     image: pjotr99/data-validator
-    volumes: ./configs/data-validator:/app/config
+    volumes:
+      - ./configs/data-validator:/config
     restart: always
     environment:
-      - INFLUXDB_URL=${INFLUX_URL}
+      - INFLUXDB_URL=${INFLUXDB_URL}
       - INFLUXDB_TOKEN=${INFLUXDB_WRITE_TOKEN}
-      - INFLUXDB_ORG=${INFLUX_ORG}
-      - MOSQUITTO_HOST=${MOSQUITTO_HOST}
-      - MOSQUITTO_PORT=${MOSQUITTO_PORT}
+      - INFLUXDB_ORG=${INFLUXDB_ORG}
+      - MOSQUITTO_HOST=${MQTT_HOST}
+      - MOSQUITTO_PORT=${MQTT_PORT}
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
