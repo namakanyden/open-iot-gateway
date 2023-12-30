@@ -40,6 +40,8 @@ services:
       - INFLUXDB_ORG=${INFLUXDB_ORG}
       - MOSQUITTO_HOST=${MQTT_HOST}
       - MOSQUITTO_PORT=${MQTT_PORT}
+      - MOSQUITTO_USERNAME=${MQTT_USERNAME}
+      - MOSQUITTO_PASSWORD=${MQTT_PASSWORD}
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
