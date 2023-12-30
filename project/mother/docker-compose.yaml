@@ -32,7 +32,7 @@ services:
   data-validator:
     image: pjotr99/data-validator
     volumes:
-      - ./configs/data-validator:/config
+      - ./configs/data-validator:/app/config
     restart: always
     environment:
       - INFLUXDB_URL=${INFLUXDB_URL}
