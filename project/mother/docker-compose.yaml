@@ -139,6 +139,32 @@ services:
       homepage.icon: telegraf.png
       homepage.description: System Metrics to InfluxDB
 
+  mqtt-explorer:
+    image: smeagolworms4/mqtt-explorer
+    restart: always
+    volumes:
+      - ./configs/mqtt-explorer:/mqtt-explorer/config
+    labels:
+      # homepage setup
+      homepage.group: Applications
+      homepage.name: MQTT Explorer
+      homepage.href: http://${HOSTIP:-localhost}/mqttexplorer/
+      homepage.description: MQTT Web Client
+      homepage.icon: http://mqtt-explorer.com/icon.png
+
+      # traefik setup
+      traefik.enable: true
+      traefik.http.services.mqttex.loadbalancer.server.port: 4000
+
+      # middleware
+      traefik.http.middlewares.mqttex-rewrite.replacepathregex.regex: "^/mqttexplorer/(.*)"
+      traefik.http.middlewares.mqttex-rewrite.replacepathregex.replacement: "/$$1"
+
+      # routers
+      traefik.http.routers.mqttex.entrypoints: web
+      traefik.http.routers.mqttex.rule: PathPrefix(`/mqttexplorer/`)
+      traefik.http.routers.mqttex.middlewares: "mqttex-rewrite"
+
 volumes:
   grafana:
   influxdb:
