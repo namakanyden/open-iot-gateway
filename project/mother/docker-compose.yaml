@@ -165,6 +165,18 @@ services:
       traefik.http.routers.mqttex.rule: PathPrefix(`/mqttexplorer/`)
       traefik.http.routers.mqttex.middlewares: "mqttex-rewrite"
 
+  mqttwarn:
+    image: tomhoover/mqttwarn
+    restart: always
+    volumes:
+      - ./configs/mqttwarn:/mqttwarn/config
+    labels:
+      # homepage setup
+      homepage.group: Applications
+      homepage.name: MQTT-warn
+      homepage.description: MQTT to Webhooks
+      homepage.icon: mqttwarn.png
+
 volumes:
   grafana:
   influxdb:
