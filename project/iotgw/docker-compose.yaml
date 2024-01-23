@@ -1,55 +1,55 @@
 version: "3"
 
 services:
+  # traefik:
+  #   image: traefik:2.10
+  #   # Enables the web UI and tells Traefik to listen to docker
+  #   command:
+  #     # Configuration
+  #     # - "--api.insecure=true"
+  #     - "--providers.docker=true"
+  #     - "--providers.docker.exposedbydefault=false"
 
-  traefik:
-    image: traefik:2.9
-    # Enables the web UI and tells Traefik to listen to docker
-    command:
-      # Configuration
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-
-      # Entrypoints
-      - "--entrypoints.mqtt.address=:1883"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-    restart: always
-    ports:
-      - 80:80       # The HTTP and HTTPS port
-      - 443:443
-      - 8080:8080   # The Web UI (enabled by --api.insecure=true)
-      - 1883:1883   # MQTT
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    labels:
-      homepage.group: IoT Gateway Core
-      homepage.name: Traefik Dashboard
-      homepage.icon: traefik.png
-      homepage.href: http://${IOTGW_HOSTNAME}:8080/
-      homepage.description: Traefik dashboard
-
+  #     # Entrypoints
+  #     - "--entrypoints.mqtt.address=:1883"
+  #     - "--entrypoints.web.address=:80"
+  #     - "--entrypoints.websecure.address=:443"
+  #   restart: always
+  #   ports:
+  #     - 80:80 # The HTTP and HTTPS port
+  #     - 443:443
+  #     - 8080:8080 # The Web UI (enabled by --api.insecure=true)
+  #     - 1883:1883 # MQTT
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   labels:
+  #     homepage.group: IoT Gateway Core
+  #     homepage.name: Traefik Dashboard
+  #     homepage.icon: traefik.png
+  #     # homepage.href: http://${IOTGW_HOSTNAME}:8080/
+  #     homepage.description: Traefik dashboard
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     volumes:
       - ./configs/homepage:/app/config
+      - ./configs/homepage/images:/app/public/images
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
+    ports:
+      - 80:3000
     labels:
-      traefik.enable: true
-      traefik.http.routers.homepage.rule: PathPrefix(`/`)
-      traefik.http.routers.homepage.entrypoints: web
-      traefik.http.services.homepage.loadbalancer.server.port: 3000
+      # traefik.enable: true
+      # traefik.http.routers.homepage.rule: PathPrefix(`/`)
+      # traefik.http.routers.homepage.entrypoints: web
+      # traefik.http.services.homepage.loadbalancer.server.port: 3000
 
       # nodered ui
       homepage.group: Applications
       homepage.name: Gateway Dashboard
       homepage.icon: node-red.png
-      homepage.href: http://${IOTGW_HOSTNAME:-localhost}/ui/
+      homepage.href: :1880/ui/
       homepage.description: IoT Gateway Dashboard
-
 
   mosquitto:
     image: eclipse-mosquitto
@@ -57,36 +57,45 @@ services:
     volumes:
       - ./configs/mosquitto:/mosquitto/config:ro
     ports:
-      - 8000:8000
+      - 1883:1883
     labels:
-      traefik.enable: true
-      traefik.tcp.services.mosquitto.loadbalancer.server.port: 1883
-      traefik.tcp.routers.mosquitto.entrypoints: mqtt
-      traefik.tcp.routers.mosquitto.service: mosquitto
-      traefik.tcp.routers.mosquitto.rule: HostSNI(`*`)
+      # traefik.enable: true
+      # traefik.tcp.services.mosquitto.loadbalancer.server.port: 1883
+      # traefik.tcp.routers.mosquitto.entrypoints: mqtt
+      # traefik.tcp.routers.mosquitto.service: mosquitto
+      # traefik.tcp.routers.mosquitto.rule: HostSNI(`*`)
       homepage.group: IoT Gateway Core
       homepage.name: Mosquitto
       homepage.icon: mqtt.png
       homepage.description: Local MQTT Broker
 
-
   telegraf:
-    image: telegraf
+    image: telegraf:alpine
     restart: always
+    user: telegraf:${DOCKER_GID}
     volumes:
       - ./configs/telegraf:/etc/telegraf:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /:/hostfs:ro
     environment:
-      HOSTIP: ${IOTGW_HOSTNAME:-localhost}
-      ROOM: ${IOTGW_ROOM:-home}
-      DEPARTMENT: ${IOTGW_DEPARTMENT}
-      MQTT_USERNAME: ${MQTT_USERNAME}
-      MQTT_PASSWORD: ${MQTT_PASSWORD}
+      - HOSTNAME=${IOTGW_HOSTNAME:-localhost}
+      - HOSTIP=${IOTGW_HOSTIP:-127.0.0.1}
+      - ROOM=${IOTGW_ROOM:-home}
+      - DEPARTMENT=${IOTGW_DEPARTMENT}
+      - MQTT_USERNAME=${MQTT_USERNAME}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
+      - TZ=${TIMEZONE}
+      - HOST_ETC=/hostfs/etc
+      - HOST_PROC=/hostfs/proc
+      - HOST_SYS=/hostfs/sys
+      - HOST_VAR=/hostfs/var
+      - HOST_RUN=/hostfs/run
+      - HOST_MOUNT_PREFIX=/hostfs
     labels:
       homepage.group: IoT Gateway Core
       homepage.name: Telegraf
       homepage.icon: telegraf.png
       homepage.description: System Metrics
-
 
   theengs:
     image: theengs/gateway
@@ -96,25 +105,24 @@ services:
       MQTT_USERNAME: ${MQTT_USERNAME}
       MQTT_PASSWORD: ${MQTT_PASSWORD}
       MQTT_PUB_TOPIC: gateway/ble
-#       MQTT_SUB_TOPIC: home/TheengsGateway/commands
+      #       MQTT_SUB_TOPIC: home/TheengsGateway/commands
       PUBLISH_ALL: true
-#       TIME_BETWEEN: 60
-#       SCAN_TIME: 60
+      #       TIME_BETWEEN: 60
+      #       SCAN_TIME: 60
       LOG_LEVEL: INFO
       DISCOVERY: false
-#      DISCOVERY_TOPIC: gateway/homeassistant/sensor
-#       DISCOVERY_DEVICE_NAME: TheengsGateway
-#      DISCOVERY_FILTER: "[IBEACON]"  # GAEN,MS-CDP
-#       SCANNING_MODE: active
+      #      DISCOVERY_TOPIC: gateway/homeassistant/sensor
+      #       DISCOVERY_DEVICE_NAME: TheengsGateway
+      #      DISCOVERY_FILTER: "[IBEACON]"  # GAEN,MS-CDP
+      #       SCANNING_MODE: active
       ADAPTER: ${IOTGW_BLE_ADAPTER:-hci0}
     volumes:
       - /var/run/dbus:/var/run/dbus
     labels:
       homepage.group: IoT Gateway Core
       homepage.name: Theengs Gateway
-      homepage.icon: https://raw.githubusercontent.com/namakanyden/Open-IoT-Gateway/main/doc/icons/theengs.png
+      homepage.icon: /images/theengs.png
       homepage.description: BLE2MQTT Gateway
-
 
   chrony:
     image: cturra/ntp
@@ -127,9 +135,8 @@ services:
     labels:
       homepage.group: IoT Gateway Core
       homepage.name: Chrony
-      homepage.icon: https://raw.githubusercontent.com/namakanyden/Open-IoT-Gateway/main/doc/icons/chrony.png
+      homepage.icon: /images/chrony.png
       homepage.description: NTP Server
-
 
   watchtower:
     image: containrrr/watchtower
@@ -139,38 +146,39 @@ services:
     labels:
       homepage.group: IoT Gateway Core
       homepage.name: Watchtower
-      homepage.icon: https://containrrr.dev/watchtower/images/logo-450px.png
+      homepage.icon: /images/watchtower.png
       homepage.description: Automates Docker container base image updates.
 
-
   nodered:
-    image: nodered/node-red
+    image: nodered/node-red:latest-minimal
     restart: always
     ports:
-    - 1880:1880
+      - 1880:1880
     volumes:
-    - nodered_data:/data
+      - nodered_data:/data
+    environment:
+      # - HOSTIP=${IOTGW_HOSTIP:-127.0.0.1}
+      - TZ=${TIMEZONE}
     labels:
       # homepage setup
       homepage.group: Services
       homepage.name: Node-RED
       homepage.icon: node-red.png
-      homepage.href: http://${IOTGW_HOSTNAME}/nodered/
+      homepage.href: "${IOTGW_HOSTIP:-127.0.0.1}:1880"
       homepage.description: Node-RED
 
-      # traefik setup
-      traefik.enable: true
-      traefik.http.services.nodered.loadbalancer.server.port: 1880
+      # # traefik setup
+      # traefik.enable: true
+      # traefik.http.services.nodered.loadbalancer.server.port: 1880
 
-      # middleware
-      traefik.http.middlewares.nodered-rewrite.replacepathregex.regex: "^/nodered/(.*)"
-      traefik.http.middlewares.nodered-rewrite.replacepathregex.replacement: "/$$1"
+      # # middleware
+      # traefik.http.middlewares.nodered-rewrite.replacepathregex.regex: "^/nodered/(.*)"
+      # traefik.http.middlewares.nodered-rewrite.replacepathregex.replacement: "/$$1"
 
-      # routers
-      traefik.http.routers.nodered.entrypoints: web
-      traefik.http.routers.nodered.rule: PathPrefix(`/nodered/`)
-      traefik.http.routers.nodered.middlewares: "nodered-rewrite"
-
+      # # routers
+      # traefik.http.routers.nodered.entrypoints: web
+      # traefik.http.routers.nodered.rule: PathPrefix(`/nodered/`)
+      # traefik.http.routers.nodered.middlewares: "nodered-rewrite"
 
 volumes:
   portainer_data:

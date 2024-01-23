@@ -1,0 +1,20 @@
+Mqtt:
+  address: "${MOSQUITTO_HOST}"
+  port: "${MOSQUITTO_PORT}"
+  username: "${MOSQUITTO_USERNAME}"
+  password: "${MOSQUITTO_PASSWORD}"
+
+Influxdb:
+  url: "${INFLUXDB_URL}"
+  token: "${INFLUXDB_TOKEN}"
+  org: "${INFLUXDB_ORG}"
+
+Validators:
+  - topics: ["kpi/+/temperature"]
+    bucket: "Measurements"
+    tags: "department/room"
+    schema: "./config/schemas/temperature-value.json"
+  - topics: ["test/+/+/temperature"]
+    bucket: "Measurements"
+    tags: "department/room/senzor"
+    schema: "./config/schemas/temperature-value.json"

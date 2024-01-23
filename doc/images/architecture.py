@@ -7,19 +7,19 @@ from diagrams.onprem.aggregator import Fluentd
 from diagrams.onprem.monitoring import Grafana
 from diagrams.onprem.database import InfluxDB
 
-with Diagram('IoT', show=True, direction='TB'):
+with Diagram('Smart Department (architecture)', show=True, direction='TB', filename='architecture'):
     with Cluster('IoT Gateway'):
-        fluentd = Fluentd()
-        telegraf = Custom('metrics', 'icons/telegraf.png')
-        theengs = Custom('ble2mqtt', 'icons/theengs.png')
-        chrony = Custom('ntp', 'icons/chrony.png')
-        mosquitto = Custom('local mqtt broker', 'icons/mosquitto.png')
+        fluentd = Fluentd('logging')
+        telegraf = Custom('metrics', 'telegraf.png')
+        theengs = Custom('ble2mqtt', 'theengs.png')
+        chrony = Custom('ntp', 'chrony.png')
+        mosquitto = Custom('local mqtt broker', 'mosquitto.png')
 
     with Cluster('Mother'):
         loki = Loki()
         grafana = Grafana('dashboard')
         influxdb = InfluxDB('database')
-        mosquitto2 = Custom('mqtt broker', 'icons/mosquitto.png')
+        mosquitto2 = Custom('mqtt broker', 'mosquitto.png')
 
     fluentd >> loki
     grafana << [ loki, influxdb ]
