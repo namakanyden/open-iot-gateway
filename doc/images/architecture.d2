@@ -1,0 +1,72 @@
+direction: left
+
+cloud: Cloud {
+  mother: Mother {
+    shape: image
+    icon: https://icons.terrastruct.com/aws%2FInternet%20of%20Things%2FIoT_Device-gateway_light-bg.svg
+  }
+  svc1: Service {
+    shape: image
+    icon: https://icons.terrastruct.com/aws%2FInternet%20of%20Things%2FIoT_HTTP-protocol_light-bg.svg
+  }
+  svc2: Service {
+    shape: image
+    icon: https://icons.terrastruct.com/aws%2FInternet%20of%20Things%2FIoT_HTTP-protocol_light-bg.svg
+  }
+}
+cloud.style.fill: "#fff"
+
+room1: Room {
+  sensor1: Sensor {
+    shape: image
+    icon: https://icons.terrastruct.com/aws%2FInternet%20of%20Things%2FIoT_Sensor_light-bg.svg
+  }
+  actuator1: Actuator {
+    shape: image
+    icon: https://icons.terrastruct.com/aws%2FInternet%20of%20Things%2FIoT_Actuator_light-bg.svg
+  }
+  iotgw1: IoT Gateway {
+    shape: image
+    icon: https://icons.terrastruct.com/aws%2FInternet%20of%20Things%2FIoT_Device-gateway_light-bg.svg
+  }
+}
+room1.style.fill: "#fff"
+
+room2: Room {
+  sensor2: Sensor {
+    shape: image
+    icon: https://icons.terrastruct.com/aws%2FInternet%20of%20Things%2FIoT_Sensor_light-bg.svg
+  }
+  actuator2: Actuator {
+    shape: image
+    icon: https://icons.terrastruct.com/aws%2FInternet%20of%20Things%2FIoT_Actuator_light-bg.svg
+  }
+  iotgw2: IoT Gateway {
+    shape: image
+    icon: https://icons.terrastruct.com/aws%2FInternet%20of%20Things%2FIoT_Device-gateway_light-bg.svg
+  }
+}
+room2.style.fill: "#fff"
+
+cloud.svc1 <-> cloud.mother
+cloud.svc2 <-> cloud.mother
+
+cloud.mother <-> room2.iotgw2
+room2.iotgw2 <-> room2.sensor2
+room2.iotgw2 <-> room2.actuator2
+
+cloud.mother <-> room1.iotgw1
+room1.iotgw1 <-> room1.sensor1
+room1.iotgw1 <-> room1.actuator1
+
+client1: Client {
+  shape: image
+  icon: https://icons.terrastruct.com/tech%2F052-smartphone-3.svg
+}
+client2: Client {
+  shape: image
+  icon: https://icons.terrastruct.com/tech%2F052-smartphone-3.svg
+}
+
+client1 <-> cloud.svc1
+client2 <-> cloud.svc2

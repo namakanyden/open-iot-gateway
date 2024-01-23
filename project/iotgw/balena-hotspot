@@ -1,0 +1,33 @@
+[connection]
+id=balena-hotspot
+# uuid=36060c57-aebd-4ccf-aba4-ef75121b5f77
+type=wifi
+autoconnect=true
+interface-name=wlan0
+# permissions=
+# secondaries=
+
+[wifi]
+band=bg
+# mac-address-blacklist=
+mac-address-randomization=0
+mode=ap
+# seen-bssids=
+ssid=chalupka-things
+
+[wifi-security]
+# group=
+key-mgmt=wpa-psk
+# pairwise=
+proto=rsn
+psk=welcome.to.the.chalupka
+
+[ipv4]
+# dns-search=
+method=shared
+addresses=10.0.0.1/24
+
+# [ipv6]
+# addr-gen-mode=stable-privacy
+# dns-search=
+# method=auto

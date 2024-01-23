@@ -1,191 +1,197 @@
-version: "3"
+version: "2.4"
 
 services:
-  # traefik:
-  #   image: traefik:2.10
-  #   # Enables the web UI and tells Traefik to listen to docker
-  #   command:
-  #     # Configuration
-  #     # - "--api.insecure=true"
-  #     - "--providers.docker=true"
-  #     - "--providers.docker.exposedbydefault=false"
-
-  #     # Entrypoints
-  #     - "--entrypoints.mqtt.address=:1883"
-  #     - "--entrypoints.web.address=:80"
-  #     - "--entrypoints.websecure.address=:443"
-  #   restart: always
-  #   ports:
-  #     - 80:80 # The HTTP and HTTPS port
-  #     - 443:443
-  #     - 8080:8080 # The Web UI (enabled by --api.insecure=true)
-  #     - 1883:1883 # MQTT
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   labels:
-  #     homepage.group: IoT Gateway Core
-  #     homepage.name: Traefik Dashboard
-  #     homepage.icon: traefik.png
-  #     # homepage.href: http://${IOTGW_HOSTNAME}:8080/
-  #     homepage.description: Traefik dashboard
+  provisioning:
+    build:
+      context: provisioning
+        #    image: alpine
+    restart: no
+    command: [ "env" ]
 
   homepage:
-    image: ghcr.io/gethomepage/homepage:latest
-    volumes:
-      - ./configs/homepage:/app/config
-      - ./configs/homepage/images:/app/public/images
-      - /var/run/docker.sock:/var/run/docker.sock
+    build:
+      context: homepage
+    # image: ghcr.io/gethomepage/homepage:latest
+    # volumes:
+    #   - ./configs/homepage:/app/config
+    #   - ./configs/homepage/images:/app/public/images
+    #   - /var/run/docker.sock:/var/run/docker.sock
     restart: always
     ports:
       - 80:3000
     labels:
-      # traefik.enable: true
-      # traefik.http.routers.homepage.rule: PathPrefix(`/`)
-      # traefik.http.routers.homepage.entrypoints: web
-      # traefik.http.services.homepage.loadbalancer.server.port: 3000
-
-      # nodered ui
-      homepage.group: Applications
-      homepage.name: Gateway Dashboard
-      homepage.icon: node-red.png
-      homepage.href: :1880/ui/
-      homepage.description: IoT Gateway Dashboard
+      io.balena.features.balena-socket: "1"
 
   mosquitto:
-    image: eclipse-mosquitto
+    build:
+      context: mosquitto
     restart: always
-    volumes:
-      - ./configs/mosquitto:/mosquitto/config:ro
+    # env_file:
+    #   - .env
+    #     volumes:
+    #       - ./configs/mosquitto:/mosquitto/config:ro
     ports:
       - 1883:1883
-    labels:
-      # traefik.enable: true
-      # traefik.tcp.services.mosquitto.loadbalancer.server.port: 1883
-      # traefik.tcp.routers.mosquitto.entrypoints: mqtt
-      # traefik.tcp.routers.mosquitto.service: mosquitto
-      # traefik.tcp.routers.mosquitto.rule: HostSNI(`*`)
-      homepage.group: IoT Gateway Core
-      homepage.name: Mosquitto
-      homepage.icon: mqtt.png
-      homepage.description: Local MQTT Broker
+  #     labels:
+  #       # traefik.enable: true
+  #       # traefik.tcp.services.mosquitto.loadbalancer.server.port: 1883
+  #       # traefik.tcp.routers.mosquitto.entrypoints: mqtt
+  #       # traefik.tcp.routers.mosquitto.service: mosquitto
+  #       # traefik.tcp.routers.mosquitto.rule: HostSNI(`*`)
+  #       homepage.group: IoT Gateway Core
+  #       homepage.name: Mosquitto
+  #       homepage.icon: mqtt.png
+  #       homepage.description: Local MQTT Broker
 
   telegraf:
-    image: telegraf:alpine
+    build:
+      context: telegraf
+    # image: telegraf:alpine
     restart: always
-    user: telegraf:${DOCKER_GID}
-    volumes:
-      - ./configs/telegraf:/etc/telegraf:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /:/hostfs:ro
-    environment:
-      - HOSTNAME=${IOTGW_HOSTNAME:-localhost}
-      - HOSTIP=${IOTGW_HOSTIP:-127.0.0.1}
-      - ROOM=${IOTGW_ROOM:-home}
-      - DEPARTMENT=${IOTGW_DEPARTMENT}
-      - MQTT_USERNAME=${MQTT_USERNAME}
-      - MQTT_PASSWORD=${MQTT_PASSWORD}
-      - TZ=${TIMEZONE}
-      - HOST_ETC=/hostfs/etc
-      - HOST_PROC=/hostfs/proc
-      - HOST_SYS=/hostfs/sys
-      - HOST_VAR=/hostfs/var
-      - HOST_RUN=/hostfs/run
-      - HOST_MOUNT_PREFIX=/hostfs
+    depends_on:
+      - mosquitto
+    # env_file:
+    #   - .env
+    user: telegraf:991
+    #     volumes:
+    #       - ./configs/telegraf:/etc/telegraf:ro
+    #       - /var/run/docker.sock:/var/run/docker.sock
+    #       - /:/hostfs:ro
+    #     environment:
+    #       - HOSTNAME=${IOTGW_HOSTNAME:-localhost}
+    #       - HOSTIP=${IOTGW_HOSTIP:-127.0.0.1}
+    #       - ROOM=${IOTGW_ROOM:-home}
+    #       - DEPARTMENT=${IOTGW_DEPARTMENT}
+    #       - MQTT_USERNAME=${MQTT_USERNAME}
+    #       - MQTT_PASSWORD=${MQTT_PASSWORD}
+    #       - TZ=${TIMEZONE}
+    #       - HOST_ETC=/hostfs/etc
+    #       - HOST_PROC=/hostfs/proc
+    #       - HOST_SYS=/hostfs/sys
+    #       - HOST_VAR=/hostfs/var
+    #       - HOST_RUN=/hostfs/run
+    #       - HOST_MOUNT_PREFIX=/hostfs
     labels:
-      homepage.group: IoT Gateway Core
-      homepage.name: Telegraf
-      homepage.icon: telegraf.png
-      homepage.description: System Metrics
+      io.resin.features.balena-socket: "1"
+  #       homepage.group: IoT Gateway Core
+  #       homepage.name: Telegraf
+  #       homepage.icon: telegraf.png
+  #       homepage.description: System Metrics
 
   theengs:
-    image: theengs/gateway
+    build:
+      context: theengs
     restart: always
+    depends_on:
+      - mosquitto
+    # env_file:
+    #   - .env
     environment:
-      MQTT_HOST: mosquitto
-      MQTT_USERNAME: ${MQTT_USERNAME}
-      MQTT_PASSWORD: ${MQTT_PASSWORD}
       MQTT_PUB_TOPIC: gateway/ble
-      #       MQTT_SUB_TOPIC: home/TheengsGateway/commands
+      # MQTT_SUB_TOPIC: home/TheengsGateway/commands
       PUBLISH_ALL: true
-      #       TIME_BETWEEN: 60
-      #       SCAN_TIME: 60
+      # TIME_BETWEEN: 60
+      # SCAN_TIME: 60
       LOG_LEVEL: INFO
       DISCOVERY: false
-      #      DISCOVERY_TOPIC: gateway/homeassistant/sensor
-      #       DISCOVERY_DEVICE_NAME: TheengsGateway
-      #      DISCOVERY_FILTER: "[IBEACON]"  # GAEN,MS-CDP
-      #       SCANNING_MODE: active
-      ADAPTER: ${IOTGW_BLE_ADAPTER:-hci0}
-    volumes:
-      - /var/run/dbus:/var/run/dbus
+      # DISCOVERY_TOPIC: gateway/homeassistant/sensor
+      # DISCOVERY_DEVICE_NAME: TheengsGateway
+      # DISCOVERY_FILTER: "[IBEACON]"  # GAEN,MS-CDP
+      # SCANNING_MODE: active
+      # ADAPTER: hci0
+      #     volumes:
+      #       - /var/run/dbus:/var/run/dbus
+      DBUS_SYSTEM_BUS_ADDRESS: unix:path=/host/run/dbus/system_bus_socket
     labels:
-      homepage.group: IoT Gateway Core
-      homepage.name: Theengs Gateway
-      homepage.icon: /images/theengs.png
-      homepage.description: BLE2MQTT Gateway
+      io.balena.features.dbus: 1
 
   chrony:
     image: cturra/ntp
     restart: always
     ports:
       - 123:123/udp
-    environment:
-      NTP_SERVERS: ${IOTGW_NTP_SERVERS:-time.cloudflare.com}
-      LOG_LEVEL: 0
-    labels:
-      homepage.group: IoT Gateway Core
-      homepage.name: Chrony
-      homepage.icon: /images/chrony.png
-      homepage.description: NTP Server
+    # environment:
+    #   LOG_LEVEL: 0
 
-  watchtower:
-    image: containrrr/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
-    labels:
-      homepage.group: IoT Gateway Core
-      homepage.name: Watchtower
-      homepage.icon: /images/watchtower.png
-      homepage.description: Automates Docker container base image updates.
+  #   watchtower:
+  #     image: containrrr/watchtower
+  #     volumes:
+  #       - /var/run/docker.sock:/var/run/docker.sock
+  #     restart: always
+  #     labels:
+  #       homepage.group: IoT Gateway Core
+  #       homepage.name: Watchtower
+  #       homepage.icon: /images/watchtower.png
+  #       homepage.description: Automates Docker container base image updates.
 
   nodered:
-    image: nodered/node-red:latest-minimal
+    build:
+      context: nodered
+    # image: nodered/node-red:latest-minimal
     restart: always
     ports:
       - 1880:1880
     volumes:
       - nodered_data:/data
+    depends_on:
+      - mosquitto
+    # environment:
+    #       # - HOSTIP=${IOTGW_HOSTIP:-127.0.0.1}
+    # - TZ=${IOTGW_TIMEZONE}
+    # labels:
+    #   io.balena.features.supervisor-api: 1
+    # homepage.group: Services
+    # homepage.name: Node-RED
+    #   homepage.icon: node-red.png
+    #   homepage.href: "http://${IOTGW_HOSTIP}:1880"
+    #   homepage.description: Node-RED
+
+  zigbee2mqtt:
+    # env_file:
+    #   - .env
+    build:
+      context: zigbee2mqtt
+    # restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - mosquitto
+    privileged: true
+    volumes:
+      - zigbee2mqtt_data:/app/data/
     environment:
-      # - HOSTIP=${IOTGW_HOSTIP:-127.0.0.1}
-      - TZ=${TIMEZONE}
+      DBUS_SYSTEM_BUS_ADDRESS: unix:path=/host/run/dbus/system_bus_socket
+    #   - TZ=Europe/Bratislava
     labels:
-      # homepage setup
-      homepage.group: Services
-      homepage.name: Node-RED
-      homepage.icon: node-red.png
-      homepage.href: "${IOTGW_HOSTIP:-127.0.0.1}:1880"
-      homepage.description: Node-RED
+      io.balena.features.dbus: 1
+    # devices:
+    #   - ${IOTGW_ZIGBEE_ADAPTER:-/dev/ttyUSB0}:/dev/ttyUSB0
+    # labels:
+    #   # homepage setup
+    #   homepage.group: Services
+    #   homepage.name: Zigbee2MQTT
+    #   homepage.icon: zigbee2mqtt.png
+    #   homepage.href: http://${HOSTIP:-localhost}/zigbee2mqtt/
+    #   homepage.description: Zigbee to MQTT bridge
 
-      # # traefik setup
-      # traefik.enable: true
-      # traefik.http.services.nodered.loadbalancer.server.port: 1880
+    #   # traefik setup
+    #   traefik.enable: true
+    #   traefik.http.services.zb2mqtt.loadbalancer.server.port: 8080
 
-      # # middleware
-      # traefik.http.middlewares.nodered-rewrite.replacepathregex.regex: "^/nodered/(.*)"
-      # traefik.http.middlewares.nodered-rewrite.replacepathregex.replacement: "/$$1"
+    #   # middleware
+    #   traefik.http.middlewares.zb2mqtt-rewrite.replacepathregex.regex: "^/zigbee2mqtt/(.*)"
+    #   traefik.http.middlewares.zb2mqtt-rewrite.replacepathregex.replacement: "/$$1"
 
-      # # routers
-      # traefik.http.routers.nodered.entrypoints: web
-      # traefik.http.routers.nodered.rule: PathPrefix(`/nodered/`)
-      # traefik.http.routers.nodered.middlewares: "nodered-rewrite"
+    #   # routers
+    #   traefik.http.routers.zb2mqtt.entrypoints: web
+    #   traefik.http.routers.zb2mqtt.rule: PathPrefix(`/zigbee2mqtt/`)
+    #   traefik.http.routers.zb2mqtt.middlewares: "zb2mqtt-rewrite"
 
 volumes:
-  portainer_data:
   nodered_data:
-
-networks:
-  # all containers will be by default connected to network iotgw
-  default:
-    name: iotgw
-    external: true
+  zigbee2mqtt_data:
+# networks:
+#   # all containers will be by default connected to network iotgw
+#   default:
+#     name: iotgw
+#     external: true

@@ -5,3 +5,8 @@ passwd
 
 custom.css
 custom.js
+
+__pycache__/
+.idea/
+
+*.lock
