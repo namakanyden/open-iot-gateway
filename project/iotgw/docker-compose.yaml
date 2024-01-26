@@ -5,8 +5,8 @@ services:
     build:
       context: provisioning
     restart: no
-    env_file:
-      - .env
+    # env_file:
+      # - .env
     volumes:
       - zigbee2mqtt_data:/mnt/zigbee2mqtt/
       - mosquitto_config:/mnt/mosquitto/
@@ -18,9 +18,7 @@ services:
     volumes:
     - homepage_config:/app/config
     - homepage_images:/app/public/images
-    - /var/run/docker.sock:/var/run/docker.sock
-    #   - ./configs/homepage:/app/config
-    #   - ./configs/homepage/images:/app/public/images
+    # - /var/run/docker.sock:/var/run/docker.sock
     restart: always
     ports:
       - 80:3000
@@ -166,8 +164,6 @@ services:
     #   - TZ=Europe/Bratislava
     labels:
       io.balena.features.dbus: 1
-    # devices:
-    #   - ${IOTGW_ZIGBEE_ADAPTER:-/dev/ttyUSB0}:/dev/ttyUSB0
     # labels:
     #   # homepage setup
     #   homepage.group: Services
