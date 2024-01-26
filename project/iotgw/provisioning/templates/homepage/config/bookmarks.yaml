@@ -1,0 +1,31 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/en/configs/bookmarks
+
+- Documentation:
+  - IoT1:
+    - abbr: IoT
+      href: http://kurzy.kpi.fei.tuke.sk/iot1
+  - Open IoT Gateway:
+    - abbr: GW
+      href: https://github.com/namakanyden/Open-IoT-Gateway
+
+- Social:
+  - Slack:
+    - abbr: SL
+      href: https://kpi-iot1-2023.slack.com
+      icon: slack.png
+
+- Namakaný deň:
+  - Homepage:
+    - abbr: ND
+      href: http://namakanyden.sk/
+  - YouTube:
+    - abbr: YT
+      href: https://www.youtube.com/@namakanyden
+      icon: youtube.png
+  - GitHub:
+    - abbr: GH
+      href: https://github.com/namakanyden
+      icon: github.png
+

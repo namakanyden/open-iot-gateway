@@ -10,15 +10,17 @@ services:
     volumes:
       - zigbee2mqtt_data:/mnt/zigbee2mqtt/
       - mosquitto_config:/mnt/mosquitto/
+      - homepage_config:/mnt/homepage/config/
+      - homepage_images:/mnt/homepage/images/
 
   homepage:
-    build:
-      context: homepage
-    # image: ghcr.io/gethomepage/homepage:latest
-    # volumes:
+    image: ghcr.io/gethomepage/homepage:latest
+    volumes:
+    - homepage_config:/app/config
+    - homepage_images:/app/public/images
+    - /var/run/docker.sock:/var/run/docker.sock
     #   - ./configs/homepage:/app/config
     #   - ./configs/homepage/images:/app/public/images
-    #   - /var/run/docker.sock:/var/run/docker.sock
     restart: always
     ports:
       - 80:3000
@@ -36,11 +38,11 @@ services:
       - provisioning
     ports:
       - 1883:1883
-  #     labels:
-  #       homepage.group: IoT Gateway Core
-  #       homepage.name: Mosquitto
-  #       homepage.icon: mqtt.png
-  #       homepage.description: Local MQTT Broker
+    # labels:
+    #   homepage.group: IoT Gateway Core
+    #   homepage.name: Mosquitto
+    #   homepage.icon: mqtt.png
+    #   homepage.description: Local MQTT Broker
 
   telegraf:
     build:
@@ -178,3 +180,5 @@ volumes:
   nodered_data:
   zigbee2mqtt_data:
   mosquitto_config:
+  homepage_config:
+  homepage_images:
