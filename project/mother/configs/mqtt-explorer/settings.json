@@ -5,7 +5,7 @@
       "certValidation": true,
       "clientId": "mqtt-explorer-c01eb9da",
       "id": "mqtt.eclipse.org",
-      "name": "Mother MQTT Explorer",
+      "name": "Mother MQTT",
       "encryption": false,
       "subscriptions": [
         {
@@ -15,13 +15,176 @@
       ],
       "type": "mqtt",
       "host": "mosquitto",
+      "port": "1883",
+      "protocol": "mqtt",
+      "changeSet": {
+        "password": "mother.mqtt.password"
+      },
+      "username": "maker",
+      "password": "mother.mqtt.password"
+    },
+    "73bd9cda-00a0-49fb-aebd-f59b2f7b298b": {
+      "configVersion": 1,
+      "certValidation": true,
+      "clientId": "mqtt-explorer-e0feffc6",
+      "id": "73bd9cda-00a0-49fb-aebd-f59b2f7b298b",
+      "name": "Mother MQTT WS",
+      "encryption": false,
+      "password": "mother.mqtt.password",
+      "username": "maker",
+      "subscriptions": [
+        {
+          "topic": "#",
+          "qos": 0
+        },
+        {
+          "topic": "$SYS/#",
+          "qos": 0
+        }
+      ],
+      "type": "mqtt",
+      "host": "mosquitto",
+      "port": "8000",
+      "protocol": "ws",
+      "changeSet": {
+        "username": "maker"
+      },
+      "basePath": "ws"
+    },
+    "7299a043-b149-4441-8ea3-1f12a34d67b3": {
+      "configVersion": 1,
+      "certValidation": true,
+      "clientId": "mqtt-explorer-efc5639e",
+      "id": "7299a043-b149-4441-8ea3-1f12a34d67b3",
+      "name": "Caprica",
+      "encryption": false,
+      "password": "this.is.mqtt",
+      "username": "maker",
+      "subscriptions": [
+        {
+          "topic": "#",
+          "qos": 0
+        },
+        {
+          "topic": "$SYS/#",
+          "qos": 0
+        }
+      ],
+      "type": "mqtt",
+      "host": "caprica-gw.fei.tuke.sk",
       "port": 1883,
       "protocol": "mqtt",
       "changeSet": {
-        "password": "mothermother"
-      },
-      "username": "mother",
-      "password": "mothermother"
+        "password": "this.is.mqtt"
+      }
+    },
+    "79b909c4-f5f7-48bc-a602-2d9f563a9d2f": {
+      "configVersion": 1,
+      "certValidation": true,
+      "clientId": "mqtt-explorer-1dbc9585",
+      "id": "79b909c4-f5f7-48bc-a602-2d9f563a9d2f",
+      "name": "Kronos",
+      "encryption": false,
+      "password": "this.is.mqtt",
+      "username": "maker",
+      "subscriptions": [
+        {
+          "topic": "#",
+          "qos": 0
+        },
+        {
+          "topic": "$SYS/#",
+          "qos": 0
+        }
+      ],
+      "type": "mqtt",
+      "host": "kronos-gw.fei.tuke.sk",
+      "port": 1883,
+      "protocol": "mqtt",
+      "changeSet": {
+        "password": "this.is.mqtt"
+      }
+    },
+    "95b84fe1-2f8d-4b68-a003-48d15b5d6206": {
+      "configVersion": 1,
+      "certValidation": true,
+      "clientId": "mqtt-explorer-ec538afd",
+      "id": "95b84fe1-2f8d-4b68-a003-48d15b5d6206",
+      "name": "Endor",
+      "encryption": false,
+      "password": "this.is.mqtt",
+      "username": "maker",
+      "subscriptions": [
+        {
+          "topic": "#",
+          "qos": 0
+        },
+        {
+          "topic": "$SYS/#",
+          "qos": 0
+        }
+      ],
+      "type": "mqtt",
+      "host": "endor-gw.fei.tuke.sk",
+      "port": 1883,
+      "protocol": "mqtt",
+      "changeSet": {
+        "password": "this.is.mqtt"
+      }
+    },
+    "ad223204-8bc7-4d67-ae4c-0fe460a95227": {
+      "configVersion": 1,
+      "certValidation": true,
+      "clientId": "mqtt-explorer-34fb9d0a",
+      "id": "ad223204-8bc7-4d67-ae4c-0fe460a95227",
+      "name": "Hyperion",
+      "encryption": false,
+      "password": "this.is.mqtt",
+      "username": "maker",
+      "subscriptions": [
+        {
+          "topic": "#",
+          "qos": 0
+        },
+        {
+          "topic": "$SYS/#",
+          "qos": 0
+        }
+      ],
+      "type": "mqtt",
+      "host": "hyperion-gw.fei.tuke.sk",
+      "port": 1883,
+      "protocol": "mqtt",
+      "changeSet": {
+        "password": "this.is.mqtt"
+      }
+    },
+    "4d2dfa2a-d1b4-42b1-b74e-3ba117eaf859": {
+      "configVersion": 1,
+      "certValidation": true,
+      "clientId": "mqtt-explorer-41164cd6",
+      "id": "4d2dfa2a-d1b4-42b1-b74e-3ba117eaf859",
+      "name": "Romulus",
+      "encryption": false,
+      "password": "this.is.mqtt",
+      "username": "maker",
+      "subscriptions": [
+        {
+          "topic": "#",
+          "qos": 0
+        },
+        {
+          "topic": "$SYS/#",
+          "qos": 0
+        }
+      ],
+      "type": "mqtt",
+      "host": "romulus-gw.fei.tuke.sk",
+      "port": 1883,
+      "protocol": "mqtt",
+      "changeSet": {
+        "password": "this.is.mqtt"
+      }
     }
   },
   "Settings": {
@@ -31,5 +194,10 @@
     "valueRendererDisplayMode": "raw",
     "selectTopicWithMouseOver": false,
     "theme": "light"
+  },
+  "connection_view_state": {
+    "79b909c4-f5f7-48bc-a602-2d9f563a9d2f": {
+      "charts": []
+    }
   }
 }

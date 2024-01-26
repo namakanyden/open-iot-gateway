@@ -18,3 +18,7 @@ Validators:
     bucket: "Measurements"
     tags: "department/room/senzor"
     schema: "./config/schemas/temperature-value.json"
+  - topics: ["kpi/+/things/#"]
+    bucket: "Things"
+    tags: "department/room"
+    schema: "./config/schemas/thing-value.json"

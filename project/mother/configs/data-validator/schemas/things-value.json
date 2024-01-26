@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "measurement": { "type": "string" },
+    "tags": {
+      "type": "object"
+    },
+    "fields": {
+      "type": "object"
+    },
+    "time": {
+      "type": "number",
+      "minimum": 999999999999999999,
+      "maximum": 10000000000000000000
+    }
+  },
+  "required": ["measurement", "tags", "fields", "time"]
+}

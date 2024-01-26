@@ -61,13 +61,17 @@ services:
     volumes:
       - ./configs/mosquitto:/mosquitto/config
     ports:
-      - 8000:8000
+      - 8000:8000 # for websocket
     labels:
       traefik.enable: true
       traefik.tcp.services.mosquitto.loadbalancer.server.port: 1883
       traefik.tcp.routers.mosquitto.entrypoints: mqtt
       traefik.tcp.routers.mosquitto.service: mosquitto
       traefik.tcp.routers.mosquitto.rule: HostSNI(`*`)
+      #      traefik.tcp.services.mosquitto_ws.loadbalancer.server.port: 8000
+      #      traefik.tcp.routers.mosquitto_ws.entrypoints: ws
+      #      traefik.tcp.routers.mosquitto_ws.service: mosquitto
+      #      traefik.tcp.routers.mosquitto_ws.rule: HostSNI(`*`)
       homepage.group: Services
       homepage.name: Mosquitto
       homepage.icon: mqtt.png
