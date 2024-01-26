@@ -14,7 +14,13 @@ typing-inspect = "^0.9.0"
 paho-mqtt = "^1.6.1"
 pydantic-settings = "^2.1.0"
 httpx = "^0.26.0"
+loguru = "^0.7.2"
+pendulum = "^3.0.0"
+fastapi-mqtt = "^2.1.0"
 
+
+[tool.poetry.group.dev.dependencies]
+ipython = "^8.20.0"
 
 [build-system]
 requires = ["poetry-core"]

@@ -132,6 +132,11 @@ services:
       homepage.icon: telegraf.png
       homepage.description: System Metrics to InfluxDB
 
+  mqttwarn:
+    image: ghcr.io/mqtt-tools/mqttwarn-full:latest
+    volumes:
+      - ./configs/mqttwarn:/etc/mqttwarn
+
 
 volumes:
   grafana:

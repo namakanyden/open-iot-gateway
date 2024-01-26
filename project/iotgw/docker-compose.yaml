@@ -4,9 +4,12 @@ services:
   provisioning:
     build:
       context: provisioning
-        #    image: alpine
     restart: no
-    command: [ "env" ]
+    env_file:
+      - .env
+    volumes:
+      - zigbee2mqtt_data:/mnt/zigbee2mqtt/
+      - mosquitto_config:/mnt/mosquitto/
 
   homepage:
     build:
@@ -19,25 +22,21 @@ services:
     restart: always
     ports:
       - 80:3000
+    depends_on:
+      - provisioning
     labels:
       io.balena.features.balena-socket: "1"
 
   mosquitto:
-    build:
-      context: mosquitto
+    image: eclipse-mosquitto
     restart: always
-    # env_file:
-    #   - .env
-    #     volumes:
-    #       - ./configs/mosquitto:/mosquitto/config:ro
+    volumes:
+      - mosquitto_config:/mosquitto/config:ro
+    depends_on:
+      - provisioning
     ports:
       - 1883:1883
   #     labels:
-  #       # traefik.enable: true
-  #       # traefik.tcp.services.mosquitto.loadbalancer.server.port: 1883
-  #       # traefik.tcp.routers.mosquitto.entrypoints: mqtt
-  #       # traefik.tcp.routers.mosquitto.service: mosquitto
-  #       # traefik.tcp.routers.mosquitto.rule: HostSNI(`*`)
   #       homepage.group: IoT Gateway Core
   #       homepage.name: Mosquitto
   #       homepage.icon: mqtt.png
@@ -49,6 +48,7 @@ services:
     # image: telegraf:alpine
     restart: always
     depends_on:
+      - provisioning
       - mosquitto
     # env_file:
     #   - .env
@@ -83,6 +83,7 @@ services:
       context: theengs
     restart: always
     depends_on:
+      - provisioning
       - mosquitto
     # env_file:
     #   - .env
@@ -134,6 +135,7 @@ services:
     volumes:
       - nodered_data:/data
     depends_on:
+      - provisioning
       - mosquitto
     # environment:
     #       # - HOSTIP=${IOTGW_HOSTIP:-127.0.0.1}
@@ -147,14 +149,12 @@ services:
     #   homepage.description: Node-RED
 
   zigbee2mqtt:
-    # env_file:
-    #   - .env
-    build:
-      context: zigbee2mqtt
-    # restart: always
+    image: koenkk/zigbee2mqtt
+    restart: always
     ports:
       - 8080:8080
     depends_on:
+      - provisioning
       - mosquitto
     privileged: true
     volumes:
@@ -174,24 +174,7 @@ services:
     #   homepage.href: http://${HOSTIP:-localhost}/zigbee2mqtt/
     #   homepage.description: Zigbee to MQTT bridge
 
-    #   # traefik setup
-    #   traefik.enable: true
-    #   traefik.http.services.zb2mqtt.loadbalancer.server.port: 8080
-
-    #   # middleware
-    #   traefik.http.middlewares.zb2mqtt-rewrite.replacepathregex.regex: "^/zigbee2mqtt/(.*)"
-    #   traefik.http.middlewares.zb2mqtt-rewrite.replacepathregex.replacement: "/$$1"
-
-    #   # routers
-    #   traefik.http.routers.zb2mqtt.entrypoints: web
-    #   traefik.http.routers.zb2mqtt.rule: PathPrefix(`/zigbee2mqtt/`)
-    #   traefik.http.routers.zb2mqtt.middlewares: "zb2mqtt-rewrite"
-
 volumes:
   nodered_data:
   zigbee2mqtt_data:
-# networks:
-#   # all containers will be by default connected to network iotgw
-#   default:
-#     name: iotgw
-#     external: true
+  mosquitto_config:

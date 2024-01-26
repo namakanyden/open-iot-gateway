@@ -12,3 +12,5 @@
 * pre ui spravit endpoint `/dashboard` a nie `/ui`
 * spravit pristup pomocou loginu a hesla
 
+
+
