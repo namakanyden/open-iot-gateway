@@ -5,13 +5,14 @@ services:
     build:
       context: provisioning
     restart: no
-    # env_file:
-      # - .env
+    env_file:
+      - .env
     volumes:
       - zigbee2mqtt_data:/mnt/zigbee2mqtt/
       - mosquitto_config:/mnt/mosquitto/
       - homepage_config:/mnt/homepage/config/
       - homepage_images:/mnt/homepage/images/
+      - theengs_config:/mnt/theengs/
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
@@ -36,11 +37,6 @@ services:
       - provisioning
     ports:
       - 1883:1883
-    # labels:
-    #   homepage.group: IoT Gateway Core
-    #   homepage.name: Mosquitto
-    #   homepage.icon: mqtt.png
-    #   homepage.description: Local MQTT Broker
 
   telegraf:
     build:
@@ -79,32 +75,20 @@ services:
   #       homepage.description: System Metrics
 
   theengs:
-    build:
-      context: theengs
-    restart: always
+    image: theengs/gateway
+    # restart: always
     depends_on:
       - provisioning
       - mosquitto
-    # env_file:
-    #   - .env
+    volumes:
+    - theengs_config:/root/
     environment:
-      MQTT_PUB_TOPIC: gateway/ble
-      # MQTT_SUB_TOPIC: home/TheengsGateway/commands
-      PUBLISH_ALL: true
-      # TIME_BETWEEN: 60
-      # SCAN_TIME: 60
-      LOG_LEVEL: INFO
-      DISCOVERY: false
-      # DISCOVERY_TOPIC: gateway/homeassistant/sensor
-      # DISCOVERY_DEVICE_NAME: TheengsGateway
-      # DISCOVERY_FILTER: "[IBEACON]"  # GAEN,MS-CDP
-      # SCANNING_MODE: active
-      # ADAPTER: hci0
-      #     volumes:
-      #       - /var/run/dbus:/var/run/dbus
+      UDEV: 1
       DBUS_SYSTEM_BUS_ADDRESS: unix:path=/host/run/dbus/system_bus_socket
     labels:
       io.balena.features.dbus: 1
+    working_dir: /opt/venv
+    command: /bin/bash -ec "source bin/activate && python3 -m TheengsGateway"
 
   chrony:
     image: cturra/ntp
@@ -164,13 +148,6 @@ services:
     #   - TZ=Europe/Bratislava
     labels:
       io.balena.features.dbus: 1
-    # labels:
-    #   # homepage setup
-    #   homepage.group: Services
-    #   homepage.name: Zigbee2MQTT
-    #   homepage.icon: zigbee2mqtt.png
-    #   homepage.href: http://${HOSTIP:-localhost}/zigbee2mqtt/
-    #   homepage.description: Zigbee to MQTT bridge
 
 volumes:
   nodered_data:
@@ -178,3 +155,4 @@ volumes:
   mosquitto_config:
   homepage_config:
   homepage_images:
+  theengs_config:

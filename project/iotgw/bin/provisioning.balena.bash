@@ -25,11 +25,14 @@ interface-name=wlan0
 band=bg
 mac-address-randomization=0
 mode=ap
+channel=%d
 ssid=%s
 
 [wifi-security]
 key-mgmt=wpa-psk
 proto=rsn
+group=ccmp
+pairwise=ccmp
 psk=%s
 
 [ipv4]
@@ -68,6 +71,7 @@ function set_hotspot() {
     log "Setup WiFi Hotspot"
 
     local hostname="${1:?Hostname is missing}"
+    local channel="${2:?Channel is missing}"
 
     ( nmcli connection show "${_CONNAME}" || [ -f  "${_HOTSPOT_CONFIG}" ] ) >/dev/null 2>&1 && {
         log "${_SP}Connection ${_CONNAME} already exist."
@@ -77,7 +81,7 @@ function set_hotspot() {
         local ssid="${hostname}-things"
         local password="welcome.to.the.${hostname}"
 
-        printf "${_HOTSPOT_TEMPLATE}" "${ssid}" "${password}" >"${_HOTSPOT_CONFIG}"
+        printf "${_HOTSPOT_TEMPLATE}" "${channel}" "${ssid}" "${password}" >"${_HOTSPOT_CONFIG}"
     }
 }
 

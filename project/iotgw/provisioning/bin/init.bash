@@ -71,10 +71,21 @@ function setup_homepage() {
     envsubst <"${templates}/config/settings.yaml" >"${target}/config/settings.yaml"
 }
 
+function setup_theengs(){
+    log "Setting up Theengs"
+
+    local template='/templates/theengs/theengsgw.conf'
+    local target='/mnt/theengs/theengsgw.conf'
+
+    # template population
+    envsubst < "${template}" > "${target}"
+}
+
 function main() {
     setup_zigbee2mqtt
     setup_mosquitto
     setup_homepage
+    setup_theengs
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
