@@ -1,0 +1,20 @@
+homeassistant: false
+permit_join: false
+mqtt:
+  base_topic: gateway/zigbee
+  server: ON_INIT
+  user: ON_INIT
+  password: ON_INIT
+  client_id: zigbee2mqtt
+frontend: true
+serial:
+  adapter: ON_INIT
+  port: ON_INIT
+advanced:
+  homeassistant_legacy_entity_attributes: false
+  legacy_api: false
+  legacy_availability_payload: false
+  pan_id: ON_INIT
+  channel: ON_INIT
+device_options:
+  legacy: false
