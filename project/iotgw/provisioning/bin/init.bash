@@ -5,7 +5,7 @@ set -o pipefail
 set -o nounset
 
 # functions
-function log(){
+function log() {
     local message="${*}"
     local now
 
@@ -71,14 +71,33 @@ function setup_homepage() {
     envsubst <"${templates}/config/settings.yaml" >"${target}/config/settings.yaml"
 }
 
-function setup_theengs(){
+function setup_theengs() {
     log "Setting up Theengs"
 
     local template='/templates/theengs/theengsgw.conf'
     local target='/mnt/theengs/theengsgw.conf'
 
     # template population
-    envsubst < "${template}" > "${target}"
+    envsubst <"${template}" >"${target}"
+}
+
+function setup_nodered() {
+    log "Setting up Node-RED"
+
+    local templates='/templates/nodered'
+    local target='/mnt/nodered/'
+
+    cp "${templates}/"* "${target}"
+}
+
+function setup_telegraf() {
+    log "Setting up Telegraf"
+
+    local template='/templates/telegraf/telegraf.conf'
+    local target='/mnt/telegraf/telegraf.conf'
+
+    # template population
+    envsubst <"${template}" >"${target}"
 }
 
 function main() {
@@ -86,6 +105,8 @@ function main() {
     setup_mosquitto
     setup_homepage
     setup_theengs
+    setup_nodered
+    setup_telegraf
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then

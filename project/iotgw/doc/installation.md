@@ -10,6 +10,15 @@ Inštalovať _Armbian_ môžete priamo odtiaľto:
 * verzia pre [počítače s architektúrou x86](https://www.armbian.com/uefi-x86/)
 
 
+### Problém s Bluetooth
+
+Ak nedochádza k preposielaniu informácií o BLE zariadeniach v okolí do MQTT, vyskúšajte aktualizovať firmvér minipočítača _Raspberry Pi_ príkazom:
+
+```bash
+$ rpi-update
+```
+
+
 ### Problém s obrazovkou
 
 Ak vám po nainštalovaní distribúcie _Armbian_ na kartu a spustení minipočítača Raspberry Pi zostane čierna obrazovka, je to zrejme prednastavenou konfiguráciou grafického výstupu. V tom prípade odporúčame pridať do konfigurácie v súbore `/boot/firmware/config.txt` pre všetkých voľbu `hdmi_safe=1` a prípadne zakomentovať voľbu `hdmi_drive`.

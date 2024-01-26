@@ -13,12 +13,13 @@ services:
       - homepage_config:/mnt/homepage/config/
       - homepage_images:/mnt/homepage/images/
       - theengs_config:/mnt/theengs/
+      - nodered_data:/mnt/nodered/
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     volumes:
-    - homepage_config:/app/config
-    - homepage_images:/app/public/images
+      - homepage_config:/app/config
+      - homepage_images:/app/public/images
     # - /var/run/docker.sock:/var/run/docker.sock
     restart: always
     ports:
@@ -39,27 +40,16 @@ services:
       - 1883:1883
 
   telegraf:
-    build:
-      context: telegraf
-    # image: telegraf:alpine
+    image: telegraf:alpine
     restart: always
     depends_on:
       - provisioning
       - mosquitto
-    # env_file:
-    #   - .env
     user: telegraf:991
-    #     volumes:
-    #       - ./configs/telegraf:/etc/telegraf:ro
-    #       - /var/run/docker.sock:/var/run/docker.sock
+    volumes:
+      - telegraf_config:/etc/telegraf:ro
     #       - /:/hostfs:ro
     #     environment:
-    #       - HOSTNAME=${IOTGW_HOSTNAME:-localhost}
-    #       - HOSTIP=${IOTGW_HOSTIP:-127.0.0.1}
-    #       - ROOM=${IOTGW_ROOM:-home}
-    #       - DEPARTMENT=${IOTGW_DEPARTMENT}
-    #       - MQTT_USERNAME=${MQTT_USERNAME}
-    #       - MQTT_PASSWORD=${MQTT_PASSWORD}
     #       - TZ=${TIMEZONE}
     #       - HOST_ETC=/hostfs/etc
     #       - HOST_PROC=/hostfs/proc
@@ -69,19 +59,15 @@ services:
     #       - HOST_MOUNT_PREFIX=/hostfs
     labels:
       io.resin.features.balena-socket: "1"
-  #       homepage.group: IoT Gateway Core
-  #       homepage.name: Telegraf
-  #       homepage.icon: telegraf.png
-  #       homepage.description: System Metrics
 
   theengs:
     image: theengs/gateway
-    # restart: always
+    restart: always
     depends_on:
       - provisioning
       - mosquitto
     volumes:
-    - theengs_config:/root/
+      - theengs_config:/root/
     environment:
       UDEV: 1
       DBUS_SYSTEM_BUS_ADDRESS: unix:path=/host/run/dbus/system_bus_socket
@@ -110,9 +96,7 @@ services:
   #       homepage.description: Automates Docker container base image updates.
 
   nodered:
-    build:
-      context: nodered
-    # image: nodered/node-red:latest-minimal
+    image: nodered/node-red:latest-minimal
     restart: always
     ports:
       - 1880:1880
@@ -122,15 +106,9 @@ services:
       - provisioning
       - mosquitto
     # environment:
-    #       # - HOSTIP=${IOTGW_HOSTIP:-127.0.0.1}
     # - TZ=${IOTGW_TIMEZONE}
     # labels:
     #   io.balena.features.supervisor-api: 1
-    # homepage.group: Services
-    # homepage.name: Node-RED
-    #   homepage.icon: node-red.png
-    #   homepage.href: "http://${IOTGW_HOSTIP}:1880"
-    #   homepage.description: Node-RED
 
   zigbee2mqtt:
     image: koenkk/zigbee2mqtt
