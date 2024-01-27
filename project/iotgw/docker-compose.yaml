@@ -14,6 +14,7 @@ services:
       - homepage_images:/mnt/homepage/images/
       - theengs_config:/mnt/theengs/
       - nodered_data:/mnt/nodered/
+      - telegraf_config:/mnt/telegraf/
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
@@ -45,9 +46,10 @@ services:
     depends_on:
       - provisioning
       - mosquitto
-    user: telegraf:991
+    user: telegraf:976  # 991
     volumes:
       - telegraf_config:/etc/telegraf:ro
+      - /var/run/docker.sock:/var/run/docker.sock
     #       - /:/hostfs:ro
     #     environment:
     #       - TZ=${TIMEZONE}
@@ -84,16 +86,6 @@ services:
     # environment:
     #   LOG_LEVEL: 0
 
-  #   watchtower:
-  #     image: containrrr/watchtower
-  #     volumes:
-  #       - /var/run/docker.sock:/var/run/docker.sock
-  #     restart: always
-  #     labels:
-  #       homepage.group: IoT Gateway Core
-  #       homepage.name: Watchtower
-  #       homepage.icon: /images/watchtower.png
-  #       homepage.description: Automates Docker container base image updates.
 
   nodered:
     image: nodered/node-red:latest-minimal
@@ -127,6 +119,18 @@ services:
     labels:
       io.balena.features.dbus: 1
 
+#   watchtower:
+  #     image: containrrr/watchtower
+  #     volumes:
+  #       - /var/run/docker.sock:/var/run/docker.sock
+  #     restart: always
+  #     labels:
+  #       homepage.group: IoT Gateway Core
+  #       homepage.name: Watchtower
+  #       homepage.icon: /images/watchtower.png
+  #       homepage.description: Automates Docker container base image updates.
+
+
 volumes:
   nodered_data:
   zigbee2mqtt_data:
@@ -134,3 +138,4 @@ volumes:
   homepage_config:
   homepage_images:
   theengs_config:
+  telegraf_config:

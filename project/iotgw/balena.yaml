@@ -1,4 +1,9 @@
 name: IoT Gateway
+description: IoT Gateway for Smart Department project.
 version: 2024.1.26
 type: sw.application
 
+data:
+  defaultDeviceType: "raspberrypi3-64"
+  supportedDeviceTypes:
+    - "raspberrypi3-64"
