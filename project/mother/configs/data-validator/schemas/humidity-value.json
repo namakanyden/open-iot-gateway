@@ -18,5 +18,5 @@
       "maximum": 100
     }
   },
-  "required": ["dt", "status", "battery"]
+  "required": ["dt", "humidity", "battery"]
 }
