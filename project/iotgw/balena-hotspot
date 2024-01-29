@@ -13,14 +13,14 @@ band=bg
 mac-address-randomization=0
 mode=ap
 # seen-bssids=
-ssid=chalupka-things
+ssid=${IOTGW_ROOM}-things
 
 [wifi-security]
 # group=
 key-mgmt=wpa-psk
 # pairwise=
 proto=rsn
-psk=welcome.to.the.chalupka
+psk=welcome.to.the.${IOTGW_ROOM}
 
 [ipv4]
 # dns-search=
