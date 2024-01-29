@@ -1,6 +1,6 @@
 name: IoT Gateway
 description: IoT Gateway for Smart Department project.
-version: 2024.1.26
+version: 2024.1.29
 type: sw.application
 
 data:

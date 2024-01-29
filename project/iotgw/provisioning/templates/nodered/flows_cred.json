@@ -1,0 +1,6 @@
+{
+  "1b63c60c0b8739db": {
+    "user": "${IOTGW_MQTT_USER}",
+    "password": "${IOTGW_MQTT_PASSWORD}"
+  }
+}

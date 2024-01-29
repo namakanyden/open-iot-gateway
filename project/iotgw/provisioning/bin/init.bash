@@ -13,6 +13,16 @@ function log() {
     printf "\e[0;35m%s\e[m: \e[0;33m%s\e[m\n" "${now}" "${message}"
 }
 
+function is_folder_empty() {
+    local folder="${1:?Folder name is missing.}"
+
+    if [[ -z $(ls -A "${folder}") ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 function setup_zigbee2mqtt() {
     log "Setting up Zigbee2MQTT"
 
@@ -87,7 +97,10 @@ function setup_nodered() {
     local templates='/templates/nodered'
     local target='/mnt/nodered/'
 
-    cp "${templates}/"* "${target}"
+    if [[ $(ls -A "${target}") == 'flows.json' ]]; then
+        cp "${templates}/"* "${target}"
+        chown 1000:1000 "${target}/"*
+    fi
 }
 
 function setup_telegraf() {
@@ -105,8 +118,8 @@ function main() {
     setup_mosquitto
     setup_homepage
     setup_theengs
-    setup_nodered
     setup_telegraf
+    setup_nodered
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then

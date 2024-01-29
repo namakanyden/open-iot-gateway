@@ -5,8 +5,8 @@ services:
     build:
       context: provisioning
     restart: no
-    env_file:
-      - .env
+    # env_file:
+      # - .env
     volumes:
       - zigbee2mqtt_data:/mnt/zigbee2mqtt/
       - mosquitto_config:/mnt/mosquitto/
@@ -15,6 +15,8 @@ services:
       - theengs_config:/mnt/theengs/
       - nodered_data:/mnt/nodered/
       - telegraf_config:/mnt/telegraf/
+    labels:
+      io.resin.features.balena-socket: "1"
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
@@ -46,13 +48,11 @@ services:
     depends_on:
       - provisioning
       - mosquitto
-    user: telegraf:976  # 991
+    user: telegraf:991
     volumes:
       - telegraf_config:/etc/telegraf:ro
-      - /var/run/docker.sock:/var/run/docker.sock
+      # - /var/run/docker.sock:/var/run/docker.sock
     #       - /:/hostfs:ro
-    #     environment:
-    #       - TZ=${TIMEZONE}
     #       - HOST_ETC=/hostfs/etc
     #       - HOST_PROC=/hostfs/proc
     #       - HOST_SYS=/hostfs/sys
@@ -97,10 +97,9 @@ services:
     depends_on:
       - provisioning
       - mosquitto
-    # environment:
-    # - TZ=${IOTGW_TIMEZONE}
     # labels:
     #   io.balena.features.supervisor-api: 1
+    entrypoint: /data/entrypoint.sh
 
   zigbee2mqtt:
     image: koenkk/zigbee2mqtt
@@ -115,7 +114,6 @@ services:
       - zigbee2mqtt_data:/app/data/
     environment:
       DBUS_SYSTEM_BUS_ADDRESS: unix:path=/host/run/dbus/system_bus_socket
-    #   - TZ=Europe/Bratislava
     labels:
       io.balena.features.dbus: 1
 

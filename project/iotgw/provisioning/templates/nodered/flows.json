@@ -1,9 +1,40 @@
 [
   {
-      "id": "f6f2187d.f17ca8",
-      "type": "tab",
-      "label": "Flow XXX",
-      "disabled": false,
-      "info": ""
+    "id": "f6f2187d.f17ca8",
+    "type": "tab",
+    "label": "Flow XXX",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "1b63c60c0b8739db",
+    "type": "mqtt-broker",
+    "name": "mosquitto",
+    "broker": "mosquitto",
+    "port": "1883",
+    "clientid": "nodered",
+    "autoConnect": true,
+    "usetls": false,
+    "protocolVersion": "4",
+    "keepalive": "60",
+    "cleansession": true,
+    "autoUnsubscribe": true,
+    "birthTopic": "",
+    "birthQos": "0",
+    "birthRetain": "false",
+    "birthPayload": "",
+    "birthMsg": {},
+    "closeTopic": "",
+    "closeQos": "0",
+    "closeRetain": "false",
+    "closePayload": "",
+    "closeMsg": {},
+    "willTopic": "",
+    "willQos": "0",
+    "willRetain": "false",
+    "willPayload": "",
+    "willMsg": {},
+    "userProps": "",
+    "sessionExpiry": ""
   }
 ]
