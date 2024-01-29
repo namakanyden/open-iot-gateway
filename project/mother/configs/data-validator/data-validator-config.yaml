@@ -10,15 +10,44 @@ Influxdb:
   org: "${INFLUXDB_ORG}"
 
 Validators:
-  - topics: ["kpi/+/temperature"]
+  - topics: ["kpi/+/temperature/#"]
     bucket: "Measurements"
-    tags: "department/room"
+    tagsPattern: "department/room"
+    measurement: "temperature"
     schema: "./config/schemas/temperature-value.json"
-  - topics: ["test/+/+/temperature"]
+    transform:
+      timestamp: "dt"
+      fields:
+        - name: "temperature"
+          path: "temperature"
+      tags:
+        - name: "battery"
+          path: "battery"
+
+  - topics: ["kpi/+/humidity/#"]
     bucket: "Measurements"
-    tags: "department/room/senzor"
-    schema: "./config/schemas/temperature-value.json"
-  - topics: ["kpi/+/things", "kpi/+/things"]
-    bucket: "Things"
-    tags: "department/room"
-    schema: "./config/schemas/thing-value.json"
+    tagsPattern: "department/room"
+    measurement: "humidity"
+    schema: "./config/schemas/humidity-value.json"
+    transform:
+      timestamp: "dt"
+      fields:
+        - name: "humidity"
+          path: "humidity"
+      tags:
+        - name: "battery"
+          path: "battery"
+
+  - topics: ["test/+/door/#"]
+    bucket: "Measurements"
+    measurement: "door"
+    tagsPattern: "department/room"
+    schema: "./config/schemas/door-value.json"
+    transform:
+      timestamp: "dt"
+      fields:
+        - name: "status"
+          path: "status"
+      tags:
+        - name: "battery"
+          path: "battery"

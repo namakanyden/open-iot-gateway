@@ -7,9 +7,9 @@
       "minimum": 1000000000,
       "maximum": 9999999999999999999
     },
-    "temperature": {
+    "humidity": {
       "type": "number",
-      "description": "The temperature in degrees Celsius"
+      "description": "The humidity level"
     },
     "battery": {
       "type": "number",

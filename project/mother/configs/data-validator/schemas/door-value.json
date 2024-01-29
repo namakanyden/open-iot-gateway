@@ -7,9 +7,9 @@
       "minimum": 1000000000,
       "maximum": 9999999999999999999
     },
-    "temperature": {
-      "type": "number",
-      "description": "The temperature in degrees Celsius"
+    "status": {
+      "enum": ["open", "closed"],
+      "description": "The status of the door"
     },
     "battery": {
       "type": "number",
