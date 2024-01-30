@@ -11,7 +11,7 @@ Influxdb:
 
 Validators:
   - topics: ["kpi/+/temperature/#"]
-    bucket: "Measurements"
+    bucket: "Things"
     tagsPattern: "department/room"
     measurement: "temperature"
     schema: "./config/schemas/temperature-value.json"
@@ -25,7 +25,7 @@ Validators:
           path: "battery"
 
   - topics: ["kpi/+/humidity/#"]
-    bucket: "Measurements"
+    bucket: "Things"
     tagsPattern: "department/room"
     measurement: "humidity"
     schema: "./config/schemas/humidity-value.json"
@@ -39,7 +39,7 @@ Validators:
           path: "battery"
 
   - topics: ["test/+/door/#"]
-    bucket: "Measurements"
+    bucket: "Things"
     measurement: "door"
     tagsPattern: "department/room"
     schema: "./config/schemas/door-value.json"
