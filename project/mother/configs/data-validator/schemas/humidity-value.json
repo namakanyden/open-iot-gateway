@@ -1,7 +1,7 @@
 {
   "type": "object",
   "properties": {
-    "dt": {
+    "ts": {
       "type": "number",
       "description": "The time of the event",
       "minimum": 1000000000,

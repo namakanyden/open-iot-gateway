@@ -34,7 +34,6 @@ Validators:
       fields:
         - name: "humidity"
           path: "humidity"
-      tags:
         - name: "battery"
           path: "battery"
 
