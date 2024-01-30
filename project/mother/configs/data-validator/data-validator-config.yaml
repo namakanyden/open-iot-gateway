@@ -16,7 +16,7 @@ Validators:
     measurement: "temperature"
     schema: "./config/schemas/temperature-value.json"
     transform:
-      timestamp: "dt"
+      timestamp: "ts"
       fields:
         - name: "temperature"
           path: "temperature"
@@ -30,7 +30,7 @@ Validators:
     measurement: "humidity"
     schema: "./config/schemas/humidity-value.json"
     transform:
-      timestamp: "dt"
+      timestamp: "ts"
       fields:
         - name: "humidity"
           path: "humidity"
@@ -43,7 +43,7 @@ Validators:
     tagsPattern: "department/room"
     schema: "./config/schemas/door-value.json"
     transform:
-      timestamp: "dt"
+      timestamp: "ts"
       fields:
         - name: "status"
           path: "status"
