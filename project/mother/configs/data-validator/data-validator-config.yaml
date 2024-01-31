@@ -62,6 +62,19 @@ Validators:
         - name: "battery"
           path: "battery"
 
+  - topics: ["kpi/+/sound/#"]
+    bucket: "Measurements"
+    measurement: "sound"
+    tagsPattern: "department/room/device_type/Device_id"
+    schema: "./config/schemas/sound-value.json"
+    transform:
+      timestamp: "ts"
+      fields:
+        - name: "sound"
+          path: "sound"
+        - name: "battery"
+          path: "battery"
+
   - topics: ["kpi/+/things/#"]
     bucket: "Things"
     measurement: "things"
