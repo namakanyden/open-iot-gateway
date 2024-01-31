@@ -6,7 +6,7 @@
       "description": "The time of the event"
     },
     "status": {
-      "enum": ["open", "closed"],
+      "type": "boolean",
       "description": "The status of the door"
     },
     "battery": {
