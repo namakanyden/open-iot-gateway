@@ -20,7 +20,6 @@ Validators:
       fields:
         - name: "temperature"
           path: "temperature"
-      tags:
         - name: "battery"
           path: "battery"
 
@@ -37,7 +36,7 @@ Validators:
         - name: "battery"
           path: "battery"
 
-  - topics: ["test/+/door/#"]
+  - topics: ["kpi/+/door/#"]
     bucket: "Things"
     measurement: "door"
     tagsPattern: "department/room"
@@ -47,6 +46,5 @@ Validators:
       fields:
         - name: "status"
           path: "status"
-      tags:
         - name: "battery"
           path: "battery"
