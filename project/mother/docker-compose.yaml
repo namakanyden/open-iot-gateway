@@ -130,7 +130,7 @@ services:
 
   telegraf:
     build:
-      context: ./config/telegraf
+      context: ./configs/telegraf
     restart: always
     volumes:
       - ./configs/telegraf:/etc/telegraf:ro
