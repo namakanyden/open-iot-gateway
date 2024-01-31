@@ -16,5 +16,5 @@
       "maximum": 100
     }
   },
-  "required": ["ts", "sound", "battery"]
+  "required": ["ts", "sound"]
 }

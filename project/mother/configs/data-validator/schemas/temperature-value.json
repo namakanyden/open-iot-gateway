@@ -16,5 +16,5 @@
       "maximum": 100
     }
   },
-  "required": ["ts", "temperature", "battery"]
+  "required": ["ts", "temperature"]
 }

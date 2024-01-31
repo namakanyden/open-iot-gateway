@@ -16,5 +16,5 @@
       "maximum": 100
     }
   },
-  "required": ["ts", "pressure", "battery"]
+  "required": ["ts", "pressure"]
 }

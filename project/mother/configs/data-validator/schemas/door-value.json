@@ -6,7 +6,9 @@
       "description": "The time of the event"
     },
     "status": {
-      "type": "boolean",
+      "type": "number",
+      "maximum": 1,
+      "minimum": 0,
       "description": "The status of the door"
     },
     "battery": {
@@ -16,5 +18,5 @@
       "maximum": 100
     }
   },
-  "required": ["ts", "status", "battery"]
+  "required": ["ts", "status"]
 }

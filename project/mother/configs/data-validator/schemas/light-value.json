@@ -5,9 +5,9 @@
       "type": "number",
       "description": "The time of the event"
     },
-    "humidity": {
+    "light": {
       "type": "number",
-      "description": "The humidity level"
+      "description": "The light in lumens"
     },
     "battery": {
       "type": "number",
@@ -16,5 +16,5 @@
       "maximum": 100
     }
   },
-  "required": ["ts", "humidity"]
+  "required": ["ts", "light"]
 }
