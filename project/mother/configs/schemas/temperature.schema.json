@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "title": "SmartDepartment: Humidity Measurement",
+  "description": "schema for temperature measurement",
+  "type": "object",
+  "properties": {
+    "ts": {
+      "description": "measurement timestamp",
+      "type": "integer"
+    },
+    "value": {
+      "type": "number",
+      "minimum": 0
+    },
+    "battery": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "unit": {
+      "type": "string",
+      "description": "Metric in Celsius, imperial in Fahrenheit and standard in Kelvins",
+      "enum": [
+        "imperial",
+        "metric",
+        "standard"
+      ]
+    }
+  },
+  "required": [
+    "ts",
+    "value",
+    "unit"
+  ]
+}

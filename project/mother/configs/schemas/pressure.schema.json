@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "title": "SmartDepartment: Presure Measurement",
+  "description": "schema for pressure measurement",
+  "type": "object",
+  "properties": {
+    "ts": {
+      "description": "measurement timestamp",
+      "type": "integer"
+    },
+    "value": {
+      "type": "number",
+      "minimum": 0
+    },
+    "battery": {
+      "type": "integer",
+      "description": "Battery level.",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "unit": {
+      "type": "string",
+      "description": "",
+      "enum": [
+        "hPa",
+        "atm",
+        "mmHg"
+      ]
+    }
+  },
+  "required": [
+    "ts",
+    "value",
+    "unit"
+  ]
+}

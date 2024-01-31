@@ -29,19 +29,19 @@ services:
       - homepage.href=http://${HOSTIP:-localhost}:8080/
       - homepage.description=Traefik dashboard
 
-  data-validator:
-    image: pjotr99/data-validator
-    volumes:
-      - ./configs/data-validator:/app/config
-    restart: always
-    environment:
-      - INFLUXDB_URL=${INFLUXDB_URL}
-      - INFLUXDB_TOKEN=${INFLUXDB_WRITE_TOKEN}
-      - INFLUXDB_ORG=${INFLUXDB_ORG}
-      - MOSQUITTO_HOST=${MQTT_HOST}
-      - MOSQUITTO_PORT=${MQTT_PORT}
-      - MOSQUITTO_USERNAME=${MQTT_USERNAME}
-      - MOSQUITTO_PASSWORD=${MQTT_PASSWORD}
+  # data-validator:
+  #   image: pjotr99/data-validator
+  #   volumes:
+  #     - ./configs/data-validator:/app/config
+  #   restart: always
+  #   environment:
+  #     - INFLUXDB_URL=${INFLUXDB_URL}
+  #     - INFLUXDB_TOKEN=${INFLUXDB_WRITE_TOKEN}
+  #     - INFLUXDB_ORG=${INFLUXDB_ORG}
+  #     - MOSQUITTO_HOST=${MQTT_HOST}
+  #     - MOSQUITTO_PORT=${MQTT_PORT}
+  #     - MOSQUITTO_USERNAME=${MQTT_USERNAME}
+  #     - MOSQUITTO_PASSWORD=${MQTT_PASSWORD}
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
@@ -129,10 +129,14 @@ services:
       homepage.description: Automates Docker container base image updates.
 
   telegraf:
-    image: telegraf
+    build:
+      context: telegraf
     restart: always
     volumes:
       - ./configs/telegraf:/etc/telegraf:ro
+      - ./configs/schemas:/app/schemas
+      - ./configs/bin:/app/bin
+      - ./configs/tmp/:/tmp/
     environment:
       MQTT_USERNAME: ${MQTT_USERNAME:-unset}
       MQTT_PASSWORD: ${MQTT_PASSWORD:-unset}
