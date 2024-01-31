@@ -134,9 +134,9 @@ services:
     restart: always
     volumes:
       - ./configs/telegraf:/etc/telegraf:ro
-      - ./configs/schemas:/app/schemas
-      - ./configs/bin:/app/bin
-      - ./configs/tmp/:/tmp/
+        ./configs/schemas:/app/schemas
+        ./configs/bin:/app/bin
+        ./configs/tmp/:/tmp/
     environment:
       MQTT_USERNAME: ${MQTT_USERNAME:-unset}
       MQTT_PASSWORD: ${MQTT_PASSWORD:-unset}
