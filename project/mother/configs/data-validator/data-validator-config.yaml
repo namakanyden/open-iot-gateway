@@ -11,8 +11,8 @@ Influxdb:
 
 Validators:
   - topics: ["kpi/+/temperature/#"]
-    bucket: "Things"
-    tagsPattern: "department/room"
+    bucket: "Measurements"
+    tagsPattern: "department/room/device_type/Device_id"
     measurement: "temperature"
     schema: "./config/schemas/temperature-value.json"
     transform:
@@ -24,8 +24,8 @@ Validators:
           path: "battery"
 
   - topics: ["kpi/+/humidity/#"]
-    bucket: "Things"
-    tagsPattern: "department/room"
+    bucket: "Measurements"
+    tagsPattern: "department/room/device_type/Device_id"
     measurement: "humidity"
     schema: "./config/schemas/humidity-value.json"
     transform:
@@ -37,14 +37,40 @@ Validators:
           path: "battery"
 
   - topics: ["kpi/+/door/#"]
-    bucket: "Things"
+    bucket: "Measurements"
     measurement: "door"
-    tagsPattern: "department/room"
+    tagsPattern: "department/room/device_type/Device_id"
     schema: "./config/schemas/door-value.json"
     transform:
       timestamp: "ts"
       fields:
         - name: "status"
           path: "status"
+        - name: "battery"
+          path: "battery"
+
+  - topics: ["kpi/+/pressure/#"]
+    bucket: "Measurements"
+    measurement: "pressure"
+    tagsPattern: "department/room/device_type/Device_id"
+    schema: "./config/schemas/pressure-value.json"
+    transform:
+      timestamp: "ts"
+      fields:
+        - name: "pressure"
+          path: "pressure"
+        - name: "battery"
+          path: "battery"
+
+  - topics: ["kpi/+/things/#"]
+    bucket: "Things"
+    measurement: "things"
+    tagsPattern: "department/room/device_type/Device_id"
+    schema: "./config/schemas/things-value.json"
+    transform:
+      timestamp: "ts"
+      fields:
+        - name: "value"
+          path: "value"
         - name: "battery"
           path: "battery"

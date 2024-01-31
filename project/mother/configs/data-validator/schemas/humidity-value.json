@@ -3,9 +3,7 @@
   "properties": {
     "ts": {
       "type": "number",
-      "description": "The time of the event",
-      "minimum": 1000000000,
-      "maximum": 9999999999999999999
+      "description": "The time of the event"
     },
     "humidity": {
       "type": "number",

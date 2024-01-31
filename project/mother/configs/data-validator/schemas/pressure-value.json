@@ -5,9 +5,9 @@
       "type": "number",
       "description": "The time of the event"
     },
-    "status": {
-      "enum": ["open", "closed"],
-      "description": "The status of the door"
+    "pressure": {
+      "type": "number",
+      "description": "The pressure in hPa"
     },
     "battery": {
       "type": "number",
@@ -16,5 +16,5 @@
       "maximum": 100
     }
   },
-  "required": ["ts", "status", "battery"]
+  "required": ["ts", "pressure", "battery"]
 }
