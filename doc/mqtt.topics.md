@@ -137,7 +137,7 @@ JsonSchema pre teplotu:
   },
   "required": ["ts", "temperature"]
 }
-
+```
 ### Vlhkosť
 Príklad správy vlhkosti:
 ```json
