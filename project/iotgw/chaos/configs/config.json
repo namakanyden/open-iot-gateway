@@ -1,0 +1,5 @@
+{
+    "broker_address": "127.0.0.1",
+    "broker_port": 1883,
+    "broker_keep_alive": 60
+}
