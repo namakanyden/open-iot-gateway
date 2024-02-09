@@ -3,7 +3,7 @@
 # https://gethomepage.dev/en/configs/settings
 
 # page title
-title: IoT Gateway Homepage
+title: "${IOTGW_DEPARTMENT}/${IOTGW_ROOM} IoT Gateway"
 
 # ui language
 language: en

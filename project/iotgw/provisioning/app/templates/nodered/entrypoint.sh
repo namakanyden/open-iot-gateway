@@ -10,7 +10,7 @@ function stop() {
 # install packages first
 (
     cd /data
-    npm install --unsafe-perm --no-update-notifier --no-fund --only=production
+    npm install --unsafe-perm --no-update-notifier --no-fund --omit=dev
 )
 
 # run nodered
