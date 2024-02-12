@@ -1,20 +1,47 @@
+import json
+
+from fastapi import FastAPI
+from fastapi_mqtt import FastMQTT, MQTTConfig
+import uvicorn
+
+
 # TODO: Load logger
 
-# TODO: Load env values
+def load_config(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            config = json.load(file)
+        return config
+    except FileNotFoundError:
+        print("Error: Config not found")
+    except json.JSONDecodeError as e:
+        print("Error: Decoding")
+    except Exception as e:
+        print("Error: Config")
 
-# TODO: Load config values
 
 # TODO: Check required binaries
 
 # TODO: Check required scripts
 
-# Load core
-from core import core
+config = load_config("./config.json")
 
-# TODO: on_exit signal
+if __name__ == "__main__":
+    uvicorn.run("main:rest", host=config["uvicorn_host"], port=config["uvicorn_port"], log_level="info")
+
+mqtt_config = MQTTConfig(
+    host=config["mqtt_host"],
+    port=config["mqtt_port"],
+    keepalive=config["mqtt_keep_alive"],
+    username=config["mqtt_username"],
+    password=config["mqtt_password"],
+)
+
+rest = FastAPI()
+mqtt = FastMQTT(config=mqtt_config)
+mqtt.init_app(rest)
 
 # Load services
 from services import *
 
-# Start MQTT client loop
-core.mqtt_client.loop_forever()
+# TODO: on_exit signal
