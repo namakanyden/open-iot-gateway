@@ -130,6 +130,7 @@ services:
       - 'INITSYSTEM=on'
     labels:
       io.balena.features.dbus: '1'
+      
 
 
 #   watchtower:
