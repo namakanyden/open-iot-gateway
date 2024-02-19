@@ -38,11 +38,14 @@ class DeviceMonitor:
         monitor.filter_by(subsystem=self.subsystem_to_monitor)
 
         for device in iter(monitor.poll, None):
-            if device.action == 'add':
-                for func in self.__connect_callbacks:
-                    func()
+            print(device.action)
+            self.call_decorated(device.action)
 
-            elif device.action == 'remove':
-                for func in self.__disconnect_callbacks:
-                    func()
+    def call_decorated(self, action):
+        if action == "remove" or action == "unbind":
+            for func in self.__disconnect_callbacks:
+                func()
+        elif action == "add" or action == "bind":
+            for func in self.__connect_callbacks:
+                func()
 
