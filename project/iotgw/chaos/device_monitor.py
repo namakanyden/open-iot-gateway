@@ -39,13 +39,13 @@ class DeviceMonitor:
 
         for device in iter(monitor.poll, None):
             print(device.action)
-            self.call_decorated(device.action)
+            self.call_decorated(device)
 
-    def call_decorated(self, action):
-        if action == "remove" or action == "unbind":
+    def call_decorated(self, device):
+        if device.action == "remove" or device.action == "unbind":
             for func in self.__disconnect_callbacks:
-                func()
-        elif action == "add" or action == "bind":
+                func(device)
+        elif device.action == "add" or device.action == "bind":
             for func in self.__connect_callbacks:
-                func()
+                func(device)
 
