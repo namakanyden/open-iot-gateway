@@ -1,11 +1,12 @@
 import json
-
+from device_monitor import DeviceMonitor
 from fastapi import FastAPI
 from fastapi_mqtt import FastMQTT, MQTTConfig
 import uvicorn
 
 
 # TODO: Load logger
+# FAST API LOGGER
 
 def load_config(file_path):
     try:
@@ -39,6 +40,8 @@ mqtt_config = MQTTConfig(
 
 rest = FastAPI()
 mqtt = FastMQTT(config=mqtt_config)
+usb = DeviceMonitor("usb")
+
 mqtt.init_app(rest)
 
 # Load services
