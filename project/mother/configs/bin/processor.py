@@ -37,18 +37,19 @@ def main():
 
     for line in sys.stdin:
         try:
+            # get data from the line
             data = parse_line(line)
             fields = data["fields"]
             topic = data["tags"]["topic"]
+            measurement = data["measurement"]
 
+            # parse the topic
             department, room, device_type, device_id = topic.split("/")
             device_id = device_id.replace(" ", "\ ")
-            measurement = 'measurements'
             if device_type == 'thing':
                 measurement = 'things'
-            if device_type == 'metrics':
-                measurement = 'metrics'
 
+            # validate the data
             validate_data(schemas, device_type, fields)
             ts = fields.pop("ts")
 

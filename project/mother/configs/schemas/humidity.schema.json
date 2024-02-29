@@ -17,10 +17,12 @@
       "type": "integer",
       "minimum": 0,
       "maximum": 100
+    },
+    "unit": {
+      "type": "string",
+      "description": "Measurement unit, relative humidity (Rh) or absolute humidity (g/kg)",
+      "enum": ["Rh", "g/kg"]
     }
   },
-  "required": [
-    "ts",
-    "humidity"
-  ]
+  "required": ["ts", "humidity"]
 }

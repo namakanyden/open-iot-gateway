@@ -20,17 +20,9 @@
     },
     "unit": {
       "type": "string",
-      "description": "",
-      "enum": [
-        "hPa",
-        "atm",
-        "mmHg"
-      ]
+      "description": "Measurement unit. hPa: hectopascal, atm: atmosphere, mmHg: millimeter of mercury.",
+      "enum": ["hPa", "atm", "mmHg"]
     }
   },
-  "required": [
-    "ts",
-    "value",
-    "unit"
-  ]
+  "required": ["ts", "value", "unit"]
 }

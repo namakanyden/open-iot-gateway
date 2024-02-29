@@ -19,17 +19,9 @@
     },
     "unit": {
       "type": "string",
-      "description": "Metric in Celsius, imperial in Fahrenheit and standard in Kelvins",
-      "enum": [
-        "imperial",
-        "metric",
-        "standard"
-      ]
+      "description": "Metric in Celsius, Fahrenheit and Kelvins",
+      "enum": ["celsius", "fahrenheit", "kelvins"]
     }
   },
-  "required": [
-    "ts",
-    "value",
-    "unit"
-  ]
+  "required": ["ts", "value", "unit"]
 }
