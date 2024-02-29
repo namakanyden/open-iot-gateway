@@ -117,17 +117,6 @@ services:
       homepage.icon: influxdb.png
       homepage.href: http://${HOSTIP:-localhost}:8086
 
-  watchtower:
-    image: containrrr/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
-    labels:
-      homepage.group: Services
-      homepage.name: Watchtower
-      homepage.icon: https://containrrr.dev/watchtower/images/logo-450px.png
-      homepage.description: Automates Docker container base image updates.
-
   telegraf:
     image: telegraf
     restart: always
@@ -186,7 +175,6 @@ services:
 volumes:
   grafana:
   influxdb:
-  portainer_data:
 
 networks:
   # all containers will be by default connected to network iotgw
