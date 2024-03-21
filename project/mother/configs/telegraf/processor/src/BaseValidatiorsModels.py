@@ -34,10 +34,10 @@ class Battery(BaseModel):
     @field_validator('battery')
     @classmethod
     def battery_level_check(cls, value: int, info: ValidationInfo) -> int:
-        if 0 <= value <= 100:
+        if 0 < value <= 100:
             return value
-
-        raise ValueError("battery level must be in range <0, 100>")
+        else:
+            raise ValueError("battery level must be in range <0, 100>")
     
     def battery_get_line_protocol(self) -> str:
         return f"battery={self.battery}"
