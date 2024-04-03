@@ -1,4 +1,4 @@
-from main import mqtt
+from __main__ import mqtt
 import asyncio
 import logging
 
@@ -18,7 +18,7 @@ async def disable_eth(client, topic, payload, qos, properties):
     print("Done!")
 
 
-@mqtt.subscribe("my/mqtt/topic/#")
+@mqtt.subscribe("my/mqtt/topic/y")
 async def disable_wn(client, topic, payload, qos, properties):
     print("Received message to specific topic: ", topic, payload.decode(), qos, properties)
     await asyncio.sleep(5)

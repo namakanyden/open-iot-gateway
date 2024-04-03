@@ -1,4 +1,4 @@
-from main import usb
+from __main__ import usb
 
 
 @usb.connect
@@ -9,6 +9,3 @@ def print_connect_message(device):
 @usb.disconnect
 def print_disconnect_message(device):
     print("USB Device disconnected...")
-
-
-
