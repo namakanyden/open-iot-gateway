@@ -1,5 +1,7 @@
 project/core/configs/homepage/logs/
 .env
+*.pyc
+.coverage
 mosquitto.conf
 passwd
 
