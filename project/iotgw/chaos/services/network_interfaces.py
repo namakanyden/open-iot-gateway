@@ -25,6 +25,17 @@ def get_sleep_time(payload):
         return 0
 
 
+async def connecting_to_balena():
+    process = await asyncio.create_subprocess_shell(
+        f"ping -c 1 balena-cloud.com",
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE
+    )
+    await process.communicate()
+    await asyncio.sleep(1)
+    return process.returncode == 0
+
+
 async def disable_network_interface(network_interface, sleep_time):
     if sleep_time <= 0:
         logger.warning(f"Invalid time, skipping request.")
@@ -39,17 +50,14 @@ async def disable_network_interface(network_interface, sleep_time):
     else:
         await asyncio.sleep(sleep_time)
         sh.ifconfig(network_interface, "up")
-        await asyncio.sleep(10)
+        await connecting_to_balena()
         logger.info(f"Network interface {network_interface} is enabled again.")
 
 
 @mqtt.subscribe("gateway/chaos/internet/set")
 async def disable_internet(client, topic, payload, qos, properties):
-    await asyncio.sleep(5)
+    await asyncio.sleep(1)
     logger.error("Not implemented.")
-    await asyncio.sleep(10)
-    logger.debug("Hello")
-
 
 @mqtt.subscribe("gateway/chaos/ethernet/set")
 async def disable_eth0(client, topic, payload, qos, properties):
