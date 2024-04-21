@@ -8,7 +8,22 @@ import uvicorn
 from core.device_monitor import DeviceMonitor
 
 
-def create_usb() -> DeviceMonitor:
+def config_logger(logger_name, config):
+    # Configure the logger
+    logger = logging.getLogger(logger_name)
+    logger.setLevel(logging.DEBUG)
+
+    # Create a handler and set its formatter
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter(config.logger_formatter)
+    handler.setFormatter(formatter)
+
+    # Add the handler to the logger
+    logger.addHandler(handler)
+
+
+def create_usb(config: Settings) -> DeviceMonitor:
+    config_logger("usb", config)
     return DeviceMonitor("usb")
 
 
@@ -30,16 +45,5 @@ def create_mqtt(config: Settings) -> FastMQTT:
         password=config.mqtt_password
     )
 
-    # Configure the logger
-    mqtt_logger = logging.getLogger("mqtt")
-    mqtt_logger.setLevel(logging.DEBUG)  # Set the log level to DEBUG
-
-    # Create a handler and set its formatter
-    handler = logging.StreamHandler()
-    formatter = logging.Formatter(config.logger_formatter)
-    handler.setFormatter(formatter)
-
-    # Add the handler to the logger
-    mqtt_logger.addHandler(handler)
-
-    return FastMQTT(config=mqtt_config, mqtt_logger=mqtt_logger)
+    config_logger("mqtt", config)
+    return FastMQTT(config=mqtt_config, mqtt_logger=logging.getLogger("mqtt"))

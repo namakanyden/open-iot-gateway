@@ -6,7 +6,7 @@ ENV DBUS_SYSTEM_BUS_ADDRESS unix:path=/host/run/dbus/system_bus_socket
 ENV UDEV=on
 
 RUN apt-get update &&\
-    apt-get install -y build-essential libudev-dev udev
+    apt-get install -y build-essential libudev-dev udev net-tools
 
 WORKDIR /chaos
 
@@ -14,4 +14,4 @@ COPY . /chaos
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD service udev restart && python main.py
+CMD service udev restart && python __main__.py

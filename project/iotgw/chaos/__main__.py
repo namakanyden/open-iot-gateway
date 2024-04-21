@@ -7,9 +7,11 @@ config = Settings()
 
 http = create_http(config)
 mqtt = create_mqtt(config)
-usb = create_usb()
+usb = create_usb(config)
 
 mqtt.init_app(http)
+
+logging.getLogger("mqtt").debug(config.model_dump())
 
 # Load services
 from services import *

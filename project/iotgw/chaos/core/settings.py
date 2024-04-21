@@ -18,9 +18,10 @@ class Settings(BaseSettings):
     uvicorn_host: str = "localhost"
     uvicorn_port: int = 5000
 
-    logger_formatter: str = Field('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+    log_level: str = "DEBUG"
 
+    logger_formatter: str = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
 
-    def __init__(self):
-        logging.getLogger("mqtt").debug(self.model_dump())
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
