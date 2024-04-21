@@ -11,7 +11,7 @@ logger = logging.getLogger("mqtt")
 
 def get_sleep_time(payload):
     try:
-        return int(payload.decode()["t"])
+        return int(dict(payload.decode())["t"])
     except KeyError:
         logger.warning("Parameter t in payload missing.")
         return 0
