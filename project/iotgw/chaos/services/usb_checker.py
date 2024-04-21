@@ -7,8 +7,8 @@ logger = logging.getLogger("usb")
 
 
 def device_info(device):
-    for attr in list(vars(device.context)):
-        logger.debug(attr)
+    for key, value in device.items():
+        print(f"{key}: {value}")
 
 
 @usb.connect
