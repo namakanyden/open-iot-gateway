@@ -7,7 +7,7 @@ logger = logging.getLogger("usb")
 
 
 def device_info(device):
-    for attr in list(vars(device)):
+    for attr in list(vars(device.context)):
         logger.debug(attr)
 
 
