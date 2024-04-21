@@ -1,27 +1,59 @@
 #!/usr/bin/env python3
 
-from diagrams import Diagram, Cluster
-from diagrams.custom import Custom
-from diagrams.onprem.logging import Loki
-from diagrams.onprem.aggregator import Fluentd
-from diagrams.onprem.monitoring import Grafana
-from diagrams.onprem.database import InfluxDB
+from diagrams import Diagram, Cluster, Edge
+from diagrams.aws.iot import IotSensor, IotDeviceGateway, IotActuator
+from diagrams.aws.general import MobileClient
+from diagrams.aws.iot import IotHttp
 
-with Diagram('Smart Department (architecture)', show=True, direction='TB', filename='architecture'):
-    with Cluster('IoT Gateway'):
-        fluentd = Fluentd('logging')
-        telegraf = Custom('metrics', 'telegraf.png')
-        theengs = Custom('ble2mqtt', 'theengs.png')
-        chrony = Custom('ntp', 'chrony.png')
-        mosquitto = Custom('local mqtt broker', 'mosquitto.png')
+room_attr={
+    # "fontsize": "45",
+    "bgcolor": "transparent",
+    "fontname": "bold",
+    # "width": "10"
+}
 
-    with Cluster('Mother'):
-        loki = Loki()
-        grafana = Grafana('dashboard')
-        influxdb = InfluxDB('database')
-        mosquitto2 = Custom('mqtt broker', 'mosquitto.png')
+cloud_attr={
+    # "fontsize": "45",
+    "bgcolor": "transparent",
+    "fontname": "bold",
+    # "width": "10",
+}
 
-    fluentd >> loki
-    grafana << [ loki, influxdb ]
-    [ theengs, telegraf ] >> mosquitto
-    mosquitto >> mosquitto2
+with Diagram('Smart Department (architecture)', show=False, direction='BT', filename='architecture'):
+    with Cluster('Room 1', graph_attr=room_attr):
+        # 1st layer
+        sensor1 = IotSensor('Sensor')
+        actuator1 = IotActuator('Actuator')
+        sensor2 = IotSensor('Sensor')
+        actuator2 = IotActuator('Actuator')
+
+        # 2nd layer
+        iotgw = IotDeviceGateway('IoT Gateway')
+
+    with Cluster('Room 2', graph_attr=room_attr):
+        # 1st layer
+        sensor3 = IotSensor('Sensor')
+        actuator3 = IotActuator('Actuator')
+        sensor4 = IotSensor('Sensor')
+        actuator4 = IotActuator('Actuator')
+
+        # 2nd layer
+        iotgw2 = IotDeviceGateway('IoT Gateway')
+
+    # 3rd layer
+    with Cluster('Cloud', graph_attr=cloud_attr):
+        mother = IotDeviceGateway('Mother')
+        service1 = IotHttp('Service')
+        service2 = IotHttp('Service')
+
+    # clients
+    phone1 = MobileClient('Client')
+    phone2 = MobileClient('Client')
+
+    # render
+    [ sensor1, actuator1, sensor2, actuator2 ] >> Edge() << iotgw >> Edge() << mother
+    [ sensor3, actuator3, sensor4, actuator4 ] >> Edge() << iotgw2 >> Edge() << mother
+
+    mother >> Edge() << [ service1, service2 ]
+    service1 >> Edge() << phone1
+    service2 >> Edge() << phone2

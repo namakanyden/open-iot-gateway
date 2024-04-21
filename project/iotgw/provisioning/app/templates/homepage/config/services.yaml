@@ -1,0 +1,48 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/en/configs/services
+
+- Services:
+    - Node-RED:
+        href: http://${IOTGW_HOSTIP}:1880/
+        icon: node-red.png
+        description: Node-RED
+        ping: nodered
+        # server: iotgw-docker
+        # container: nodered
+
+    - Zigbee2MQTT:
+        href: http://${IOTGW_HOSTIP}:8080/
+        icon: zigbee2mqtt.png
+        description: Zigbee to MQTT bridge
+        ping: zigbee2mqtt
+
+- Applications:
+    - Gateway Dashboard:
+        href: http://${IOTGW_HOSTIP}:1880/ui/
+        icon: node-red.png
+        description: IoT Gateway Dashboard
+        ping: nodered
+        # server: iotgw-docker
+        # container: nodered
+
+- IoT Gateway Core:
+  - Telegraf:
+      description: System Metrics
+      icon: telegraf.png
+      ping: telegraf
+
+  - Chrony:
+      description: NTP Server
+      icon: /images/chrony.png
+      ping: chrony
+
+  - Mosquitto:
+      description: Local MQTT Broker
+      icon: mqtt.png
+      ping: mosquitto
+
+  - Theengs Gateway:
+      icon: /images/theengs.png
+      description: BLE2MQTT Gateway
+      ping: theengs

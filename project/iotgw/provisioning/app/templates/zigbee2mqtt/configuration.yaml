@@ -1,0 +1,20 @@
+homeassistant: false
+permit_join: false
+mqtt:
+  base_topic: gateway/zigbee
+  server: ${IOTGW_MQTT_BROKER}
+  user: ${IOTGW_MQTT_USER}
+  password: ${IOTGW_MQTT_PASSWORD}
+  client_id: zigbee2mqtt
+frontend: true
+serial:
+  adapter: ${IOTGW_ZIGBEE_ADAPTER}
+  port: ${IOTGW_ZIGBEE_ADAPTER_PORT}
+advanced:
+  homeassistant_legacy_entity_attributes: false
+  legacy_api: false
+  legacy_availability_payload: false
+  pan_id: ${IOTGW_ZIGBEE_PAN_ID}
+  channel: ${IOTGW_ZIGBEE_CHANNEL}
+device_options:
+  legacy: false

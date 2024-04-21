@@ -23,5 +23,5 @@
 
 - greeting:
     text_size: 4xl
-    text: "{{ ROOM }} IoT Gateway"
+    text: "${IOTGW_DEPARTMENT}/${IOTGW_ROOM} IoT Gateway"
 
