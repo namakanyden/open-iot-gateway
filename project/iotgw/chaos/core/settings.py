@@ -37,6 +37,10 @@ class Settings(BaseSettings):
         # Add the handler to the logger
         logger.addHandler(handler)
 
-        for key, value in dict(self.model_dump()):
-            logger.info(f"{key}: {value}")
+        dump = dict(self.model_dump())
+
+        for key in dump:
+            if key == "mqtt_password":
+                logger.info(f"{key}: *****")
+            logger.info(f"{key}: {dump[key]}")
 
