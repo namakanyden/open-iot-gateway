@@ -1,4 +1,5 @@
 import logging
+import json
 
 from __main__ import usb
 from __main__ import mqtt
@@ -6,20 +7,20 @@ from __main__ import mqtt
 logger = logging.getLogger("usb")
 
 
-def device_info(device):
+def log_device_info(device):
     for key, value in device.items():
-        print(f"{key}: {value}")
+        logging.debug(f"{key}: {value}")
 
 
 @usb.connect
 def print_connect_message(device):
     logger.critical("USB Device connected...")
-    logger.debug(device_info(device))
-    mqtt.publish("gateway/chaos/device-manager", f"connected {device.device_path}")
+    log_device_info(device)
+    mqtt.publish("gateway/chaos/device-manager", f"{json.dumps(device.device_path)}")
 
 
 @usb.disconnect
 def print_disconnect_message(device):
     logger.critical("USB Device disconnected...")
-    logger.debug(device_info(device))
-    mqtt.publish("gateway/chaos/device-manager", f"disconnected {device.device_path}")
+    log_device_info(device)
+    mqtt.publish("gateway/chaos/device-manager",  f"{json.dumps(device.device_path)}")

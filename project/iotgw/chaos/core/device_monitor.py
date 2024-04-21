@@ -43,6 +43,8 @@ class DeviceMonitor:
             os._exit(1)
 
     def call_decorated(self, device):
+        logging.debug(device.attributes["DEVTYPE"])
+
         if device.action == "remove":
             for func in self.__disconnect_callbacks:
                 func(device)
