@@ -12,6 +12,7 @@ def config_logger(logger_name, config):
     # Configure the logger
     logger = logging.getLogger(logger_name)
     logger.setLevel(logging.getLevelName(config.log_level))
+    logger.propagate = False
 
     # Create a handler and set its formatter
     handler = logging.StreamHandler()

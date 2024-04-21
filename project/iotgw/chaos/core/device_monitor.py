@@ -43,6 +43,7 @@ class DeviceMonitor:
             os._exit(1)
 
     def call_decorated(self, device):
+        self.logger.debug(f"{device.action} : {device.get('DEVTYPE')} : {device.device_path}.")
 
         if device.get('DEVTYPE') == "usb_device":
             if device.action == "remove":

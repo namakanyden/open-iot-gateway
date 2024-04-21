@@ -28,6 +28,7 @@ class Settings(BaseSettings):
         # Configure the logger
         logger = logging.getLogger("chaos")
         logger.setLevel(logging.getLevelName(self.log_level))
+        logger.propagate = False
 
         # Create a handler and set its formatter
         handler = logging.StreamHandler()
