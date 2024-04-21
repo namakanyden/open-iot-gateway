@@ -33,7 +33,8 @@ class Settings(BaseSettings):
         for key in dump:
             if key == "mqtt_password":
                 logger.info(f"{key}: *****")
-            logger.info(f"{key}: {dump[key]}")
+            else:
+                logger.info(f"{key}: {dump[key]}")
 
     def config_logger(self, logger_name):
         # Configure the logger

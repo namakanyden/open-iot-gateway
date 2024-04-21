@@ -2,7 +2,6 @@ import logging
 
 import pyudev
 import threading
-import signal
 import os
 
 
