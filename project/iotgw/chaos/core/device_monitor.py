@@ -43,11 +43,12 @@ class DeviceMonitor:
             os._exit(1)
 
     def call_decorated(self, device):
-        logging.debug(device.attributes["DEVTYPE"])
+        logging.debug(f"Found {device.action()} : {device.get('DEVTYPE')} : {device.device_path}.")
 
-        if device.action == "remove":
-            for func in self.__disconnect_callbacks:
-                func(device)
-        elif device.action == "add":
-            for func in self.__connect_callbacks:
-                func(device)
+        if device.get('DEVTYPE') == "usb_device":
+            if device.action == "remove":
+                for func in self.__disconnect_callbacks:
+                    func(device)
+            elif device.action == "add":
+                for func in self.__connect_callbacks:
+                    func(device)
