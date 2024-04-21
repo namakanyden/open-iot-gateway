@@ -14,19 +14,26 @@ def get_sleep_time(payload):
         return int(payload.decode()["t"])
     except KeyError:
         logger.error("Parameter t in payload missing.")
+        return 0
     except ValueError:
         logger.error("Parameter t expects integer value.")
+        return 0
     except Exception as err:
         logger.error(f"Exception: {err}")
+        return 0
 
 
 async def disable_network_interface(network_interface, sleep_time):
+    if sleep_time <= 0:
+        logger.info(f"Invalid time, skipping request.")
+        return
+
     logger.info(f"Disabling network interface {network_interface}.")
 
     try:
         sh.ifconfig(network_interface, "down")
     except sh.ErrorReturnCode_255:
-        logger.error(f"Error: Network interface '{network_interface}' does not exist.")
+        logger.error(f"Network interface '{network_interface}' does not exist.")
     else:
         await asyncio.sleep(sleep_time)
         sh.ifconfig(network_interface, "up")
