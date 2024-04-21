@@ -37,6 +37,6 @@ class Settings(BaseSettings):
         # Add the handler to the logger
         logger.addHandler(handler)
 
-        for key, value in self.model_dump():
+        for key, value in dict(self.model_dump()):
             logger.info(f"{key}: {value}")
-            
+
