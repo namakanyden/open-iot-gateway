@@ -13,13 +13,13 @@ def get_sleep_time(payload):
     try:
         return int(payload.decode()["t"])
     except KeyError:
-        logger.error("Parameter t in payload missing.")
+        logger.warning("Parameter t in payload missing.")
         return 0
     except ValueError:
-        logger.error("Parameter t expects integer value.")
+        logger.warning("Parameter t expects integer value.")
         return 0
     except Exception as err:
-        logger.error(f"Exception: {err}")
+        logger.warning(f"Exception: {err}")
         return 0
 
 
