@@ -4,6 +4,7 @@ from core import Settings
 
 import logging
 import uvicorn
+import os
 
 from core.device_monitor import DeviceMonitor
 
@@ -32,5 +33,12 @@ def create_mqtt(config: Settings) -> FastMQTT:
     )
 
     config.config_logger("mqtt")
+    logger = logging.getLogger("mqtt")
 
-    return FastMQTT(config=mqtt_config, mqtt_logger=logging.getLogger("mqtt"))
+    try:
+        mqtt = FastMQTT(config=mqtt_config, mqtt_logger=logging.getLogger("mqtt"))
+    except Exception:
+        logger.critical("Unable to connect to broker.")
+        os._exit(1)
+
+    return mqtt

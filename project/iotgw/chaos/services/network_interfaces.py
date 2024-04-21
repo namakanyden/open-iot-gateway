@@ -39,12 +39,16 @@ async def disable_network_interface(network_interface, sleep_time):
     else:
         await asyncio.sleep(sleep_time)
         sh.ifconfig(network_interface, "up")
+        await asyncio.sleep(10)
         logger.info(f"Network interface {network_interface} is enabled again.")
 
 
 @mqtt.subscribe("gateway/chaos/internet/set")
-def disable_internet(client, topic, payload, qos, properties):
+async def disable_internet(client, topic, payload, qos, properties):
+    await asyncio.sleep(5)
     logger.error("Not implemented.")
+    await asyncio.sleep(10)
+    logger.debug("Hello")
 
 
 @mqtt.subscribe("gateway/chaos/ethernet/set")
