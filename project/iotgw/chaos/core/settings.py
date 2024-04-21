@@ -25,9 +25,22 @@ class Settings(BaseSettings):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        # Configure the logger
+        self.config_logger("chaos")
         logger = logging.getLogger("chaos")
+
+        dump = dict(self.model_dump())
+
+        for key in dump:
+            if key == "mqtt_password":
+                logger.info(f"{key}: *****")
+            logger.info(f"{key}: {dump[key]}")
+
+    def config_logger(self, logger_name):
+        # Configure the logger
+        logger = logging.getLogger(logger_name)
         logger.setLevel(logging.getLevelName(self.log_level))
+
+        # Dont send to root logger
         logger.propagate = False
 
         # Create a handler and set its formatter
@@ -37,11 +50,3 @@ class Settings(BaseSettings):
 
         # Add the handler to the logger
         logger.addHandler(handler)
-
-        dump = dict(self.model_dump())
-
-        for key in dump:
-            if key == "mqtt_password":
-                logger.info(f"{key}: *****")
-            logger.info(f"{key}: {dump[key]}")
-
