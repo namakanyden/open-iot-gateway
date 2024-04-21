@@ -33,7 +33,6 @@ class DeviceMonitor:
             monitor.filter_by(subsystem=self.subsystem_to_monitor)
 
             for device in iter(monitor.poll, None):
-
                 self.call_decorated(device)
         except ImportError:
             self.logger.critical("udev is not installed or supported on this device.")
