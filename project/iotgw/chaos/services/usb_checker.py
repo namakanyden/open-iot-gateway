@@ -16,11 +16,11 @@ def log_device_info(device):
 def print_connect_message(device):
     logger.critical("USB Device connected...")
     log_device_info(device)
-    mqtt.publish("gateway/chaos/device-manager", f"{json.dumps(device)}")
+    mqtt.publish("gateway/chaos/device-manager", f"{json.dumps(dict(device))}")
 
 
 @usb.disconnect
 def print_disconnect_message(device):
     logger.critical("USB Device disconnected...")
     log_device_info(device)
-    mqtt.publish("gateway/chaos/device-manager",  f"{json.dumps(device)}")
+    mqtt.publish("gateway/chaos/device-manager",  f"{json.dumps(dict(device))}")
