@@ -17,7 +17,7 @@ class OpenCloseSensor(Device, TimeStamp):
     
     @field_validator('value')
     @classmethod
-    def validate_value(cls, value: str, info: ValidationInfo) -> float:
+    def validate_value(cls, value: str, info: ValidationInfo) -> str:
         if value not in ['open', 'close']:
             raise ValueError("Invalid value. Value must be 'open' or 'close' !")
         return value
