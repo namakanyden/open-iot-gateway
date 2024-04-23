@@ -14,7 +14,8 @@ class TestDevice(unittest.TestCase):
             "room": "A1",
             "device_type": "humidity",
             "device_id": "123fa",
-            "topic": "kpi/A1/humidity/123fa"
+            "topic": "kpi/A1/humidity/123fa",
+            "ts": 7654321
         }
     
         device = None
@@ -29,7 +30,8 @@ class TestDevice(unittest.TestCase):
         self.assertEqual(device.device_type, "humidity")
         self.assertEqual(device.device_id, "123fa")
         self.assertEqual(device.topic, "kpi/A1/humidity/123fa")
-        self.assertEqual(device.device_get_line_protocol(), "department=kpi,room=A1,device_type=humidity,device_id=123fa,topic=kpi/A1/humidity/123fa")
+        self.assertEqual(device.ts, 7654321)
+        self.assertEqual(device.address_get_line_protocol(), "department=kpi,room=A1,device_type=humidity,device_id=123fa,topic=kpi/A1/humidity/123fa")
             
     def test_device_invalid_department(self):
         data = {
@@ -43,18 +45,19 @@ class TestDevice(unittest.TestCase):
         with self.assertRaises(ValueError):
             Device(**data)
             
-    def test_device_get_line_protocol(self):
+    def test_address_get_line_protocol(self):
         data = {
             "department": "kpi",
             "room": "A1",
             "device_type": "humidity",
             "device_id": "123fa",
-            "topic": "kpi/A1/humidity/123fa"
+            "topic": "kpi/A1/humidity/123fa",
+            "ts": 7654321
         }
         
         device = Device(**data)
         
-        self.assertEqual(device.device_get_line_protocol(), "department=kpi,room=A1,device_type=humidity,device_id=123fa,topic=kpi/A1/humidity/123fa")
+        self.assertEqual(device.address_get_line_protocol(), "department=kpi,room=A1,device_type=humidity,device_id=123fa,topic=kpi/A1/humidity/123fa")
       
         
     def test_device_no_space_as_value_invalid(self):

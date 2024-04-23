@@ -6,25 +6,6 @@ from pydantic import BaseModel, ValidationInfo, field_validator
 class Department(str, Enum):
     KPI = 'kpi'
     KKUI = 'kkui'
-
-# Device model
-# Base class contains base attributes for all devices
-class Device(BaseModel):
-    department: Department
-    room: str
-    device_type: str
-    device_id: str
-    topic: str
-
-    @field_validator('department', 'room', 'device_type', 'device_id', 'topic')
-    @classmethod
-    def no_space_as_value(cls, v: str, info: ValidationInfo) -> str:
-        if ' ' in v:
-            raise ValueError("department, room, device_type or device_id can't contain a space")
-        return v
-    
-    def device_get_line_protocol(self) -> str:
-        return f'department={self.department.value.__str__()},room={self.room},device_type={self.device_type},device_id={self.device_id},topic={self.topic}'
     
 # Battery model
 # Contains battery level
@@ -57,3 +38,26 @@ class TimeStamp(BaseModel):
     def timestamp_get_line_protocol(self) -> str:
         return self.ts.__str__()
     
+# Address model
+# Contains address of the device
+class Address(BaseModel):
+    department: Department
+    room: str
+    device_type: str
+    device_id: str
+    topic: str
+
+    @field_validator('department', 'room', 'device_type', 'device_id', 'topic')
+    @classmethod
+    def no_space_as_value(cls, v: str, info: ValidationInfo) -> str:
+        if ' ' in v:
+            raise ValueError("department, room, device_type or device_id can't contain a space")
+        return v
+    
+    def address_get_line_protocol(self) -> str:
+        return f'department={self.department.value.__str__()},room={self.room},device_type={self.device_type},device_id={self.device_id},topic={self.topic}'
+
+# Device model
+# Base class contains base attributes for all devices. Grup of attributes: Address, TimeStamp
+class Device(TimeStamp, Address):
+    pass

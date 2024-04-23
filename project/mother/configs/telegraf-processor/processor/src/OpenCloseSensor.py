@@ -5,14 +5,15 @@ from BaseValidatiorsModels import Battery, Device, TimeStamp
 # ----------- Open/Close Sensor -----------
 # OpenClose model
 # Contains value about open or close state
-class DoorWindowTypeEnum(str, Enum):
+class OpenCloseTypeEnum(str, Enum):
     DOOR = 'door'
     WINDOW = 'window'
+    DRAWER = 'drawer'
 
 
-class DoorWindowSensor(Device, TimeStamp):
+class OpenCloseSensor(Device, TimeStamp):
     value: str
-    type: DoorWindowTypeEnum = DoorWindowTypeEnum.DOOR
+    type: OpenCloseTypeEnum = OpenCloseTypeEnum.DOOR
     
     @field_validator('value')
     @classmethod
@@ -25,12 +26,12 @@ class DoorWindowSensor(Device, TimeStamp):
         return 1 if self.value == 'open' else 0
     
     def get_line_protocol(self) -> str:
-        return f"{self.device_type},{super().device_get_line_protocol()},type={self.type.value} value={self.normalize_value()} {super().timestamp_get_line_protocol()}"
+        return f"{self.device_type},{super().address_get_line_protocol()},type={self.type.value} value={self.normalize_value()} {super().timestamp_get_line_protocol()}"
     
     
 # HumiditySensorWithBattery model
 # Contains humidity value and unit and battery level
-class DoorWindowSensorWithBattery(DoorWindowSensor, Battery):
+class OpenCloseSensorWithBattery(OpenCloseSensor, Battery):
     
     def get_line_protocol(self) -> str:
-        return f"{self.device_type},{super().device_get_line_protocol()},battery={self.battery},type={self.type.value} value={self.normalize_value()} {super().timestamp_get_line_protocol()}"
+        return f"{self.device_type},{super().address_get_line_protocol()},battery={self.battery},type={self.type.value} value={self.normalize_value()} {super().timestamp_get_line_protocol()}"

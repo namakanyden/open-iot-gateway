@@ -38,11 +38,11 @@ class PressureSensor(Device, TimeStamp):
             return self.value
         
     def get_line_protocol(self) -> str:
-        return f"{self.device_type},{super().device_get_line_protocol()},unit=Pa value={self.normalize_value()} {super().timestamp_get_line_protocol()}"
+        return f"{self.device_type},{super().address_get_line_protocol()},unit=Pa value={self.normalize_value()} {super().timestamp_get_line_protocol()}"
     
 # PressureSensorWithBattery model
 # Contains pressure value and unit and battery level
 class PressureSensorWithBattery(PressureSensor, Battery):
     
     def get_line_protocol(self) -> str:
-        return f"{self.device_type},{super().device_get_line_protocol()},battery={self.battery},unit=Pa value={self.normalize_value()} {super().timestamp_get_line_protocol()}"
+        return f"{self.device_type},{super().address_get_line_protocol()},battery={self.battery},unit=Pa value={self.normalize_value()} {super().timestamp_get_line_protocol()}"

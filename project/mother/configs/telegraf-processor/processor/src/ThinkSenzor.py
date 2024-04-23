@@ -9,11 +9,11 @@ class ThinkSensor(Device, TimeStamp):
     value: float
         
     def get_line_protocol(self) -> str:
-        return f"{self.device_type},{super().device_get_line_protocol()} value={self.value} {super().timestamp_get_line_protocol()}"
+        return f"{self.device_type},{super().address_get_line_protocol()} value={self.value} {super().timestamp_get_line_protocol()}"
     
 # ThinkSensorWithBattery model
 # Contains value and battery level
 class ThinkSensorWithBattery(ThinkSensor, Battery):
     
     def get_line_protocol(self) -> str:
-        return f"{self.device_type},{super().device_get_line_protocol()},battery={self.battery} value={self.value} {super().timestamp_get_line_protocol()}"
+        return f"{self.device_type},{super().address_get_line_protocol()},battery={self.battery} value={self.value} {super().timestamp_get_line_protocol()}"

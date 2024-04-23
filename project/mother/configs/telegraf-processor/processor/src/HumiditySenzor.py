@@ -32,11 +32,11 @@ class HumiditySensor(Device, TimeStamp):
     #         return self.value
         
     def get_line_protocol(self) -> str:
-        return f"{self.device_type},{super().device_get_line_protocol()},unit={self.unit.value} value={self.value} {super().timestamp_get_line_protocol()}"
+        return f"{self.device_type},{super().address_get_line_protocol()},unit={self.unit.value} value={self.value} {super().timestamp_get_line_protocol()}"
     
 # HumiditySensorWithBattery model
 # Contains humidity value and unit and battery level
 class HumiditySensorWithBattery(HumiditySensor, Battery):
     
     def get_line_protocol(self) -> str:
-        return f"{self.device_type},{super().device_get_line_protocol()},battery={self.battery},unit={self.unit.value} value={self.value} {super().timestamp_get_line_protocol()}"
+        return f"{self.device_type},{super().address_get_line_protocol()},battery={self.battery},unit={self.unit.value} value={self.value} {super().timestamp_get_line_protocol()}"

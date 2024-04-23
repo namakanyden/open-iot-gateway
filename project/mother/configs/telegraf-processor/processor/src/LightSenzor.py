@@ -24,11 +24,11 @@ class LightSensor(Device, TimeStamp):
         return self.value
         
     def get_line_protocol(self) -> str:
-        return f"{self.device_type},{super().device_get_line_protocol()},unit=lm value={self.normalize_value()} {super().timestamp_get_line_protocol()}"
+        return f"{self.device_type},{super().address_get_line_protocol()},unit=lm value={self.normalize_value()} {super().timestamp_get_line_protocol()}"
     
 # LightSensorWithBattery model
 # Contains light value and unit and battery level
 class LightSensorWithBattery(LightSensor, Battery):
     
     def get_line_protocol(self) -> str:
-        return f"{self.device_type},{super().device_get_line_protocol()},battery={self.battery},unit=lm value={self.normalize_value()} {super().timestamp_get_line_protocol()}"
+        return f"{self.device_type},{super().address_get_line_protocol()},battery={self.battery},unit=lm value={self.normalize_value()} {super().timestamp_get_line_protocol()}"

@@ -2,7 +2,7 @@
 import sys
 
 from pydantic import ValidationError
-from DoorWindowSensor import DoorWindowSensor, DoorWindowSensorWithBattery
+from OpenCloseSensor import OpenCloseSensor, OpenCloseSensorWithBattery
 from HumiditySenzor import HumiditySensor, HumiditySensorWithBattery
 from LightSenzor import LightSensor, LightSensorWithBattery
 from NoiseSenzor import NoiseSensor, NoiseSenzorWithBattery
@@ -40,9 +40,9 @@ def validate_data(data: dict):
             return NoiseSensor(**data);
     elif data['device_type'] == 'door' or data['device_type'] == 'window':
         if 'battery' in data:
-            return DoorWindowSensor(**data);
+            return OpenCloseSensor(**data);
         else:
-            return DoorWindowSensorWithBattery(**data);
+            return OpenCloseSensorWithBattery(**data);
     elif data['device_type'] == 'think':
         if 'battery' in data:
             return ThinkSensor(**data);

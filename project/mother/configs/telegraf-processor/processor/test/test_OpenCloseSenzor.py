@@ -4,7 +4,7 @@ import unittest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 
-from DoorWindowSensor import DoorWindowSensor, DoorWindowSensorWithBattery
+from OpenCloseSensor import OpenCloseSensor, OpenCloseSensorWithBattery
 
 class TestOpenCloseSensor(unittest.TestCase):
     # TEST ---- PressureSensor ----
@@ -22,9 +22,9 @@ class TestOpenCloseSensor(unittest.TestCase):
         
         window = None
         try:
-            window = DoorWindowSensor(**data)
+            window = OpenCloseSensor(**data)
         except Exception:
-            self.fail("DoorWindowSensor(**data) raised Exception !")
+            self.fail("OpenCloseSensor(**data) raised Exception !")
         
         self.assertNotEqual(window, None)
         self.assertEqual(window.department.value, "kpi")
@@ -51,7 +51,7 @@ class TestOpenCloseSensor(unittest.TestCase):
         }
         
         with self.assertRaises(ValueError):
-            DoorWindowSensor(**data)
+            OpenCloseSensor(**data)
         
             
     def test_PressureSensor_missing_arguments(self):
@@ -64,7 +64,7 @@ class TestOpenCloseSensor(unittest.TestCase):
         }
         
         with self.assertRaises(ValueError):
-            DoorWindowSensor(**data)
+            OpenCloseSensor(**data)
             
             
     def test_PressureSensor_normalize_value(self):
@@ -81,17 +81,17 @@ class TestOpenCloseSensor(unittest.TestCase):
         
         pressure = None
         try:
-            pressure = DoorWindowSensor(**data)
+            pressure = OpenCloseSensor(**data)
         except Exception:
-            self.fail("DoorWindowSensor(**data) raised Exception !")
+            self.fail("OpenCloseSensor(**data) raised Exception !")
         
         self.assertEqual(pressure.normalize_value(), 1)
         pressure.value = "close"
         self.assertEqual(pressure.normalize_value(), 0)
         
         
-    # TEST ---- DoorWindowSensorWithBattery ----
-    def test_DoorWindowWithBattery_correct_input_data(self):
+    # TEST ---- OpenCloseSensorWithBattery ----
+    def test_OpenCloseWithBattery_correct_input_data(self):
         data = {
             "department": "kpi",
             "room": "A1",
@@ -106,9 +106,9 @@ class TestOpenCloseSensor(unittest.TestCase):
         
         windowBattery = None
         try:
-            windowBattery = DoorWindowSensorWithBattery(**data)
+            windowBattery = OpenCloseSensorWithBattery(**data)
         except Exception:
-            self.fail("DoorWindowSensorWithBattery(**data) raised Exception !")
+            self.fail("OpenCloseSensorWithBattery(**data) raised Exception !")
     
         
         expected_result = "window,department=kpi,room=A1,device_type=window,device_id=123fa,topic=kpi/A1/window/123fa,battery=90,type=window value=0 1234567892"
