@@ -15,6 +15,7 @@ services:
       - theengs_config:/mnt/theengs/
       - nodered_data:/mnt/nodered/
       - telegraf_config:/mnt/telegraf/
+      - chaos_config:/mnt/chaos/
     labels:
       io.resin.features.balena-socket: "1"
       io.balena.features.dbus: "1"
@@ -117,6 +118,22 @@ services:
     labels:
       io.balena.features.dbus: 1
 
+  chaos:
+    build: ./chaos
+    privileged: true
+    depends_on:
+      - provisioning
+      - mosquitto
+    environment:
+      - 'DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket'
+      - 'UDEV=on'
+      - 'INITSYSTEM=on'
+    labels:
+      io.balena.features.dbus: '1'
+    network_mode: host
+      
+
+
 #   watchtower:
   #     image: containrrr/watchtower
   #     volumes:
@@ -145,3 +162,4 @@ volumes:
   homepage_images:
   theengs_config:
   telegraf_config:
+  chaos_config:
