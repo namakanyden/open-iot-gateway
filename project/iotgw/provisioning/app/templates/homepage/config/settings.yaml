@@ -1,0 +1,19 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/en/configs/settings
+
+# page title
+title: "${IOTGW_DEPARTMENT}/${IOTGW_ROOM} IoT Gateway"
+
+# ui language
+language: en
+
+# default layout
+layout:
+  IoT Gateway Core:
+  Services:
+  Applications:
+
+providers:
+  openweathermap: apikey
+  weatherapi: weatherapiapikey

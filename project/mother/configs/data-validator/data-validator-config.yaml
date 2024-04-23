@@ -1,0 +1,89 @@
+Mqtt:
+  address: "${MOSQUITTO_HOST}"
+  port: "${MOSQUITTO_PORT}"
+  username: "${MOSQUITTO_USERNAME}"
+  password: "${MOSQUITTO_PASSWORD}"
+
+Influxdb:
+  url: "${INFLUXDB_URL}"
+  token: "${INFLUXDB_TOKEN}"
+  org: "${INFLUXDB_ORG}"
+
+Validators:
+  - topics: ["kpi/+/temperature/#"]
+    bucket: "Measurements"
+    tagsPattern: "department/room/device_type/Device_id"
+    measurement: "temperature"
+    schema: "./config/schemas/temperature-value.json"
+    transform:
+      timestamp: "ts"
+      fields:
+        - name: "temperature"
+          path: "temperature"
+        - name: "battery"
+          path: "battery"
+
+  - topics: ["kpi/+/humidity/#"]
+    bucket: "Measurements"
+    tagsPattern: "department/room/device_type/Device_id"
+    measurement: "humidity"
+    schema: "./config/schemas/humidity-value.json"
+    transform:
+      timestamp: "ts"
+      fields:
+        - name: "humidity"
+          path: "humidity"
+        - name: "battery"
+          path: "battery"
+
+  - topics: ["kpi/+/door/#"]
+    bucket: "Measurements"
+    measurement: "door"
+    tagsPattern: "department/room/device_type/Device_id"
+    schema: "./config/schemas/door-value.json"
+    transform:
+      timestamp: "ts"
+      fields:
+        - name: "status"
+          path: "status"
+        - name: "battery"
+          path: "battery"
+
+  - topics: ["kpi/+/pressure/#"]
+    bucket: "Measurements"
+    measurement: "pressure"
+    tagsPattern: "department/room/device_type/Device_id"
+    schema: "./config/schemas/pressure-value.json"
+    transform:
+      timestamp: "ts"
+      fields:
+        - name: "pressure"
+          path: "pressure"
+        - name: "battery"
+          path: "battery"
+
+  - topics: ["kpi/+/sound/#"]
+    bucket: "Measurements"
+    measurement: "sound"
+    tagsPattern: "department/room/device_type/Device_id"
+    schema: "./config/schemas/sound-value.json"
+    transform:
+      timestamp: "ts"
+      fields:
+        - name: "sound"
+          path: "sound"
+        - name: "battery"
+          path: "battery"
+
+  - topics: ["kpi/+/things/#"]
+    bucket: "Things"
+    measurement: "things"
+    tagsPattern: "department/room/device_type/Device_id"
+    schema: "./config/schemas/things-value.json"
+    transform:
+      timestamp: "ts"
+      fields:
+        - name: "value"
+          path: "value"
+        - name: "battery"
+          path: "battery"

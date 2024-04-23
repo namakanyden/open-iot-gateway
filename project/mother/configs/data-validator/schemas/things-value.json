@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "properties": {
+    "ts": {
+      "type": "number",
+      "description": "The time of the event"
+    },
+    "value": {
+      "type": "number",
+      "description": "The value of the measurement"
+    }
+  },
+  "required": ["ts", "value"]
+}

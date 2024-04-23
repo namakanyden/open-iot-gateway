@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "ts": {
+      "type": "number",
+      "description": "The time of the event"
+    },
+    "status": {
+      "type": "number",
+      "maximum": 1,
+      "minimum": 0,
+      "description": "The status of the door"
+    },
+    "battery": {
+      "type": "number",
+      "description": "The battery level",
+      "minimum": 0,
+      "maximum": 100
+    }
+  },
+  "required": ["ts", "status"]
+}

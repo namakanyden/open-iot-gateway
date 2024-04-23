@@ -2,10 +2,12 @@ FROM alpine
 
 LABEL author "mirek"
 
-RUN apk add jo yq jq bash envsubst mosquitto
+RUN apk add jo yq jq bash envsubst mosquitto networkmanager-cli
 
-COPY bin/init.bash /
-COPY templates/ /templates/
-# COPY local.env /
+COPY app/ /app/
 
-CMD [ "/init.bash" ]
+WORKDIR /app
+
+ENV DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket
+
+CMD [ "/bin/bash", "init.bash" ]

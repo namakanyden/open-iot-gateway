@@ -2,7 +2,7 @@
 
 # to run
 # curl -sSL http://xxx/script.bash | bash -s -- hostname
-# curl -sSL http://mirek.s.cnl.sk/download/provisioning.balena.bash | bash -s -- dune
+# curl -sSL http://mirek.s.cnl.sk/download/provisioning.balena.bash | bash -s -- abydos 6
 
 set -o errexit
 set -o pipefail
@@ -87,9 +87,10 @@ function set_hotspot() {
 
 function main() {
     local hostname="${1:?Error: Hostname is missing.}"
+    local channel="${2:?Channel is missing}"
 
     set_hostname "${hostname}"
-    set_hotspot "${hostname}"
+    set_hotspot "${hostname}" "${channel}"
 
     printf "Rebooting in 10s...\n"
     sleep 10

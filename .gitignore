@@ -1,5 +1,7 @@
 .env
-#mosquitto.conf
+*.pyc
+.coverage
+mosquitto.conf
 passwd
 
 custom.css

@@ -6,7 +6,7 @@ services:
       context: provisioning
     restart: no
     # env_file:
-      # - .env
+    #   - .env
     volumes:
       - zigbee2mqtt_data:/mnt/zigbee2mqtt/
       - mosquitto_config:/mnt/mosquitto/
@@ -18,6 +18,7 @@ services:
       - chaos_config:/mnt/chaos/
     labels:
       io.resin.features.balena-socket: "1"
+      io.balena.features.dbus: "1"
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
@@ -52,7 +53,6 @@ services:
     user: telegraf:991
     volumes:
       - telegraf_config:/etc/telegraf:ro
-      # - /var/run/docker.sock:/var/run/docker.sock
     #       - /:/hostfs:ro
     #       - HOST_ETC=/hostfs/etc
     #       - HOST_PROC=/hostfs/proc
@@ -145,6 +145,14 @@ services:
   #       homepage.icon: /images/watchtower.png
   #       homepage.description: Automates Docker container base image updates.
 
+
+  wifi-repeater:
+    build: wifi-repeater
+    privileged: true
+    depends_on:
+    - provisioning
+    labels:
+      io.balena.features.dbus: "1"
 
 volumes:
   nodered_data:
