@@ -13,6 +13,10 @@ function main() {
     local target='/mnt/nodered/'
 
     if [[ "${DEBUG_PROVISIONING:-0}" == 1 ]]; then
+        echo "DEBUG MODE ACTIVE"
+        rm -rf "${target}"/*
+        rm -rf "${target}"/.*
+
         # copy all files
         cp "${templates}/"* "${target}"
 
@@ -23,7 +27,12 @@ function main() {
     fi
 
     if [[ $(ls -A "${target}") == 'flows.json' ]]; then
+        # copy all files
         cp "${templates}/"* "${target}"
+
+        # set credentials
+        envsubst -i "${templates}/flows_cred.json" -o "${target}/flows_cred.json"
+
         chown 1000:1000 "${target}/"*
     fi
 }

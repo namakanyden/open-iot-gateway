@@ -13,6 +13,7 @@ services:
       - theengs_config:/mnt/theengs/
       - nodered_data:/mnt/nodered/
       - telegraf_config:/mnt/telegraf/
+      - mqttexplorer_config:/mnt/mqttexplorer
     labels:
       io.resin.features.balena-socket: "1"
       io.balena.features.dbus: "1"
@@ -55,7 +56,7 @@ services:
     labels:
       homepage.group: IoT Gateway Core
       homepage.name: Mosquitto
-      homepage.icon: mqtt.png
+      homepage.icon: eclipse-mosquitto.png
       homepage.description: Local MQTT Broker.
 
 
@@ -70,6 +71,10 @@ services:
       - telegraf_config:/etc/telegraf:ro
     labels:
       io.resin.features.balena-socket: "1"
+      homepage.group: IoT Gateway Core
+      homepage.name: Telegraf
+      homepage.icon: telegraf.png
+      homepage.description: System Metrics Collector.
 
 
   theengs:
@@ -83,10 +88,14 @@ services:
     environment:
       UDEV: 1
       DBUS_SYSTEM_BUS_ADDRESS: unix:path=/host/run/dbus/system_bus_socket
-    labels:
-      io.balena.features.dbus: "1"
     working_dir: /opt/venv
     command: /bin/bash -ec "source bin/activate && python3 -m TheengsGateway"
+    labels:
+      io.balena.features.dbus: "1"
+      homepage.group: IoT Gateway Core
+      homepage.name: Theengs
+      homepage.icon: /images/theengs.png
+      homepage.description: BLE2MQTT Gateway.
 
 
   chrony:
@@ -96,6 +105,11 @@ services:
       - 123:123/udp
     # environment:
     #   LOG_LEVEL: 0
+    labels:
+      homepage.group: IoT Gateway Core
+      homepage.name: Chrony
+      homepage.icon: /images/chrony.png
+      homepage.description: NTP Server.
 
 
   nodered:
@@ -108,9 +122,15 @@ services:
     depends_on:
       - provisioning
       - mosquitto
-    # labels:
-    #   io.balena.features.supervisor-api: 1
     entrypoint: /data/entrypoint.sh
+    labels:
+    #   io.balena.features.supervisor-api: 1
+      homepage.group: Services
+      homepage.name: Node-RED
+      homepage.icon: node-red.png
+      homepage.description: Low-code programmer.
+
+
 
   zigbee2mqtt:
     image: koenkk/zigbee2mqtt:1.38.0
@@ -127,6 +147,10 @@ services:
       DBUS_SYSTEM_BUS_ADDRESS: unix:path=/host/run/dbus/system_bus_socket
     labels:
       io.balena.features.dbus: "1"
+      homepage.group: Services
+      homepage.name: Zigbee2MQTT
+      homepage.icon: zigbee2mqtt.png
+      homepage.description: Zigbee2MQTT Bridge.
 
   wifi-repeater:
       build: wifi-repeater
@@ -144,3 +168,4 @@ volumes:
   homepage_images:
   theengs_config:
   telegraf_config:
+  mqttexplorer_config:

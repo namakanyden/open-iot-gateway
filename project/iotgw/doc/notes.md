@@ -35,8 +35,6 @@
       retries: 3
    ```
 
-* zrejme nefunguju labels na identifikaciu jednotlivych beziacich kontajnerov
-
 
 ## Telegraf
 

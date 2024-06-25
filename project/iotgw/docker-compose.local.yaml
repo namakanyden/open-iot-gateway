@@ -19,6 +19,7 @@ services:
     #   io.resin.features.balena-socket: "1"
     #   io.balena.features.dbus: "1"
 
+
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     volumes:
@@ -30,11 +31,11 @@ services:
       - 80:3000
     depends_on:
       - provisioning
-    # labels:
-      # homepage.group: IoT Gateway Core
-      # homepage.name: Homepage
-      # homepage.icon: homepage.png
-      # homepage.description: Application dashboard.
+    labels:
+      homepage.group: IoT Gateway Core
+      homepage.name: Homepage
+      homepage.icon: homepage.png
+      homepage.description: Application dashboard.
     deploy:
       resources:
         limits:
@@ -43,6 +44,7 @@ services:
         reservations:
           cpus: '0.25'
           memory: 128M
+
 
   mosquitto:
     image: eclipse-mosquitto:2.0
@@ -53,11 +55,11 @@ services:
       - provisioning
     ports:
       - 1883:1883
-    # labels:
-      # homepage.group: IoT Gateway Core
-      # homepage.name: Mosquitto
-      # homepage.icon: mqtt.png
-      # homepage.description: Local MQTT Broker.
+    labels:
+      homepage.group: IoT Gateway Core
+      homepage.name: Mosquitto
+      homepage.icon: eclipse-mosquitto.png
+      homepage.description: Local MQTT Broker.
     deploy:
       resources:
         limits:
@@ -66,6 +68,7 @@ services:
         reservations:
           cpus: '0.1'
           memory: 10M
+
 
   telegraf:
     image: telegraf:1.31-alpine
@@ -84,12 +87,11 @@ services:
     #       - HOST_VAR=/hostfs/var
     #       - HOST_RUN=/hostfs/run
     #       - HOST_MOUNT_PREFIX=/hostfs
-    # labels:
-      # io.resin.features.balena-socket: "1"
-      # homepage.group: IoT Gateway Core
-      # homepage.name: Telegraf
-      # homepage.icon: telegraf.png
-      # homepage.description: System Metrics Collector.
+    labels:
+      homepage.group: IoT Gateway Core
+      homepage.name: Telegraf
+      homepage.icon: telegraf.png
+      homepage.description: System Metrics Collector.
     deploy:
       resources:
         limits:
@@ -111,10 +113,13 @@ services:
     environment:
       UDEV: 1
       DBUS_SYSTEM_BUS_ADDRESS: unix:path=/host/run/dbus/system_bus_socket
-    labels:
-      io.balena.features.dbus: 1
     working_dir: /opt/venv
     command: /bin/bash -ec "source bin/activate && python3 -m TheengsGateway"
+    labels:
+      homepage.group: IoT Gateway Core
+      homepage.name: Theengs
+      homepage.icon: /images/theengs.png
+      homepage.description: BLE2MQTT Gateway.
 
 
   chrony:
@@ -124,6 +129,11 @@ services:
       - 123:123/udp
     # environment:
     #   LOG_LEVEL: 0
+    labels:
+      homepage.group: IoT Gateway Core
+      homepage.name: Chrony
+      homepage.icon: /images/chrony.png
+      homepage.description: NTP Server.
 
 
   nodered:
@@ -136,9 +146,13 @@ services:
     depends_on:
       - provisioning
       - mosquitto
-    # labels:
-    #   io.balena.features.supervisor-api: 1
     entrypoint: /data/entrypoint.sh
+    labels:
+      homepage.group: Services
+      homepage.name: Node-RED
+      homepage.icon: node-red.png
+      homepage.description: Low-code programmer.
+
 
   zigbee2mqtt:
     image: koenkk/zigbee2mqtt:1.38.0
@@ -154,19 +168,24 @@ services:
     environment:
       DBUS_SYSTEM_BUS_ADDRESS: unix:path=/host/run/dbus/system_bus_socket
     labels:
-      io.balena.features.dbus: 1
+      homepage.group: Services
+      homepage.name: Zigbee2MQTT
+      homepage.icon: zigbee2mqtt.png
+      homepage.description: Zigbee2MQTT Bridge.
+
 
   watchtower:
       image: containrrr/watchtower:1.7.1
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
       restart: always
+      command: --schedule "0 0 4 * * *"  # at 04:00:00
       labels:
         homepage.group: IoT Gateway Core
         homepage.name: Watchtower
         homepage.icon: /images/watchtower.png
         homepage.description: Automates Docker container base image updates.
-      command: --schedule "0 0 4 * * *"  # at 04:00:00
+
 
   mqttexplorer:
     image: smeagolworms4/mqtt-explorer:master
