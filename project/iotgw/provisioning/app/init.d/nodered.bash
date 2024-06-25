@@ -12,6 +12,16 @@ function main() {
     local templates='/app/templates/nodered'
     local target='/mnt/nodered/'
 
+    if [[ "${DEBUG_PROVISIONING:-0}" == 1 ]]; then
+        # copy all files
+        cp "${templates}/"* "${target}"
+
+        # set credentials
+        envsubst < "${templates}/flows_cred.json" > "${target}/flows_cred.json"
+
+        chown 1000:1000 "${target}/"*
+    fi
+
     if [[ $(ls -A "${target}") == 'flows.json' ]]; then
         cp "${templates}/"* "${target}"
         chown 1000:1000 "${target}/"*

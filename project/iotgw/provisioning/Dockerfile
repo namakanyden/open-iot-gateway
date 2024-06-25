@@ -1,8 +1,18 @@
-FROM alpine
+FROM alpine:3.20
 
 LABEL author "mirek"
 
-RUN apk add jo yq jq bash envsubst mosquitto networkmanager-cli
+# Environment variables substitution for Go:  https://github.com/a8m/envsubst
+RUN apk add \
+        jo \
+        yq \
+        jq \
+        bash \
+        mosquitto \
+        networkmanager-cli \
+        curl \
+    && curl -L https://github.com/a8m/envsubst/releases/download/v1.2.0/envsubst-`uname -s`-`uname -m` -o /usr/local/bin/envsubst \
+    && chmod +x /usr/local/bin/envsubst
 
 COPY app/ /app/
 

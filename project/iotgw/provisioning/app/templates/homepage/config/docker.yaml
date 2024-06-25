@@ -3,4 +3,4 @@
 # https://gethomepage.dev/en/configs/docker/
 
 iotgw-docker:
-  socket: ${DOCKER_HOST}
+  socket: ${DOCKER_HOST:-/var/run/docker.sock}

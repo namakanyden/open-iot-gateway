@@ -1,12 +1,10 @@
-version: "2.4"
-
 services:
   provisioning:
     build:
       context: provisioning
     restart: no
-    # env_file:
-    #   - .env
+    env_file:
+      - .env
     volumes:
       - zigbee2mqtt_data:/mnt/zigbee2mqtt/
       - mosquitto_config:/mnt/mosquitto/
@@ -15,26 +13,25 @@ services:
       - theengs_config:/mnt/theengs/
       - nodered_data:/mnt/nodered/
       - telegraf_config:/mnt/telegraf/
-    labels:
-      io.resin.features.balena-socket: "1"
-      io.balena.features.dbus: "1"
+      # - /var/run/docker.sock:/var/run/docker.sock
+    # labels:
+    #   io.resin.features.balena-socket: "1"
+    #   io.balena.features.dbus: "1"
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     volumes:
       - homepage_config:/app/config
       - homepage_images:/app/public/images
-    # - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: always
     ports:
       - 80:3000
     depends_on:
       - provisioning
-    labels:
-      io.balena.features.balena-socket: "1"
 
   mosquitto:
-    image: eclipse-mosquitto
+    image: eclipse-mosquitto:2.0
     restart: always
     volumes:
       - mosquitto_config:/mosquitto/config:ro
@@ -44,7 +41,7 @@ services:
       - 1883:1883
 
   telegraf:
-    image: telegraf:alpine
+    image: telegraf:1.31-alpine
     restart: always
     depends_on:
       - provisioning
@@ -62,8 +59,9 @@ services:
     labels:
       io.resin.features.balena-socket: "1"
 
+
   theengs:
-    image: theengs/gateway
+    image: theengs/gateway:latest
     restart: always
     depends_on:
       - provisioning
@@ -78,8 +76,9 @@ services:
     working_dir: /opt/venv
     command: /bin/bash -ec "source bin/activate && python3 -m TheengsGateway"
 
+
   chrony:
-    image: cturra/ntp
+    image: cturra/ntp:latest
     restart: always
     ports:
       - 123:123/udp
@@ -88,7 +87,7 @@ services:
 
 
   nodered:
-    image: nodered/node-red:latest-minimal
+    image: nodered/node-red:4.0.0-minimal
     restart: always
     ports:
       - 1880:1880
@@ -102,7 +101,7 @@ services:
     entrypoint: /data/entrypoint.sh
 
   zigbee2mqtt:
-    image: koenkk/zigbee2mqtt
+    image: koenkk/zigbee2mqtt:1.38.0
     restart: always
     ports:
       - 8080:8080
@@ -117,25 +116,26 @@ services:
     labels:
       io.balena.features.dbus: 1
 
-#   watchtower:
-  #     image: containrrr/watchtower
-  #     volumes:
-  #       - /var/run/docker.sock:/var/run/docker.sock
-  #     restart: always
-  #     labels:
-  #       homepage.group: IoT Gateway Core
-  #       homepage.name: Watchtower
-  #       homepage.icon: /images/watchtower.png
-  #       homepage.description: Automates Docker container base image updates.
+  watchtower:
+      image: containrrr/watchtower:1.7.1
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      restart: always
+      labels:
+        homepage.group: IoT Gateway Core
+        homepage.name: Watchtower
+        homepage.icon: /images/watchtower.png
+        homepage.description: Automates Docker container base image updates.
+      command: --schedule "0 0 4 * * *"  # at 04:00:00
 
 
-  wifi-repeater:
-    build: wifi-repeater
-    privileged: true
-    depends_on:
-    - provisioning
-    labels:
-      io.balena.features.dbus: "1"
+  # wifi-repeater:
+  #   build: wifi-repeater
+  #   privileged: true
+  #   depends_on:
+  #   - provisioning
+  #   labels:
+  #     io.balena.features.dbus: "1"
 
 volumes:
   nodered_data:
