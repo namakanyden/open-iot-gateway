@@ -13,6 +13,7 @@ services:
       - theengs_config:/mnt/theengs/
       - nodered_data:/mnt/nodered/
       - telegraf_config:/mnt/telegraf/
+      - mqttexplorer_config:/mnt/mqttexplorer
       # - /var/run/docker.sock:/var/run/docker.sock
     # labels:
     #   io.resin.features.balena-socket: "1"
@@ -29,6 +30,19 @@ services:
       - 80:3000
     depends_on:
       - provisioning
+    # labels:
+      # homepage.group: IoT Gateway Core
+      # homepage.name: Homepage
+      # homepage.icon: homepage.png
+      # homepage.description: Application dashboard.
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
 
   mosquitto:
     image: eclipse-mosquitto:2.0
@@ -39,6 +53,19 @@ services:
       - provisioning
     ports:
       - 1883:1883
+    # labels:
+      # homepage.group: IoT Gateway Core
+      # homepage.name: Mosquitto
+      # homepage.icon: mqtt.png
+      # homepage.description: Local MQTT Broker.
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 50M
+        reservations:
+          cpus: '0.1'
+          memory: 10M
 
   telegraf:
     image: telegraf:1.31-alpine
@@ -46,9 +73,10 @@ services:
     depends_on:
       - provisioning
       - mosquitto
-    user: telegraf:991
+    user: telegraf:973
     volumes:
       - telegraf_config:/etc/telegraf:ro
+      - /var/run/docker.sock:/var/run/docker.sock
     #       - /:/hostfs:ro
     #       - HOST_ETC=/hostfs/etc
     #       - HOST_PROC=/hostfs/proc
@@ -56,8 +84,20 @@ services:
     #       - HOST_VAR=/hostfs/var
     #       - HOST_RUN=/hostfs/run
     #       - HOST_MOUNT_PREFIX=/hostfs
-    labels:
-      io.resin.features.balena-socket: "1"
+    # labels:
+      # io.resin.features.balena-socket: "1"
+      # homepage.group: IoT Gateway Core
+      # homepage.name: Telegraf
+      # homepage.icon: telegraf.png
+      # homepage.description: System Metrics Collector.
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 150M
+        reservations:
+          cpus: '0.1'
+          memory: 30M
 
 
   theengs:
@@ -128,6 +168,25 @@ services:
         homepage.description: Automates Docker container base image updates.
       command: --schedule "0 0 4 * * *"  # at 04:00:00
 
+  mqttexplorer:
+    image: smeagolworms4/mqtt-explorer:master
+    ports:
+    - 4000:4000
+    restart: always
+    environment:
+    - INITIAL_CONFIG={}
+    volumes:
+    - mqttexplorer_config:/mqtt-explorer/config
+    depends_on:
+      - provisioning
+      - mosquitto
+    labels:
+        homepage.group: Applications
+        homepage.name: MQTT Explorer
+        homepage.icon: /images/mqttexplorer.png
+        homepage.description: Comprehensive MQTT client.
+        homepage.href: http://localhost:4000
+
 
   # wifi-repeater:
   #   build: wifi-repeater
@@ -145,3 +204,4 @@ volumes:
   homepage_images:
   theengs_config:
   telegraf_config:
+  mqttexplorer_config:

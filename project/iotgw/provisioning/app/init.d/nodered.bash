@@ -17,7 +17,7 @@ function main() {
         cp "${templates}/"* "${target}"
 
         # set credentials
-        envsubst < "${templates}/flows_cred.json" > "${target}/flows_cred.json"
+        envsubst -i "${templates}/flows_cred.json" -o "${target}/flows_cred.json"
 
         chown 1000:1000 "${target}/"*
     fi

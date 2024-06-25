@@ -7,12 +7,11 @@ set -o nounset
 source /app/helpers.bash
 
 function main() {
-    log "Setting up Telegraf"
+    log "Setting up MQTT Explorer"
 
-    local template='/app/templates/telegraf/telegraf.conf'
-    local target='/mnt/telegraf/telegraf.conf'
+    local template="/app/templates/mqttexplorer/settings.json"
+    local target="/mnt/mqttexplorer/settings.json"
 
-    # template population
     envsubst -i "${template}" -o "${target}"
 }
 

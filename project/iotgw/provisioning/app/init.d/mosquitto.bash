@@ -13,7 +13,7 @@ function main() {
     local target='/mnt/mosquitto/mosquitto.conf'
 
     # create config
-    envsubst <"${template}" >"${target}"
+    envsubst -i "${template}" -o "${target}"
 
     # create user and password
     mosquitto_passwd -b -c /mnt/mosquitto/passwd "${IOTGW_MQTT_USER}" "${IOTGW_MQTT_PASSWORD}"
