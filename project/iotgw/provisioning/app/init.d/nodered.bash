@@ -4,16 +4,16 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-source /app/helpers.bash
+source "/app/lib/helpers.bash"
 
 function main() {
-    log "Setting up Node-RED"
+    info "Setting up Node-RED"
 
     local templates='/app/templates/nodered'
     local target='/mnt/nodered/'
 
     if [[ "${DEBUG_PROVISIONING:-0}" == 1 ]]; then
-        echo "DEBUG MODE ACTIVE"
+        debug "DEBUG MODE ACTIVE"
         rm -rf "${target}"/*
         rm -rf "${target}"/.*
 

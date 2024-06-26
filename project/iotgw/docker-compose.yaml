@@ -17,6 +17,7 @@ services:
     labels:
       io.resin.features.balena-socket: "1"
       io.balena.features.dbus: "1"
+      io.balena.features.supervisor-api: "1"
 
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
@@ -113,6 +114,7 @@ services:
 
 
   nodered:
+    container_name: nodered
     image: nodered/node-red:4.0.0-minimal
     restart: always
     ports:
@@ -123,16 +125,17 @@ services:
       - provisioning
       - mosquitto
     entrypoint: /data/entrypoint.sh
-    labels:
-    #   io.balena.features.supervisor-api: 1
-      homepage.group: Services
-      homepage.name: Node-RED
-      homepage.icon: node-red.png
-      homepage.description: Low-code programmer.
-
+    # labels:
+    # #   io.balena.features.supervisor-api: 1
+    #   homepage.group: Services
+    #   homepage.name: Node-RED
+    #   homepage.icon: node-red.png
+    #   homepage.description: Low-code programmer.
+    #   homepage.href: http://${IOTGW_HOSTIP}:1880/
 
 
   zigbee2mqtt:
+    container_name: zigbee2mqtt
     image: koenkk/zigbee2mqtt:1.38.0
     restart: always
     ports:
@@ -145,12 +148,14 @@ services:
       - zigbee2mqtt_data:/app/data/
     environment:
       DBUS_SYSTEM_BUS_ADDRESS: unix:path=/host/run/dbus/system_bus_socket
-    labels:
-      io.balena.features.dbus: "1"
-      homepage.group: Services
-      homepage.name: Zigbee2MQTT
-      homepage.icon: zigbee2mqtt.png
-      homepage.description: Zigbee2MQTT Bridge.
+    # labels:
+    #   io.balena.features.dbus: "1"
+    #   homepage.group: Services
+    #   homepage.name: Zigbee2MQTT
+    #   homepage.icon: zigbee2mqtt.png
+    #   homepage.description: Zigbee2MQTT Bridge.
+    #   homepage.href: http://${IOTGW_HOSTIP}:8080/
+
 
   wifi-repeater:
       build: wifi-repeater

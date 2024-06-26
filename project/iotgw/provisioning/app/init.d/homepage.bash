@@ -4,10 +4,10 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-source /app/helpers.bash
+source "/app/lib/helpers.bash"
 
 function main() {
-    log "Setting up Homepage"
+    info "Setting up Homepage"
 
     local templates='/app/templates/homepage'
     local target='/mnt/homepage'

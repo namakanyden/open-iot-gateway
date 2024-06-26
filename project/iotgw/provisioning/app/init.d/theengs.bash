@@ -4,10 +4,10 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-source /app/helpers.bash
+source "/app/lib/helpers.bash"
 
 function main() {
-    log "Setting up Theengs"
+    info "Setting up Theengs"
 
     local template='/app/templates/theengs/theengsgw.conf'
     local target='/mnt/theengs/theengsgw.conf'

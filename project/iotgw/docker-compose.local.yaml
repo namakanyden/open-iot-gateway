@@ -137,6 +137,7 @@ services:
 
 
   nodered:
+    container_name: nodered
     image: nodered/node-red:4.0.0-minimal
     restart: always
     ports:
@@ -147,14 +148,15 @@ services:
       - provisioning
       - mosquitto
     entrypoint: /data/entrypoint.sh
-    labels:
-      homepage.group: Services
-      homepage.name: Node-RED
-      homepage.icon: node-red.png
-      homepage.description: Low-code programmer.
+    # labels:
+    #   homepage.group: Services
+    #   homepage.name: Node-RED
+    #   homepage.icon: node-red.png
+    #   homepage.description: Low-code programmer.
 
 
   zigbee2mqtt:
+    container_name: zigbee2mqtt
     image: koenkk/zigbee2mqtt:1.38.0
     restart: always
     ports:
@@ -167,11 +169,11 @@ services:
       - zigbee2mqtt_data:/app/data/
     environment:
       DBUS_SYSTEM_BUS_ADDRESS: unix:path=/host/run/dbus/system_bus_socket
-    labels:
-      homepage.group: Services
-      homepage.name: Zigbee2MQTT
-      homepage.icon: zigbee2mqtt.png
-      homepage.description: Zigbee2MQTT Bridge.
+    # labels:
+    #   homepage.group: Services
+    #   homepage.name: Zigbee2MQTT
+    #   homepage.icon: zigbee2mqtt.png
+    #   homepage.description: Zigbee2MQTT Bridge.
 
 
   watchtower:

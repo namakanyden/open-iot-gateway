@@ -4,10 +4,10 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-source /app/helpers.bash
+source "/app/lib/helpers.bash"
 
 function main() {
-    log "Setting up Mosquitto"
+    info "Setting up Mosquitto"
 
     local template='/app/templates/mosquitto/mosquitto.conf'
     local target='/mnt/mosquitto/mosquitto.conf'

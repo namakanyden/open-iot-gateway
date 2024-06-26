@@ -4,10 +4,10 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-source /app/helpers.bash
+source "/app/lib/helpers.bash"
 
 function main() {
-    log "Setting up Telegraf"
+    info "Setting up Telegraf"
 
     local template='/app/templates/telegraf/telegraf.conf'
     local target='/mnt/telegraf/telegraf.conf'

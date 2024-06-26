@@ -4,10 +4,10 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-source /app/helpers.bash
+source "/app/lib/helpers.bash"
 
 function main() {
-    log "Setting up Zigbee2MQTT"
+    info "Setting up Zigbee2MQTT"
 
     local template='/app/templates/zigbee2mqtt/configuration.yaml'
     local target='/mnt/zigbee2mqtt/configuration.yaml'

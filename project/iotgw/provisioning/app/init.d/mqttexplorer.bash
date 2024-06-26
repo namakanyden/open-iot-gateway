@@ -4,10 +4,10 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-source /app/helpers.bash
+source "/app/lib/helpers.bash"
 
 function main() {
-    log "Setting up MQTT Explorer"
+    info "Setting up MQTT Explorer"
 
     local template="/app/templates/mqttexplorer/settings.json"
     local target="/mnt/mqttexplorer/settings.json"
