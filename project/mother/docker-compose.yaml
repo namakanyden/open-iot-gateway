@@ -1,8 +1,7 @@
-version: "3"
-
 services:
+
   traefik:
-    image: traefik:2.10
+    image: traefik:2.11
     # Enables the web UI and tells Traefik to listen to docker
     command:
       # Configuration
@@ -35,19 +34,59 @@ services:
       - ./configs/homepage:/app/config
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
+    depends_on:
+    - traefik
     labels:
       traefik.enable: true
       traefik.http.routers.homepage.rule: PathPrefix(`/`)
       traefik.http.routers.homepage.entrypoints: web
       traefik.http.services.homepage.loadbalancer.server.port: 3000
+      homepage.group: Services
+      homepage.name: Homepage
+      homepage.icon: homepage.png
+      homepage.description: Application Dashboard
+
+  portainer:
+    image: portainer/portainer-ce
+    ports:
+      # - 8000:8000
+      - 9443:9443
+    restart: always
+    depends_on:
+      - homepage
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer:/data
+    labels:
+      homepage.group: Applications
+      homepage.name: Portainer
+      homepage.icon: portainer.png
+      homepage.href: https://${HOSTIP:-localhost}:9443/
+      homepage.description: Docker management
+
+      #traefik.enable: true
+      #traefik.http.services.portainer.loadbalancer.server.port: 9443
+
+      ## middleware
+      #traefik.http.middlewares.portainer-rewrite.replacepathregex.regex: "^/portainer/(.*)"
+      #traefik.http.middlewares.portainer-rewrite.replacepathregex.replacement: "/$$1"
+
+      ## routers
+      #traefik.http.routers.portainer.entrypoints: web
+      #traefik.http.routers.portainer.rule: PathPrefix(`/portainer/`)
+      #traefik.http.routers.portainer.middlewares: "portainer-rewrite"
+
 
   mosquitto:
     image: eclipse-mosquitto
     restart: always
     volumes:
       - ./configs/mosquitto:/mosquitto/config
-    ports:
-      - 8000:8000 # for websocket
+    # ports:
+    #   - 8000:8000 # for websocket
+    depends_on:
+      - traefik
+      - homepage
     labels:
       traefik.enable: true
       traefik.tcp.services.mosquitto.loadbalancer.server.port: 1883
@@ -63,39 +102,51 @@ services:
       homepage.icon: mqtt.png
       homepage.description: Local MQTT Broker
 
-  grafana:
-    image: grafana/grafana
-    environment:
-      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-unset}
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-unset}
-      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/grafana
-      - GF_SERVER_SERVE_FROM_SUB_PATH=true
-    volumes:
-      - grafana:/var/lib/grafana
-    labels:
-      homepage.group: Applications
-      homepage.name: Grafana
-      homepage.href: http://${HOSTIP:-localhost}/grafana/
-      homepage.description: Dashboards
-      homepage.icon: grafana.png
+#   grafana:
+#     image: grafana/grafana
+#     environment:
+#       - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-unset}
+#       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-unset}
+#       - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/grafana
+#       - GF_SERVER_SERVE_FROM_SUB_PATH=true
+#     volumes:
+#       - grafana:/var/lib/grafana
+#     labels:
+#       homepage.group: Applications
+#       homepage.name: Grafana
+#       homepage.href: http://${HOSTIP:-localhost}/grafana/
+#       homepage.description: Dashboards
+#       homepage.icon: grafana.png
 
-      traefik.enable: true
-      traefik.http.routers.grafana.rule: PathPrefix(`/grafana`)
-      traefik.http.routers.grafana.entrypoints: web
-      traefik.http.services.grafana.loadbalancer.server.port: 3000
+#       traefik.enable: true
+#       traefik.http.routers.grafana.rule: PathPrefix(`/grafana`)
+#       traefik.http.routers.grafana.entrypoints: web
+#       traefik.http.services.grafana.loadbalancer.server.port: 3000
 
   influxdb:
-    image: influxdb
+    image: bitnami/influxdb:2.7.6
     ports:
       - 8086:8086
     volumes:
-      - influxdb:/var/lib/influxdb2
+      - influxdb:/bitnami/influxdb/
+      - ./configs/influxdb/init.d/:/docker-entrypoint-initdb.d/
+    depends_on:
+      - homepage
     environment:
-      - DOCKER_INFLUXDB_INIT_MODE=setup
-      - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_USER:-unset}
-      - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_PASSWORD:-unset}
-      - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_ORG:-unset}
-      - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET:-unset}
+      - INFLUXDB_INIT_MODE=setup
+      - INFLUXDB_ADMIN_USER=${INFLUXDB_ADMIN_USER}
+      - INFLUXDB_ADMIN_USER_PASSWORD=${INFLUXDB_ADMIN_USER_PASSWORD}
+      - INFLUXDB_ADMIN_USER_TOKEN=${INFLUXDB_ADMIN_USER_TOKEN}
+      - INFLUXDB_ADMIN_ORG=${INFLUXDB_ADMIN_ORG}
+      # - INFLUXDB_ADMIN_BUCKET=${INFLUXDB_BUCKET:-unset}
+
+      # - INFLUXDB_USER=${INFLUXDB_USER:-maker}
+      # - INFLUXDB_USER_PASSWORD=${INFLUXDB_USER_PASSWORD}
+
+      # - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUXDB_USER:-unset}
+      # - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_PASSWORD:-unset}
+      # - DOCKER_INFLUXDB_INIT_ORG=${INFLUXDB_ORG:-unset}
+      # - DOCKER_INFLUXDB_INIT_BUCKET=${INFLUXDB_BUCKET:-unset}
     labels:
       homepage.group: Services
       homepage.name: InfluxDB
@@ -103,49 +154,52 @@ services:
       homepage.icon: influxdb.png
       homepage.href: http://${HOSTIP:-localhost}:8086
 
-  telegraf-processor:
-    build:
-      context: ./configs/telegraf-processor
-    restart: always
-    volumes:
-      - ./configs/telegraf-processor:/etc/telegraf:ro
-      - ./configs/telegraf-processor/processor/src:/app/bin
-      - ./configs/tmp/:/tmp/
-    environment:
-      MQTT_USERNAME: ${MQTT_USERNAME:-unset}
-      MQTT_PASSWORD: ${MQTT_PASSWORD:-unset}
-      INFLUXDB_WRITE_TOKEN: ${INFLUXDB_WRITE_TOKEN}
-      INFLUXDB_ORG: ${INFLUXDB_ORG}
-      INFLUXDB_BUCKET_METRICS: ${INFLUXDB_BUCKET_METRICS}
-    labels:
-      homepage.group: Services
-      homepage.name: Telegraf Processor
-      homepage.icon: telegraf.png
-      homepage.description: Measured values to InfluxDB
+#   telegraf-processor:
+#     build:
+#       context: ./configs/telegraf-processor
+#     restart: always
+#     volumes:
+#       - ./configs/telegraf-processor:/etc/telegraf:ro
+#       - ./configs/telegraf-processor/processor/src:/app/bin
+#       - ./configs/tmp/:/tmp/
+#     environment:
+#       MQTT_USERNAME: ${MQTT_USERNAME:-unset}
+#       MQTT_PASSWORD: ${MQTT_PASSWORD:-unset}
+#       INFLUXDB_WRITE_TOKEN: ${INFLUXDB_WRITE_TOKEN}
+#       INFLUXDB_ORG: ${INFLUXDB_ORG}
+#       INFLUXDB_BUCKET_METRICS: ${INFLUXDB_BUCKET_METRICS}
+#     labels:
+#       homepage.group: Services
+#       homepage.name: Telegraf Processor
+#       homepage.icon: telegraf.png
+#       homepage.description: Measured values to InfluxDB
 
-  telegraf-metrics:
-    image: telegraf
-    restart: always
-    volumes:
-      - ./configs/telegraf-metrics:/etc/telegraf:ro
-      - ./configs/tmp/:/tmp/
-    environment:
-      MQTT_USERNAME: ${MQTT_USERNAME:-unset}
-      MQTT_PASSWORD: ${MQTT_PASSWORD:-unset}
-      INFLUXDB_WRITE_TOKEN: ${INFLUXDB_WRITE_TOKEN}
-      INFLUXDB_ORG: ${INFLUXDB_ORG}
-      INFLUXDB_BUCKET_METRICS: ${INFLUXDB_BUCKET_METRICS}
-    labels:
-      homepage.group: Services
-      homepage.name: Telegraf Metrics
-      homepage.icon: telegraf.png
-      homepage.description: System Metrics to InfluxDB
+#   telegraf-metrics:
+#     image: telegraf
+#     restart: always
+#     volumes:
+#       - ./configs/telegraf-metrics:/etc/telegraf:ro
+#       - ./configs/tmp/:/tmp/
+#     environment:
+#       MQTT_USERNAME: ${MQTT_USERNAME:-unset}
+#       MQTT_PASSWORD: ${MQTT_PASSWORD:-unset}
+#       INFLUXDB_WRITE_TOKEN: ${INFLUXDB_WRITE_TOKEN}
+#       INFLUXDB_ORG: ${INFLUXDB_ORG}
+#       INFLUXDB_BUCKET_METRICS: ${INFLUXDB_BUCKET_METRICS}
+#     labels:
+#       homepage.group: Services
+#       homepage.name: Telegraf Metrics
+#       homepage.icon: telegraf.png
+#       homepage.description: System Metrics to InfluxDB
 
   mqtt-explorer:
     image: smeagolworms4/mqtt-explorer
     restart: always
     volumes:
       - ./configs/mqtt-explorer:/mqtt-explorer/config
+    depends_on:
+      - mosquitto
+      - homepage
     labels:
       # homepage setup
       homepage.group: Applications
@@ -167,24 +221,27 @@ services:
       traefik.http.routers.mqttex.rule: PathPrefix(`/mqttexplorer/`)
       traefik.http.routers.mqttex.middlewares: "mqttex-rewrite"
 
-  mqttwarn:
-    image: tomhoover/mqttwarn
-    restart: always
-    volumes:
-      - ./configs/mqttwarn:/mqttwarn/config
-    labels:
-      # homepage setup
-      homepage.group: Applications
-      homepage.name: MQTT-warn
-      homepage.description: MQTT to Webhooks
-      homepage.icon: mqttwarn.png
+  # homeassistant:
+
+#   mqttwarn:
+#     image: tomhoover/mqttwarn
+#     restart: always
+#     volumes:
+#       - ./configs/mqttwarn:/mqttwarn/config
+#     labels:
+#       # homepage setup
+#       homepage.group: Applications
+#       homepage.name: MQTT-warn
+#       homepage.description: MQTT to Webhooks
+#       homepage.icon: mqttwarn.png
 
 volumes:
   grafana:
   influxdb:
+  portainer:
 
-networks:
-  # all containers will be by default connected to network iotgw
-  default:
-    name: motherNetwork
-    external: true
+# networks:
+#   # all containers will be by default connected to network iotgw
+#   default:
+#     name: motherNetwork
+#     external: true
