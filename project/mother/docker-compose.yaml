@@ -5,6 +5,7 @@ services:
       context: provisioning
     restart: no
     environment:
+      - TZ=UTC
       - HOSTIP=${HOSTIP:-localhost}
       - MOSQUITTO_USER=${MOSQUITTO_USER}
       - MOSQUITTO_PASSWORD=${MOSQUITTO_PASSWORD}
@@ -19,7 +20,8 @@ services:
       - homepage_config:/mnt/homepage/config/
       - telegraf_config:/mnt/telegraf/
       - mosquitto_config:/mnt/mosquitto/
-      - mqttexplorer_config:/mnt/mqttexplorer
+      - mqttexplorer_config:/mnt/mqttexplorer/
+      - influxdb_init:/mnt/influxdb/
       # - nodered_data:/mnt/nodered/
 
 
@@ -159,7 +161,7 @@ services:
       - 8086:8086
     volumes:
       - influxdb:/bitnami/influxdb/
-      - ./configs/influxdb/init.d/:/docker-entrypoint-initdb.d/
+      - influxdb_init:/docker-entrypoint-initdb.d/
     depends_on:
       - provisioning
       - homepage
@@ -272,10 +274,11 @@ services:
 
 volumes:
   grafana:
-  influxdb:
   portainer:
   telegraf_config:
   homepage_config:
   homepage_images:
   mosquitto_config:
   mqttexplorer_config:
+  influxdb:
+  influxdb_init:
