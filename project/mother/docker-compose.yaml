@@ -18,10 +18,10 @@ services:
     volumes:
       - homepage_images:/mnt/homepage/images/
       - homepage_config:/mnt/homepage/config/
-      - telegraf_config:/mnt/telegraf/
       - mosquitto_config:/mnt/mosquitto/
       - mqttexplorer_config:/mnt/mqttexplorer/
       - influxdb_init:/mnt/influxdb/
+      - telegraf_config:/mnt/telegraf/
       # - nodered_data:/mnt/nodered/
 
 
@@ -209,24 +209,28 @@ services:
 #       homepage.description: Measured values to InfluxDB
 
 
-#   telegraf-metrics:
-#     image: telegraf
-#     restart: always
-#     volumes:
-#       - ./configs/telegraf-metrics:/etc/telegraf:ro
-#       - ./configs/tmp/:/tmp/
-        # - telegraf_config:/etc/telegraf:ro
-#     environment:
-#       MQTT_USERNAME: ${MQTT_USERNAME:-unset}
-#       MQTT_PASSWORD: ${MQTT_PASSWORD:-unset}
-#       INFLUXDB_WRITE_TOKEN: ${INFLUXDB_WRITE_TOKEN}
-#       INFLUXDB_ORG: ${INFLUXDB_ORG}
-#       INFLUXDB_BUCKET_METRICS: ${INFLUXDB_BUCKET_METRICS}
-#     labels:
-#       homepage.group: Services
-#       homepage.name: Telegraf Metrics
-#       homepage.icon: telegraf.png
-#       homepage.description: System Metrics to InfluxDB
+  telegraf:
+     build:
+      context: telegraf 
+     restart: always
+     depends_on:
+       - provisioning
+     volumes:
+       - telegraf_config:/etc/telegraf:ro
+       - ./telegraf/processor/src:/app/bin
+         #- ./configs/telegraf-metrics:/etc/telegraf:ro
+       - ./configs/tmp/:/tmp/
+       # - telegraf_config:/etc/telegraf:ro
+     environment:
+      - MOSQUITTO_USER=${MOSQUITTO_USER}
+      - MOSQUITTO_PASSWORD=${MOSQUITTO_PASSWORD}
+      - INFLUXDB_ADMIN_USER_TOKEN=${INFLUXDB_ADMIN_USER_TOKEN}
+      - INFLUXDB_ADMIN_ORG=${INFLUXDB_ADMIN_ORG}
+     labels:
+       homepage.group: Services
+       homepage.name: Telegraf Metrics
+       homepage.icon: telegraf.png
+       homepage.description: System Metrics to InfluxDB
 
   mqtt-explorer:
     image: smeagolworms4/mqtt-explorer
