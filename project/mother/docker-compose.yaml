@@ -1,5 +1,28 @@
 services:
 
+  provisioning:
+    build:
+      context: provisioning
+    restart: no
+    environment:
+      - HOSTIP=${HOSTIP:-localhost}
+      - MOSQUITTO_USER=${MOSQUITTO_USER}
+      - MOSQUITTO_PASSWORD=${MOSQUITTO_PASSWORD}
+      - DEBUG_PROVISIONING=${DEBUG_PROVISIONING}
+
+      - INFLUXDB_ADMIN_USER=${INFLUXDB_ADMIN_USER}
+      - INFLUXDB_ADMIN_USER_PASSWORD=${INFLUXDB_ADMIN_USER_PASSWORD}
+      - INFLUXDB_ADMIN_USER_TOKEN=${INFLUXDB_ADMIN_USER_TOKEN}
+      - INFLUXDB_ADMIN_ORG=${INFLUXDB_ADMIN_ORG}
+    volumes:
+      - homepage_images:/mnt/homepage/images/
+      - homepage_config:/mnt/homepage/config/
+      - telegraf_config:/mnt/telegraf/
+      - mosquitto_config:/mnt/mosquitto/
+      - mqttexplorer_config:/mnt/mqttexplorer
+      # - nodered_data:/mnt/nodered/
+
+
   traefik:
     image: traefik:2.11
     # Enables the web UI and tells Traefik to listen to docker
@@ -28,13 +51,16 @@ services:
       - homepage.href=http://${HOSTIP:-localhost}:8080/
       - homepage.description=Traefik dashboard
 
+
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     volumes:
-      - ./configs/homepage:/app/config
+      - homepage_config:/app/config
+      - homepage_images:/app/public/images
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
     depends_on:
+    - provisioning
     - traefik
     labels:
       traefik.enable: true
@@ -45,6 +71,7 @@ services:
       homepage.name: Homepage
       homepage.icon: homepage.png
       homepage.description: Application Dashboard
+
 
   portainer:
     image: portainer/portainer-ce
@@ -81,10 +108,11 @@ services:
     image: eclipse-mosquitto
     restart: always
     volumes:
-      - ./configs/mosquitto:/mosquitto/config
+      - mosquitto_config:/mosquitto/config
     # ports:
     #   - 8000:8000 # for websocket
     depends_on:
+      - provisioning
       - traefik
       - homepage
     labels:
@@ -101,6 +129,7 @@ services:
       homepage.name: Mosquitto
       homepage.icon: mqtt.png
       homepage.description: Local MQTT Broker
+
 
 #   grafana:
 #     image: grafana/grafana
@@ -123,6 +152,7 @@ services:
 #       traefik.http.routers.grafana.entrypoints: web
 #       traefik.http.services.grafana.loadbalancer.server.port: 3000
 
+
   influxdb:
     image: bitnami/influxdb:2.7.6
     ports:
@@ -131,6 +161,7 @@ services:
       - influxdb:/bitnami/influxdb/
       - ./configs/influxdb/init.d/:/docker-entrypoint-initdb.d/
     depends_on:
+      - provisioning
       - homepage
     environment:
       - INFLUXDB_INIT_MODE=setup
@@ -154,6 +185,7 @@ services:
       homepage.icon: influxdb.png
       homepage.href: http://${HOSTIP:-localhost}:8086
 
+
 #   telegraf-processor:
 #     build:
 #       context: ./configs/telegraf-processor
@@ -174,12 +206,14 @@ services:
 #       homepage.icon: telegraf.png
 #       homepage.description: Measured values to InfluxDB
 
+
 #   telegraf-metrics:
 #     image: telegraf
 #     restart: always
 #     volumes:
 #       - ./configs/telegraf-metrics:/etc/telegraf:ro
 #       - ./configs/tmp/:/tmp/
+        # - telegraf_config:/etc/telegraf:ro
 #     environment:
 #       MQTT_USERNAME: ${MQTT_USERNAME:-unset}
 #       MQTT_PASSWORD: ${MQTT_PASSWORD:-unset}
@@ -198,6 +232,7 @@ services:
     volumes:
       - ./configs/mqtt-explorer:/mqtt-explorer/config
     depends_on:
+      - provisioning
       - mosquitto
       - homepage
     labels:
@@ -239,9 +274,8 @@ volumes:
   grafana:
   influxdb:
   portainer:
-
-# networks:
-#   # all containers will be by default connected to network iotgw
-#   default:
-#     name: motherNetwork
-#     external: true
+  telegraf_config:
+  homepage_config:
+  homepage_images:
+  mosquitto_config:
+  mqttexplorer_config:

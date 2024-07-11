@@ -1,0 +1,18 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/en/configs/settings
+
+# page title
+title: The Mother
+
+# ui language
+language: en
+
+# default layout
+layout:
+  Services:
+  Applications:
+
+# providers:
+#   openweathermap: apikey
+#   weatherapi: weatherapiapikey

@@ -1,0 +1,19 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/en/configs/services
+
+- Services:
+    - Node-RED:
+        href: http://${HOSTIP}:1880/
+        icon: node-red.png
+        description: Node-RED
+        # ping: nodered
+        server: local-docker
+
+- Applications:
+    - Gateway Dashboard:
+        href: http://${HOSTIP}:1880/ui/
+        icon: node-red.png
+        description: IoT Gateway Dashboard
+        # ping: nodered
+        server: local-docker
